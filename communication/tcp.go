@@ -1,7 +1,6 @@
 package communication
 
 import (
-	"crypto/sha256"
 	"errors"
 	"fmt"
 	"io"
@@ -10,12 +9,13 @@ import (
 	"sync"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/r3musketeers/hermes/proxy"
 )
 
 type TCPCommunicator struct {
 	listener    *net.TCPListener
-	deliverAddr *net.TCPAddr
+	deliverConn *net.TCPConn
 
 	connIDsMux   sync.RWMutex
 	messageConns map[string]string
@@ -23,7 +23,8 @@ type TCPCommunicator struct {
 	connsMux    sync.RWMutex
 	connsCount  int
 	clientConns map[string]*net.TCPConn
-	serverConns map[string]*net.TCPConn
+
+	responseBuffer []byte
 }
 
 func NewTCPCommunicator(
@@ -45,9 +46,11 @@ func NewTCPCommunicator(
 		return nil, err
 	}
 
+	deliverConn, err := net.DialTCP("tcp", nil, deliverAddr)
+
 	return &TCPCommunicator{
 		listener:    listener,
-		deliverAddr: deliverAddr,
+		deliverConn: deliverConn,
 
 		connIDsMux:   sync.RWMutex{},
 		messageConns: map[string]string{},
@@ -55,7 +58,8 @@ func NewTCPCommunicator(
 		connsMux:    sync.RWMutex{},
 		connsCount:  0,
 		clientConns: map[string]*net.TCPConn{},
-		serverConns: map[string]*net.TCPConn{},
+
+		responseBuffer: make([]byte, 1024),
 	}, nil
 }
 
@@ -82,18 +86,35 @@ func (comm TCPCommunicator) Deliver(id string, data []byte) error {
 	}()
 
 	comm.connIDsMux.RLock()
-	connID := comm.messageConns[id]
+	connID, ok := comm.messageConns[id]
 	comm.connIDsMux.RUnlock()
+
+	if !ok {
+		log.Println("message already delivered or not present in communicator cache")
+		return nil
+	}
 
 	log.Println("delivering for connection", connID)
 
-	comm.connsMux.RLock()
-	serverConn := comm.serverConns[connID]
-	comm.connsMux.RUnlock()
-
-	serverConn.Write(data)
+	comm.deliverConn.Write(data)
 
 	log.Println("delivered message")
+
+	comm.connsMux.RLock()
+	clientConn, ok := comm.clientConns[connID]
+	comm.connsMux.RUnlock()
+
+	if !ok {
+		log.Println("client connection not here")
+		return nil
+	}
+
+	n, err := comm.deliverConn.Read(comm.responseBuffer)
+	if err != nil {
+		clientConn.Write([]byte(err.Error()))
+	} else {
+		clientConn.Write(comm.responseBuffer[:n])
+	}
 
 	return nil
 }
@@ -102,68 +123,17 @@ func (comm *TCPCommunicator) handleConnection(
 	clientConn *net.TCPConn,
 	handle proxy.HandleIncomingMessageFunc,
 ) {
-	// starts connection with server
-	serverConn, err := net.DialTCP("tcp", nil, comm.deliverAddr)
-	if err != nil {
-		clientConn.Write([]byte(err.Error()))
-		return
-	}
-
-	// saves client and server connections for future use
+	// saves client connection for future use
 	comm.connsMux.Lock()
-	// connID := uuid.New().String()
 	connID := fmt.Sprintf("%d", comm.connsCount)
 	comm.connsCount++
 	log.Println("starting connection", connID)
 	comm.clientConns[connID] = clientConn
-	comm.serverConns[connID] = serverConn
 	comm.connsMux.Unlock()
 
 	errChan := make(chan error)
 	quitChan := make(chan struct{})
 	wg := sync.WaitGroup{}
-
-	// starts reading from the server
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-
-		buffer := make([]byte, 1024)
-		for {
-			select {
-			case <-quitChan:
-				return
-			default:
-				err := serverConn.SetReadDeadline(time.Now().Add(2 * time.Second))
-				if err != nil {
-					log.Println("failed setting read deadline for server connection", connID)
-					continue
-				}
-
-				n, err := serverConn.Read(buffer)
-				if err != nil {
-					if netErr, ok := err.(net.Error); ok && netErr.Timeout() {
-						continue
-					}
-
-					if errors.Is(err, io.EOF) {
-						log.Println("server closed connection", connID)
-						errChan <- nil
-					} else {
-						errChan <- fmt.Errorf("error reading from client: %w", err)
-					}
-
-					return
-				}
-
-				log.Println("message from server for connection", connID)
-
-				clientConn.Write(buffer[:n])
-
-				log.Println("replied message on connection", connID)
-			}
-		}
-	}()
 
 	// starts reading from the client
 	wg.Add(1)
@@ -200,9 +170,10 @@ func (comm *TCPCommunicator) handleConnection(
 
 				log.Print("message from client for connection", connID)
 
-				hash := sha256.New()
-				hash.Write(buffer[:n])
-				id := string(hash.Sum([]byte(clientConn.RemoteAddr().String())))
+				// hash := sha256.New()
+				// hash.Write(buffer[:n])
+				// id := string(hash.Sum([]byte(clientConn.RemoteAddr().String())))
+				id := uuid.NewString()
 
 				comm.connIDsMux.Lock()
 				comm.messageConns[id] = connID
@@ -217,7 +188,7 @@ func (comm *TCPCommunicator) handleConnection(
 		}
 	}()
 
-	err = <-errChan
+	err := <-errChan
 	if err != nil {
 		log.Printf("error for connection %s: %s", connID, err.Error())
 	}
@@ -227,11 +198,8 @@ func (comm *TCPCommunicator) handleConnection(
 
 	wg.Wait()
 
-	serverConn.Close()
-
 	comm.connsMux.Lock()
 	delete(comm.clientConns, connID)
-	delete(comm.serverConns, connID)
 	comm.connsMux.Unlock()
 
 	log.Println("finished connection", connID)

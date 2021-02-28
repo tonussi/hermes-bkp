@@ -21,7 +21,7 @@ func Init(
 	_orderer = orderer
 }
 
-func Run(addr string) error {
+func Run() error {
 	errCh := make(chan error)
 
 	go func() {
@@ -45,12 +45,13 @@ func handleIncomingMessage(id string, data []byte) error {
 		return err
 	}
 
-	log.Println("handling ordered message")
-
-	return _communicator.Deliver(id, data)
+	return nil
 }
 
 func handleOrderedMessage(id string, data []byte) error {
+	log.Println("handling ordered message")
+
+	_communicator.Deliver(id, data)
 
 	return nil
 }

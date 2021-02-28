@@ -1,30 +1,55 @@
 package main
 
 import (
+	"flag"
 	"log"
+	"time"
 
 	"github.com/r3musketeers/hermes/communication"
-	"github.com/r3musketeers/hermes/ordering/dummy"
+	hashicorpraft "github.com/r3musketeers/hermes/ordering/hashicorp-raft"
 	"github.com/r3musketeers/hermes/proxy"
 )
 
+var (
+	nodeID       = flag.String("i", "", "node id")
+	clientsAddr  = flag.String("c", ":8001", "client requests address")
+	deliveryAddr = flag.String("d", ":8000", "delivery server address")
+	ordererAddr  = flag.String("o", "localhost:10012", "ordering protocol address bind")
+	joinAddr     = flag.String("j", "", "join listener address")
+)
+
 func main() {
-	tcpCommunicator, err := communication.NewTCPCommunicator(":8001", ":8000")
+	flag.Parse()
+
+	if *nodeID == "" {
+		log.Fatal("node id cannot be empty")
+	}
+
+	tcpCommunicator, err := communication.NewTCPCommunicator(
+		*clientsAddr,
+		*deliveryAddr,
+	)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
-	// udpCommunicator, err := communication.NewUDPCommunicator(":8001")
-	// if err != nil {
-	// 	log.Fatal(err.Error())
-	// }
+	hashicoprRaftOrderer, err := hashicorpraft.NewHashicorpRaftOrderer(
+		*nodeID,
+		*ordererAddr,
+		10*time.Second,
+		"data/hashicor-raft/"+*nodeID,
+		2,
+		10*time.Second,
+		*joinAddr == "",
+	)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
-	// httpCommunicator := communication.NewHTTPCommunicator(":8000")
+	// dummyOrder := dummy.NewDummyOrderer()
 
-	dummyOrderer := dummy.NewDummyOrderer()
-
-	proxy.Init(tcpCommunicator, dummyOrderer)
-	if err := proxy.Run(":8001"); err != nil {
+	proxy.Init(tcpCommunicator, hashicoprRaftOrderer)
+	if err := proxy.Run(); err != nil {
 		log.Fatal(err.Error())
 	}
 }

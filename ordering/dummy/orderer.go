@@ -35,5 +35,7 @@ func (orderer DummyOrderer) Run(handle proxy.HandleOrderedMessageFunc) error {
 func (orderer DummyOrderer) Propose(id string, data []byte) error {
 	time.Sleep(2 * time.Second)
 
+	orderer.orderedCh <- DummyMessage{ID: id, Data: data}
+
 	return nil
 }
