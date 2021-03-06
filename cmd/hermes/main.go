@@ -5,9 +5,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/r3musketeers/hermes/communication"
-	hashicorpraft "github.com/r3musketeers/hermes/ordering/hashicorp-raft"
-	"github.com/r3musketeers/hermes/proxy"
+	"github.com/r3musketeers/hermes/pkg/communication"
+	hashicorpraft "github.com/r3musketeers/hermes/pkg/ordering/hashicorp-raft"
+	"github.com/r3musketeers/hermes/pkg/proxy"
 )
 
 var (
@@ -45,8 +45,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-
-	// dummyOrder := dummy.NewDummyOrderer()
 
 	proxy.Init(tcpCommunicator, hashicoprRaftOrderer)
 	if err := proxy.Run(); err != nil {

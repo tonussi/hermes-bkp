@@ -14,7 +14,7 @@ import (
 
 	"github.com/hashicorp/raft"
 	raftboltdb "github.com/hashicorp/raft-boltdb"
-	"github.com/r3musketeers/hermes/proxy"
+	"github.com/r3musketeers/hermes/pkg/proxy"
 )
 
 type HashicorpRaftMessage struct {

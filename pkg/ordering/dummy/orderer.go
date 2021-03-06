@@ -3,7 +3,7 @@ package dummy
 import (
 	"time"
 
-	"github.com/r3musketeers/hermes/proxy"
+	"github.com/r3musketeers/hermes/pkg/proxy"
 )
 
 type DummyMessage struct {
