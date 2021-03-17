@@ -21,6 +21,7 @@ func Init(
 ) {
 	_communicator = communicator
 	_orderer = orderer
+	_orderedCh = make(chan Message, 64)
 }
 
 func Run() error {

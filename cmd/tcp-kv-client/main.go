@@ -1,11 +1,12 @@
 package main
 
 import (
+	"encoding/binary"
 	"flag"
 	"log"
 	"math/rand"
 	"net"
-	"os"
+	"runtime"
 	"sync"
 	"time"
 
@@ -13,71 +14,145 @@ import (
 )
 
 var (
-	serverAddr = flag.String("s", ":8000", "server address")
-	duration   = flag.Duration("d", time.Second*10, "experiment duration")
-	logPath    = flag.String("l", "latency.log", "path to log the latency")
+	serverAddr   = flag.String("s", ":8000", "server address")
+	duration     = flag.Duration("d", time.Second*30, "experiment duration")
+	payloadSize  = flag.Int("p", 1024, "payload size")
+	keyRange     = flag.Int("k", 100000, "key range")
+	readRate     = flag.Int("r", 0, "read percentage proportion")
+	nThreads     = flag.Int("n", 1, "number of threads")
+	thinkingTime = flag.Duration("t", time.Millisecond*100, "thinking time")
+	logFrequency = flag.Uint64("f", 10, "log constant to determine frequency")
+	bufferSize   = flag.Int("b", 2048, "response buffer size")
 )
 
 func main() {
 	flag.Parse()
+	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	wg := sync.WaitGroup{}
+	allSetWg := sync.WaitGroup{}
+	clientsWg := sync.WaitGroup{}
 	startCh := make(chan struct{})
 	stopChan := make(chan struct{})
 
-	wg.Add(1)
-	go func() {
-		tcpAddr, err := net.ResolveTCPAddr("tcp", *serverAddr)
-		if err != nil {
-			log.Fatal(err)
-		}
+	tcpAddr, err := net.ResolveTCPAddr("tcp", *serverAddr)
+	if err != nil {
+		log.Fatal(err)
+	}
 
+	payload := make([]byte, *payloadSize)
+
+	allSetWg.Add(*nThreads)
+	clientsWg.Add(*nThreads)
+
+	go func() {
 		conn, err := net.DialTCP("tcp", nil, tcpAddr)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		logFile, err := os.Create(*logPath)
-		if err != nil {
-			log.Fatal(err)
+		buffer := make([]byte, *bufferSize)
+
+		req := kv.Request{
+			Data: payload,
 		}
 
-		logger := log.New(logFile, "", log.LstdFlags)
+		reqBytes := req.Serialize()
 
-		buffer := make([]byte, 2048)
-
+		allSetWg.Done()
 		<-startCh
 
 		for {
 			select {
 			case <-stopChan:
-				wg.Done()
+				clientsWg.Done()
 				return
 			default:
-				randKey := rand.Intn(1000000)
-				req := kv.Request{
-					Op:   kv.SetOp,
-					Key:  uint64(randKey),
-					Data: make([]byte, 1008),
+				randOpNumber := rand.Intn(100)
+				var op kv.Op
+				if randOpNumber < *readRate {
+					op = kv.GetOp
+				} else {
+					op = kv.SetOp
 				}
+				binary.PutUvarint(reqBytes[:kv.OpByteSize], uint64(op))
+
+				key := uint64(rand.Intn(*keyRange))
+				binary.PutUvarint(
+					reqBytes[kv.OpByteSize:kv.OpByteSize+kv.KeyByteSize],
+					key,
+				)
 
 				startTime := time.Now()
 
-				conn.Write(req.Serialize())
+				conn.Write(reqBytes)
 
 				_, err := conn.Read(buffer)
 				if err != nil {
 					log.Fatal(err)
 				}
 
-				if randKey%10 == 0 {
-					logger.Println(time.Since(startTime).Microseconds())
+				if req.Key%*logFrequency == 0 {
+					log.Println(time.Since(startTime).Microseconds())
 				}
 
-				time.Sleep(time.Millisecond * 100)
+				time.Sleep(*thinkingTime)
 			}
 		}
 	}()
+
+	for i := 1; i <= *nThreads-1; i++ {
+		go func(clientId int) {
+			conn, err := net.DialTCP("tcp", nil, tcpAddr)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			buffer := make([]byte, *bufferSize)
+
+			req := kv.Request{
+				Data: payload,
+			}
+
+			reqBytes := req.Serialize()
+
+			allSetWg.Done()
+			<-startCh
+
+			for {
+				select {
+				case <-stopChan:
+					clientsWg.Done()
+					return
+				default:
+					randOpNumber := rand.Intn(100)
+					var op kv.Op
+					if randOpNumber < *readRate {
+						op = kv.GetOp
+					} else {
+						op = kv.SetOp
+					}
+					binary.PutUvarint(reqBytes[:kv.OpByteSize], uint64(op))
+
+					key := uint64(rand.Intn(*keyRange))
+					binary.PutUvarint(
+						reqBytes[kv.OpByteSize:kv.OpByteSize+kv.KeyByteSize],
+						key,
+					)
+
+					conn.Write(reqBytes)
+
+					_, err := conn.Read(buffer)
+					if err != nil {
+						log.Fatal(err)
+					}
+
+					time.Sleep(*thinkingTime)
+				}
+			}
+		}(i)
+	}
+
+	allSetWg.Wait()
 
 	close(startCh)
 
@@ -85,5 +160,6 @@ func main() {
 	<-timer.C
 
 	close(stopChan)
-	wg.Wait()
+
+	clientsWg.Wait()
 }

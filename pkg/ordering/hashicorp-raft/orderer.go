@@ -3,7 +3,9 @@ package hashicorpraft
 import (
 	"bytes"
 	"encoding/gob"
+	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"log"
 	"net"
@@ -28,6 +30,9 @@ type HashicorpRaftOrderer struct {
 	raft            *raft.Raft
 	proposalTimeout time.Duration
 
+	listenJoinAddr string
+	joinAddr       string
+
 	orderedCh chan HashicorpRaftMessage
 
 	history map[string][]byte
@@ -40,7 +45,8 @@ func NewHashicorpRaftOrderer(
 	baseDir string,
 	snapshotRetain int,
 	proposalTimeout time.Duration,
-	enableSingle bool,
+	listenJoinAddr string,
+	joinAddr string,
 ) (*HashicorpRaftOrderer, error) {
 	config := raft.DefaultConfig()
 	config.LocalID = raft.ServerID(nodeID)
@@ -77,16 +83,19 @@ func NewHashicorpRaftOrderer(
 		return nil, err
 	}
 
-	raftAdapter := &HashicorpRaftOrderer{
+	orderer := &HashicorpRaftOrderer{
 		nodeID:          nodeID,
 		address:         addrStr,
 		proposalTimeout: proposalTimeout,
-		orderedCh:       make(chan HashicorpRaftMessage),
+		listenJoinAddr:  listenJoinAddr,
+		joinAddr:        joinAddr,
+
+		orderedCh: make(chan HashicorpRaftMessage),
 	}
 
 	raftInstance, err := raft.NewRaft(
 		config,
-		raftAdapter,
+		orderer,
 		boltDB,
 		boltDB,
 		snapshotStore,
@@ -96,18 +105,37 @@ func NewHashicorpRaftOrderer(
 		return nil, err
 	}
 
-	raftAdapter.raft = raftInstance
+	orderer.raft = raftInstance
 
-	if enableSingle {
+	if joinAddr == "" {
 		configSingle := raft.Configuration{
 			Servers: []raft.Server{
 				{ID: config.LocalID, Address: transport.LocalAddr()},
 			},
 		}
 		raftInstance.BootstrapCluster(configSingle)
+	} else {
+		joinBody, err := json.Marshal(map[string]string{
+			"id":   nodeID,
+			"addr": addrStr,
+		})
+		if err != nil {
+			return nil, err
+		}
+
+		resp, err := http.Post(
+			fmt.Sprintf("http://%s/hashicorp-raft/join", joinAddr),
+			"application-type/json",
+			bytes.NewReader(joinBody),
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		resp.Body.Close()
 	}
 
-	return raftAdapter, nil
+	return orderer, nil
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -119,11 +147,14 @@ func NewHashicorpRaftOrderer(
 func (orderer HashicorpRaftOrderer) Run(handle proxy.HandleOrderedMessageFunc) error {
 	listenJoinErrCh := make(chan error)
 
-	go func() {
-		http.HandleFunc("/hashicorp-raft/join", orderer.joinHandler)
+	if orderer.listenJoinAddr != "" {
+		go func() {
+			http.HandleFunc("/hashicorp-raft/join", orderer.joinHandler)
 
-		listenJoinErrCh <- http.ListenAndServe(":8002", nil)
-	}()
+			log.Println("listening join requests at", orderer.listenJoinAddr)
+			listenJoinErrCh <- http.ListenAndServe(orderer.listenJoinAddr, nil)
+		}()
+	}
 
 	for {
 		select {

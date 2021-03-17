@@ -1,28 +1,24 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
 	"flag"
 	"io"
 	"log"
 	"net"
-	"os"
-	"sync"
-	"sync/atomic"
 	"time"
 
 	"github.com/r3musketeers/hermes/pkg/kv"
 )
 
 var (
-	counter    uint64
-	last       uint64
-	counterMux sync.RWMutex
-
-	addr       = flag.String("a", ":8000", "server address")
-	logPath    = flag.String("l", "throughput.log", "path to log the throughput")
-	bufferSize = flag.Int("b", 2048, "requests buffer size")
+	nodeID         = flag.String("i", "", "node id")
+	addr           = flag.String("a", ":8000", "server address")
+	logPath        = flag.String("l", "throughput.log", "path to log the throughput")
+	bufferSize     = flag.Int("b", 2048, "requests buffer size")
+	listenJoinAddr = flag.String("k", ":10000", "address to listen join requests")
+	raftAddr       = flag.String("r", "localhost:11000", "ordering protocol address bind")
+	joinAddr       = flag.String("j", "", "join listener address")
 )
 
 func main() {
@@ -39,23 +35,19 @@ func main() {
 	}
 	defer listener.Close()
 
-	store := kv.NewKV()
-
-	go func() {
-		logFile, err := os.Create(*logPath)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		logger := log.New(logFile, "", log.LstdFlags)
-
-		ticker := time.NewTicker(time.Second)
-		for range ticker.C {
-			delta := atomic.LoadUint64(&counter) - atomic.LoadUint64(&last)
-			logger.Println(delta)
-			atomic.StoreUint64(&last, atomic.LoadUint64(&counter))
-		}
-	}()
+	fsm, err := NewFSM(
+		*nodeID,
+		*raftAddr,
+		10*time.Second,
+		"data/tcp-kv-hashicor-raft/"+*nodeID,
+		2,
+		10*time.Second,
+		*listenJoinAddr,
+		*joinAddr,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	for {
 		conn, err := listener.AcceptTCP()
@@ -85,23 +77,24 @@ func main() {
 
 				switch req.Op {
 				case kv.GetOp:
-					value := store.Get(req.Key)
+					value := fsm.Get(req.Key)
 					conn.Write(value)
 					conn.Write([]byte("\n"))
 				case kv.SetOp:
-					store.Set(req.Key, req.Data)
+					err := fsm.Set(req.Key, req.Data)
+					if err != nil {
+						conn.Write([]byte(err.Error()))
+					}
 					conn.Write([]byte("\n"))
 				case kv.DelOp:
-					store.Delete(req.Key)
+					err := fsm.Delete(req.Key)
+					if err != nil {
+						conn.Write([]byte(err.Error()))
+					}
 					conn.Write([]byte("\n"))
-				case kv.SnapOp:
-					snapshot := store.Snapshot()
-					json.NewEncoder(conn).Encode(snapshot)
 				default:
 					conn.Write([]byte("unsupported operation\n"))
 				}
-
-				atomic.AddUint64(&counter, 1)
 			}
 		}()
 	}

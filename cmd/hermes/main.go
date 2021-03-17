@@ -11,11 +11,12 @@ import (
 )
 
 var (
-	nodeID       = flag.String("i", "", "node id")
-	clientsAddr  = flag.String("c", ":8001", "client requests address")
-	deliveryAddr = flag.String("d", ":8000", "delivery server address")
-	ordererAddr  = flag.String("o", "localhost:10012", "ordering protocol address bind")
-	joinAddr     = flag.String("j", "", "join listener address")
+	nodeID         = flag.String("i", "", "node id")
+	listenAddr     = flag.String("l", ":9000", "listen requests address")
+	deliveryAddr   = flag.String("d", ":8000", "delivery server address")
+	listenJoinAddr = flag.String("k", ":10000", "address to listen join requests")
+	ordererAddr    = flag.String("o", "localhost:11000", "ordering protocol address bind")
+	joinAddr       = flag.String("j", "", "join listener address")
 )
 
 func main() {
@@ -26,7 +27,7 @@ func main() {
 	}
 
 	tcpCommunicator, err := communication.NewTCPCommunicator(
-		*clientsAddr,
+		*listenAddr,
 		*deliveryAddr,
 	)
 	if err != nil {
@@ -37,10 +38,11 @@ func main() {
 		*nodeID,
 		*ordererAddr,
 		10*time.Second,
-		"data/hashicor-raft/"+*nodeID,
+		"data/hermes/hashicor-raft/"+*nodeID,
 		2,
 		10*time.Second,
-		*joinAddr == "",
+		*listenJoinAddr,
+		*joinAddr,
 	)
 	if err != nil {
 		log.Fatal(err.Error())

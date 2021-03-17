@@ -85,20 +85,22 @@ func (comm TCPCommunicator) Deliver(id string, data []byte) error {
 		comm.connIDsMux.Unlock()
 	}()
 
+	comm.deliverConn.Write(data)
+
+	log.Println("delivered message")
+
+	n, err := comm.deliverConn.Read(comm.responseBuffer)
+
 	comm.connIDsMux.RLock()
 	connID, ok := comm.messageConns[id]
 	comm.connIDsMux.RUnlock()
 
 	if !ok {
-		log.Println("message already delivered or not present in communicator cache")
+		log.Println("no need to respond the message")
 		return nil
 	}
 
-	log.Println("delivering for connection", connID)
-
-	comm.deliverConn.Write(data)
-
-	log.Println("delivered message")
+	log.Println("responding for connection", connID)
 
 	comm.connsMux.RLock()
 	clientConn, ok := comm.clientConns[connID]
@@ -109,7 +111,6 @@ func (comm TCPCommunicator) Deliver(id string, data []byte) error {
 		return nil
 	}
 
-	n, err := comm.deliverConn.Read(comm.responseBuffer)
 	if err != nil {
 		clientConn.Write([]byte(err.Error()))
 	} else {
