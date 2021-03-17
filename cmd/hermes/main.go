@@ -12,11 +12,11 @@ import (
 
 var (
 	nodeID         = flag.String("i", "", "node id")
-	listenAddr     = flag.String("l", ":9000", "listen requests address")
-	deliveryAddr   = flag.String("d", ":8000", "delivery server address")
-	listenJoinAddr = flag.String("k", ":10000", "address to listen join requests")
-	ordererAddr    = flag.String("o", "localhost:11000", "ordering protocol address bind")
-	joinAddr       = flag.String("j", "", "join listener address")
+	listenAddr     = flag.String("l", ":8000", "listen requests address")
+	deliveryAddr   = flag.String("d", ":8001", "delivery server address")
+	listenJoinAddr = flag.String("k", ":9000", "listen join requests address")
+	ordererAddr    = flag.String("o", "localhost:10000", "ordering protocol address bind")
+	joinAddr       = flag.String("j", "", "join address")
 )
 
 func main() {

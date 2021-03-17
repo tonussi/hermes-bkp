@@ -16,8 +16,8 @@ var (
 	addr           = flag.String("a", ":8000", "server address")
 	logPath        = flag.String("l", "throughput.log", "path to log the throughput")
 	bufferSize     = flag.Int("b", 2048, "requests buffer size")
-	listenJoinAddr = flag.String("k", ":10000", "address to listen join requests")
-	raftAddr       = flag.String("r", "localhost:11000", "ordering protocol address bind")
+	listenJoinAddr = flag.String("k", ":9000", "address to listen join requests")
+	raftAddr       = flag.String("r", "localhost:10000", "ordering protocol address bind")
 	joinAddr       = flag.String("j", "", "join listener address")
 )
 
