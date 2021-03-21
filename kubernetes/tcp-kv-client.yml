@@ -7,35 +7,34 @@ spec:
   completions: 2
   parallelism: 2
   template:
+    metadata:
+      labels:
+        app: tcp-kv-client
     spec:
       containers:
       - name: tcp-kv-client
         image: r3musketeers/tcp-kv-client:latest
-        # resources:
-        #   requests:
-        #     cpu: 4
-        #   limits:
-        #     cpu: 8
-          # requests:
-          #   memory: 100Mi
-          # limits:
-          #   memory: 200Mi
-        # command: [ "/bin/tcp-kv-client", "-d", "2m", "-u", "http://10.244.2.5:11010/kv" ]
         args: [
-          "-s", "172.17.0.6:8000",
-          "-d", "10s",
-          "-l", "/tmp/latency.log",
+          "-s", "tcp-kv-server:8000",
+          "-d", "30s",
           "-p", "1024",
           "-k", "100000",
           "-r", "0",
-          "-n", "16",
-          "-t", "50ms",
-          "-f", "10",
+          "-n", "192",
+          "-t", "10ms",
+          "-f", "50",
           "-b", "2048"
         ]
+        resources:
+          requests:
+            cpu: 2000m
+            memory: 2Gi
+          limits:
+              cpu: 4000m
+              memory: 4Gi
       restartPolicy: Never
-      # nodeSelector:
-      #   role: client
+      nodeSelector:
+        role: client
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

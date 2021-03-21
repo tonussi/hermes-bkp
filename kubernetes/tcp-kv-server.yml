@@ -30,17 +30,27 @@ spec:
           ]
           ports:
             - containerPort: 8000
-      # nodeSelector:
-      #   role: server
-      # affinity:
-      #   podAntiAffinity:
-      #     requiredDuringSchedulingIgnoredDuringExecution:
-      #       - labelSelector:
-      #           matchExpressions:
-      #             - key: name
-      #               operator: In
-      #               values: [ "tcp-kv-server" ]
-      #         topologyKey: failure-domain.beta.kubernetes.io/zone
+          resources:
+            requests:
+              cpu: 2000m
+              memory: 2Gi
+            limits:
+              cpu: 4000m
+              memory: 4Gi
+          readinessProbe:
+            tcpSocket:
+              port: 8000
+      nodeSelector:
+        role: server
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: name
+                    operator: In
+                    values: [ "tcp-kv-server" ]
+              topologyKey: failure-domain.beta.kubernetes.io/zone
 ---
 apiVersion: v1
 kind: Service
@@ -54,4 +64,3 @@ spec:
   ports:
     - port: 8000
       targetPort: 8000
-      nodePort: 30000

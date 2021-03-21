@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 ANSIBLE_PB_DIR=$1
+KUBERNETES_DIR=$2
 shift 1
 
 DOCKERD_JSON_FILE="$(cd ansible; pwd)/daemon.json"
@@ -14,7 +15,7 @@ echo "initial master setup..."
 ansible-playbook -i $ANSIBLE_PB_DIR/hosts $ANSIBLE_PB_DIR/init-master.yml
 
 echo "apply flannel pod network..."
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+kubectl apply -f $KUBERNETES_DIR/kube-flannel.yml
 
 echo "join worker nodes to cluster..."
 ansible-playbook -i $ANSIBLE_PB_DIR/hosts $ANSIBLE_PB_DIR/join-workers.yml
