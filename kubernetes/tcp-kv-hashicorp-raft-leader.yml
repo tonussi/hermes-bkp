@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tcp-kv-hashicorp-raft-leader
+  labels:
+    app: tcp-kv-hashicorp-raft-leader
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tcp-kv-hashicorp-raft-leader
+  template:
+    metadata:
+      labels:
+        app: tcp-kv-hashicorp-raft-leader
+    spec:
+      containers:
+        - name: tcp-kv-hashicorp-raft-leader
+          image: r3musketeers/tcp-kv-hashicorp-raft
+          args: [
+            "-l", "/tmp/throughput.log",
+            "-b", "2048",
+          ]
+          env:
+            - name: NODE_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: PROTOCOL_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: PROTOCOL_PORT
+              value: "10000"
+          ports:
+            - name: server
+              containerPort: 8000
+            - name: join
+              containerPort: 9000
+            - name: protocol
+              containerPort: 10000
+          resources:
+            requests:
+              cpu: 2000m
+              memory: 2Gi
+            limits:
+              cpu: 4000m
+              memory: 4Gi
+          readinessProbe:
+            tcpSocket:
+              port: 8000
+      nodeSelector:
+        role: server
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: name
+                    operator: In
+                    values: [ "tcp-kv-hashicorp-raft-leader", "tcp-kv-hashicorp-raft-follower" ]
+              topologyKey: failure-domain.beta.kubernetes.io/zone
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tcp-kv-hashicorp-raft-leader
+spec:
+  selector:
+    app: tcp-kv-hashicorp-raft-leader
+  type: NodePort
+  ports:
+    - name: server
+      port: 8000
+      targetPort: 8000
+    - name: join
+      port: 9000
+      targetPort: 9000

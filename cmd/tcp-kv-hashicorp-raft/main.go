@@ -6,18 +6,17 @@ import (
 	"io"
 	"log"
 	"net"
+	"os"
 	"time"
 
 	"github.com/r3musketeers/hermes/pkg/kv"
 )
 
 var (
-	nodeID         = flag.String("i", "", "node id")
 	addr           = flag.String("a", ":8000", "server address")
 	logPath        = flag.String("l", "throughput.log", "path to log the throughput")
 	bufferSize     = flag.Int("b", 2048, "requests buffer size")
 	listenJoinAddr = flag.String("k", ":9000", "address to listen join requests")
-	raftAddr       = flag.String("r", "localhost:10000", "ordering protocol address bind")
 	joinAddr       = flag.String("j", "", "join listener address")
 )
 
@@ -35,11 +34,18 @@ func main() {
 	}
 	defer listener.Close()
 
+	nodeID := os.Getenv("NODE_ID")
+	if nodeID == "" {
+		log.Fatal("node id must be set")
+	}
+
+	raftAddr := os.Getenv("PROTOCOL_IP") + ":" + os.Getenv("PROTOCOL_PORT")
+
 	fsm, err := NewFSM(
-		*nodeID,
-		*raftAddr,
+		nodeID,
+		raftAddr,
 		10*time.Second,
-		"data/tcp-kv-hashicor-raft/"+*nodeID,
+		"data/tcp-kv-hashicor-raft/"+nodeID,
 		2,
 		10*time.Second,
 		*listenJoinAddr,

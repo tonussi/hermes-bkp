@@ -2,10 +2,10 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: tcp-kv-client
-  namespace: hermes
+  # namespace: hermes
 spec:
-  completions: 2
-  parallelism: 2
+  completions: 1
+  parallelism: 1
   template:
     metadata:
       labels:
@@ -15,14 +15,14 @@ spec:
       - name: tcp-kv-client
         image: r3musketeers/tcp-kv-client:latest
         args: [
-          "-s", "tcp-kv-server:8000",
-          "-d", "30s",
+          "-s", "tcp-kv-hashicorp-raft-leader:8000",
+          "-d", "60s",
           "-p", "1024",
           "-k", "100000",
           "-r", "0",
           "-n", "256",
           "-t", "10ms",
-          "-f", "50",
+          "-f", "100",
           "-b", "2048"
         ]
         resources:
