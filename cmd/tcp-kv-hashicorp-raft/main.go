@@ -7,12 +7,18 @@ import (
 	"log"
 	"net"
 	"os"
+	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/r3musketeers/hermes/pkg/kv"
 )
 
 var (
+	counter    uint64
+	last       uint64
+	counterMux sync.RWMutex
+
 	addr           = flag.String("a", ":8000", "server address")
 	logPath        = flag.String("l", "throughput.log", "path to log the throughput")
 	bufferSize     = flag.Int("b", 2048, "requests buffer size")
@@ -55,6 +61,22 @@ func main() {
 		log.Fatal(err)
 	}
 
+	go func() {
+		logFile, err := os.Create(*logPath)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		logger := log.New(logFile, "", log.LstdFlags)
+
+		ticker := time.NewTicker(time.Second)
+		for range ticker.C {
+			delta := atomic.LoadUint64(&counter) - atomic.LoadUint64(&last)
+			logger.Println(delta)
+			atomic.StoreUint64(&last, atomic.LoadUint64(&counter))
+		}
+	}()
+
 	for {
 		conn, err := listener.AcceptTCP()
 		if err != nil {
@@ -66,6 +88,7 @@ func main() {
 			log.Println("connection started")
 
 			buffer := make([]byte, *bufferSize)
+			respCh := make(chan []byte, 1)
 
 			for {
 				n, err := conn.Read(buffer)
@@ -81,26 +104,17 @@ func main() {
 				req := kv.Request{}
 				req.Parse(buffer[:n])
 
-				switch req.Op {
-				case kv.GetOp:
-					value := fsm.Get(req.Key)
-					conn.Write(value)
+				err, resp := fsm.Process(req, respCh)
+				if err != nil {
+					conn.Write([]byte(err.Error()))
 					conn.Write([]byte("\n"))
-				case kv.SetOp:
-					err := fsm.Set(req.Key, req.Data)
-					if err != nil {
-						conn.Write([]byte(err.Error()))
-					}
-					conn.Write([]byte("\n"))
-				case kv.DelOp:
-					err := fsm.Delete(req.Key)
-					if err != nil {
-						conn.Write([]byte(err.Error()))
-					}
-					conn.Write([]byte("\n"))
-				default:
-					conn.Write([]byte("unsupported operation\n"))
+					continue
 				}
+
+				conn.Write(resp)
+				conn.Write([]byte("\n"))
+
+				atomic.AddUint64(&counter, 1)
 			}
 		}()
 	}

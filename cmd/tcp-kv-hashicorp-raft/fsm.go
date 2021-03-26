@@ -13,7 +13,6 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
-	"sync/atomic"
 	"time"
 
 	"github.com/google/uuid"
@@ -35,10 +34,6 @@ type FSM struct {
 
 	joinAddr string
 
-	counter    uint64
-	last       uint64
-	counterMux sync.RWMutex
-
 	store   *kv.KV
 	history map[string][]byte
 
@@ -46,6 +41,9 @@ type FSM struct {
 	messageConnMap map[string]int
 	connMap        map[int]*net.TCPConn
 	connMux        sync.RWMutex
+
+	respChMap map[string]chan []byte
+	respChMux sync.RWMutex
 }
 
 func NewFSM(
@@ -105,6 +103,8 @@ func NewFSM(
 
 		messageConnMap: map[string]int{},
 		connMap:        map[int]*net.TCPConn{},
+
+		respChMap: map[string]chan []byte{},
 	}
 
 	raftInstance, err := raft.NewRaft(
@@ -159,63 +159,37 @@ func NewFSM(
 		}()
 	}
 
-	// throughput log thread
-	go func() {
-		logFile, err := os.Create(*logPath)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		logger := log.New(logFile, "", log.LstdFlags)
-
-		ticker := time.NewTicker(time.Second)
-		for range ticker.C {
-			delta := atomic.LoadUint64(&fsm.counter) - atomic.LoadUint64(&fsm.last)
-			logger.Println(delta)
-			atomic.StoreUint64(&fsm.last, atomic.LoadUint64(&fsm.counter))
-		}
-	}()
-
 	return fsm, nil
 }
 
-func (fsm *FSM) Get(key uint64) []byte {
-	defer atomic.AddUint64(&fsm.counter, 1)
-	return fsm.store.Get(key)
-}
-
-func (fsm *FSM) Set(key uint64, value []byte) error {
+func (fsm *FSM) Process(req kv.Request, respCh chan []byte) (error, []byte) {
 	if fsm.raft.State() != raft.Leader {
-		return errors.New("not a raft leader")
+		return errors.New("not a raft leader"), nil
 	}
 
-	req := kv.Request{Op: kv.SetOp, Key: key, Data: value}
+	if req.Op != kv.GetOp && req.Op != kv.SetOp && req.Op != kv.DelOp {
+		return errors.New("unsupported operation"), nil
+	}
+
+	messageID := uuid.NewString()
 
 	buffer := bytes.NewBuffer([]byte{})
 	gob.NewEncoder(buffer).Encode(
-		HashicorpRaftMessage{ID: uuid.NewString(), Data: req.Serialize()},
+		HashicorpRaftMessage{ID: messageID, Data: req.Serialize()},
 	)
+
+	fsm.respChMux.Lock()
+	fsm.respChMap[messageID] = respCh
+	fsm.respChMux.Unlock()
 
 	raftFuture := fsm.raft.Apply(buffer.Bytes(), fsm.proposalTimeout)
 
-	return raftFuture.Error()
-}
-
-func (fsm *FSM) Delete(key uint64) error {
-	if fsm.raft.State() != raft.Leader {
-		return errors.New("not a raft leader")
+	err := raftFuture.Error()
+	if err != nil {
+		return err, nil
 	}
 
-	req := kv.Request{Op: kv.DelOp, Key: key}
-
-	buffer := bytes.NewBuffer([]byte{})
-	gob.NewEncoder(buffer).Encode(
-		HashicorpRaftMessage{ID: uuid.NewString(), Data: req.Serialize()},
-	)
-
-	raftFuture := fsm.raft.Apply(buffer.Bytes(), fsm.proposalTimeout)
-
-	return raftFuture.Error()
+	return nil, raftFuture.Response().([]byte)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -233,16 +207,18 @@ func (fsm *FSM) Apply(logEntry *raft.Log) interface{} {
 	req := kv.Request{}
 	req.Parse(message.Data)
 
+	resp := []byte{}
+
 	switch req.Op {
+	case kv.GetOp:
+		resp = fsm.store.Get(req.Key)
 	case kv.SetOp:
 		fsm.store.Set(req.Key, req.Data)
 	case kv.DelOp:
 		fsm.store.Delete(req.Key)
 	}
 
-	atomic.AddUint64(&fsm.counter, 1)
-
-	return nil
+	return resp
 }
 
 func (fsm *FSM) Snapshot() (raft.FSMSnapshot, error) {
