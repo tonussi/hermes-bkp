@@ -4,8 +4,8 @@ metadata:
   name: tcp-kv-client
   # namespace: hermes
 spec:
-  completions: 1
-  parallelism: 1
+  completions: 2
+  parallelism: 2
   template:
     metadata:
       labels:
@@ -20,7 +20,7 @@ spec:
           "-p", "1024",
           "-k", "100000",
           "-r", "0",
-          "-n", "256",
+          "-n", "42",
           "-t", "10ms",
           "-f", "100",
           "-b", "2048"
