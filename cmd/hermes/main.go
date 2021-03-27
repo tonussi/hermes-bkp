@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"log"
+	"os"
 	"time"
 
 	"github.com/r3musketeers/hermes/pkg/communication"
@@ -11,20 +12,21 @@ import (
 )
 
 var (
-	nodeID         = flag.String("i", "", "node id")
 	listenAddr     = flag.String("l", ":8000", "listen requests address")
 	deliveryAddr   = flag.String("d", ":8001", "delivery server address")
 	listenJoinAddr = flag.String("k", ":9000", "listen join requests address")
-	ordererAddr    = flag.String("o", "localhost:10000", "ordering protocol address bind")
 	joinAddr       = flag.String("j", "", "join address")
 )
 
 func main() {
 	flag.Parse()
 
-	if *nodeID == "" {
-		log.Fatal("node id cannot be empty")
+	nodeID := os.Getenv("NODE_ID")
+	if nodeID == "" {
+		log.Fatal("node id must be set")
 	}
+
+	raftAddr := os.Getenv("PROTOCOL_IP") + ":" + os.Getenv("PROTOCOL_PORT")
 
 	tcpCommunicator, err := communication.NewTCPCommunicator(
 		*listenAddr,
@@ -35,10 +37,10 @@ func main() {
 	}
 
 	hashicoprRaftOrderer, err := hashicorpraft.NewHashicorpRaftOrderer(
-		*nodeID,
-		*ordererAddr,
+		nodeID,
+		raftAddr,
 		10*time.Second,
-		"data/hermes/hashicor-raft/"+*nodeID,
+		"data/hermes/hashicor-raft/"+nodeID,
 		2,
 		10*time.Second,
 		*listenJoinAddr,

@@ -7,7 +7,6 @@ import (
 	"log"
 	"net"
 	"sync"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/r3musketeers/hermes/pkg/proxy"
@@ -132,76 +131,44 @@ func (comm *TCPCommunicator) handleConnection(
 	comm.clientConns[connID] = clientConn
 	comm.connsMux.Unlock()
 
-	errChan := make(chan error)
-	quitChan := make(chan struct{})
-	wg := sync.WaitGroup{}
+	defer func() {
+		comm.connsMux.Lock()
+		delete(comm.clientConns, connID)
+		comm.connsMux.Unlock()
 
-	// starts reading from the client
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-
-		buffer := make([]byte, 1024)
-		for {
-			select {
-			case <-quitChan:
-				return
-			default:
-				err := clientConn.SetReadDeadline(time.Now().Add(2 * time.Second))
-				if err != nil {
-					log.Println("failed setting read deadline for client connection", connID)
-					continue
-				}
-
-				n, err := clientConn.Read(buffer)
-				if err != nil {
-					if netErr, ok := err.(net.Error); ok && netErr.Timeout() {
-						continue
-					}
-
-					if errors.Is(err, io.EOF) {
-						log.Println("client closed connection", connID)
-						errChan <- nil
-					} else {
-						errChan <- fmt.Errorf("error reading from client: %w", err)
-					}
-
-					return
-				}
-
-				log.Print("message from client for connection", connID)
-
-				// hash := sha256.New()
-				// hash.Write(buffer[:n])
-				// id := string(hash.Sum([]byte(clientConn.RemoteAddr().String())))
-				id := uuid.NewString()
-
-				comm.connIDsMux.Lock()
-				comm.messageConns[id] = connID
-				comm.connIDsMux.Unlock()
-
-				err = handle(id, buffer[:n])
-				if err != nil {
-					clientConn.Write([]byte(err.Error()))
-					continue
-				}
-			}
-		}
+		log.Println("finished connection", connID)
 	}()
 
-	err := <-errChan
-	if err != nil {
-		log.Printf("error for connection %s: %s", connID, err.Error())
+	// starts reading from the client
+	buffer := make([]byte, 1024)
+
+	for {
+		n, err := clientConn.Read(buffer)
+		if err != nil {
+			if errors.Is(err, io.EOF) {
+				log.Println("client closed connection", connID)
+			} else {
+				log.Printf("error for connection %s: %s", connID, err.Error())
+			}
+
+			return
+		}
+
+		log.Print("message from client for connection", connID)
+
+		// hash := sha256.New()
+		// hash.Write(buffer[:n])
+		// id := string(hash.Sum([]byte(clientConn.RemoteAddr().String())))
+		id := uuid.NewString()
+
+		comm.connIDsMux.Lock()
+		comm.messageConns[id] = connID
+		comm.connIDsMux.Unlock()
+
+		err = handle(id, buffer[:n])
+		if err != nil {
+			clientConn.Write([]byte(err.Error()))
+			continue
+		}
 	}
-
-	close(quitChan)
-	close(errChan)
-
-	wg.Wait()
-
-	comm.connsMux.Lock()
-	delete(comm.clientConns, connID)
-	comm.connsMux.Unlock()
-
-	log.Println("finished connection", connID)
 }

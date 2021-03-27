@@ -1,6 +1,6 @@
 package proxy
 
 type Orderer interface {
-	Run(HandleOrderedMessageFunc) error
+	SetOrderedMessageHandler(HandleOrderedMessageFunc)
 	Propose(string, []byte) error
 }

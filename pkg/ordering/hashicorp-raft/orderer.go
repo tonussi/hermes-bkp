@@ -30,10 +30,7 @@ type HashicorpRaftOrderer struct {
 	raft            *raft.Raft
 	proposalTimeout time.Duration
 
-	listenJoinAddr string
-	joinAddr       string
-
-	orderedCh chan HashicorpRaftMessage
+	handle proxy.HandleOrderedMessageFunc
 
 	history map[string][]byte
 }
@@ -87,10 +84,6 @@ func NewHashicorpRaftOrderer(
 		nodeID:          nodeID,
 		address:         addrStr,
 		proposalTimeout: proposalTimeout,
-		listenJoinAddr:  listenJoinAddr,
-		joinAddr:        joinAddr,
-
-		orderedCh: make(chan HashicorpRaftMessage),
 	}
 
 	raftInstance, err := raft.NewRaft(
@@ -135,6 +128,15 @@ func NewHashicorpRaftOrderer(
 		resp.Body.Close()
 	}
 
+	if listenJoinAddr != "" {
+		go func() {
+			http.HandleFunc("/hashicorp-raft/join", orderer.joinHandler)
+
+			log.Println("listening join requests at", listenJoinAddr)
+			http.ListenAndServe(listenJoinAddr, nil)
+		}()
+	}
+
 	return orderer, nil
 }
 
@@ -144,35 +146,13 @@ func NewHashicorpRaftOrderer(
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-func (orderer HashicorpRaftOrderer) Run(handle proxy.HandleOrderedMessageFunc) error {
-	listenJoinErrCh := make(chan error)
-
-	if orderer.listenJoinAddr != "" {
-		go func() {
-			http.HandleFunc("/hashicorp-raft/join", orderer.joinHandler)
-
-			log.Println("listening join requests at", orderer.listenJoinAddr)
-			listenJoinErrCh <- http.ListenAndServe(orderer.listenJoinAddr, nil)
-		}()
-	}
-
-	for {
-		select {
-		case err := <-listenJoinErrCh:
-			log.Println("error on join listener", err.Error())
-			return err
-		default:
-			message := <-orderer.orderedCh
-
-			err := handle(message.ID, message.Data)
-			if err != nil {
-				log.Println("error handling message", message.ID)
-			}
-		}
-	}
+func (orderer *HashicorpRaftOrderer) SetOrderedMessageHandler(
+	handle proxy.HandleOrderedMessageFunc,
+) {
+	orderer.handle = handle
 }
 
-func (orderer HashicorpRaftOrderer) Propose(id string, data []byte) error {
+func (orderer *HashicorpRaftOrderer) Propose(id string, data []byte) error {
 	if orderer.raft.State() != raft.Leader {
 		return errors.New("not a raft leader")
 	}
@@ -200,8 +180,7 @@ func (orderer HashicorpRaftOrderer) Apply(logEntry *raft.Log) interface{} {
 	buffer := bytes.NewReader(logEntry.Data)
 	gob.NewDecoder(buffer).Decode(&message)
 
-	orderer.orderedCh <- message
-	return nil
+	return orderer.handle(message.ID, message.Data)
 }
 
 func (orderer HashicorpRaftOrderer) Snapshot() (raft.FSMSnapshot, error) {
