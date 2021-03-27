@@ -1,12 +1,8 @@
 package proxy
 
-import (
-	"log"
-)
+type HandleIncomingMessageFunc func([]byte) ([]byte, error)
 
-type HandleIncomingMessageFunc func(string, []byte) error
-
-type HandleOrderedMessageFunc func(string, []byte) error
+type HandleOrderedMessageFunc func([]byte) ([]byte, error)
 
 var (
 	_communicator Communicator
@@ -29,19 +25,10 @@ func Run() error {
 
 // Unexported functions
 
-func handleIncomingMessage(id string, data []byte) error {
-	log.Println("handling incoming message")
-
-	err := _orderer.Propose(id, data)
-	if err != nil {
-		return err
-	}
-
-	return nil
+func handleIncomingMessage(data []byte) ([]byte, error) {
+	return _orderer.Process(data)
 }
 
-func handleOrderedMessage(id string, data []byte) error {
-	log.Println("handling ordered message")
-
-	return _communicator.Deliver(id, data)
+func handleOrderedMessage(data []byte) ([]byte, error) {
+	return _communicator.Deliver(data)
 }

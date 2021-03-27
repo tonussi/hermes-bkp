@@ -14,6 +14,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/hashicorp/raft"
 	raftboltdb "github.com/hashicorp/raft-boltdb"
 	"github.com/r3musketeers/hermes/pkg/proxy"
@@ -152,19 +153,21 @@ func (orderer *HashicorpRaftOrderer) SetOrderedMessageHandler(
 	orderer.handle = handle
 }
 
-func (orderer *HashicorpRaftOrderer) Propose(id string, data []byte) error {
+func (orderer *HashicorpRaftOrderer) Process(data []byte) ([]byte, error) {
 	if orderer.raft.State() != raft.Leader {
-		return errors.New("not a raft leader")
+		return nil, errors.New("not a raft leader")
 	}
 
 	buffer := bytes.NewBuffer([]byte{})
 	gob.NewEncoder(buffer).Encode(
-		HashicorpRaftMessage{ID: id, Data: data},
+		HashicorpRaftMessage{ID: uuid.NewString(), Data: data},
 	)
 
 	raftFuture := orderer.raft.Apply(buffer.Bytes(), orderer.proposalTimeout)
 
-	return raftFuture.Error()
+	err := raftFuture.Error()
+
+	return raftFuture.Response().([]byte), err
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -174,13 +177,17 @@ func (orderer *HashicorpRaftOrderer) Propose(id string, data []byte) error {
 ////////////////////////////////////////////////////////////////////////////////
 
 func (orderer HashicorpRaftOrderer) Apply(logEntry *raft.Log) interface{} {
-	// TODO: Add to local cache
 	var message HashicorpRaftMessage
 
 	buffer := bytes.NewReader(logEntry.Data)
 	gob.NewDecoder(buffer).Decode(&message)
 
-	return orderer.handle(message.ID, message.Data)
+	resp, err := orderer.handle(message.Data)
+	if err != nil {
+		return err
+	}
+
+	return resp
 }
 
 func (orderer HashicorpRaftOrderer) Snapshot() (raft.FSMSnapshot, error) {

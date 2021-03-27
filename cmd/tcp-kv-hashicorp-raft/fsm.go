@@ -41,9 +41,6 @@ type FSM struct {
 	messageConnMap map[string]int
 	connMap        map[int]*net.TCPConn
 	connMux        sync.RWMutex
-
-	respChMap map[string]chan []byte
-	respChMux sync.RWMutex
 }
 
 func NewFSM(
@@ -103,8 +100,6 @@ func NewFSM(
 
 		messageConnMap: map[string]int{},
 		connMap:        map[int]*net.TCPConn{},
-
-		respChMap: map[string]chan []byte{},
 	}
 
 	raftInstance, err := raft.NewRaft(
@@ -162,13 +157,13 @@ func NewFSM(
 	return fsm, nil
 }
 
-func (fsm *FSM) Process(req kv.Request, respCh chan []byte) (error, []byte) {
+func (fsm *FSM) Process(req kv.Request) ([]byte, error) {
 	if fsm.raft.State() != raft.Leader {
-		return errors.New("not a raft leader"), nil
+		return nil, errors.New("not a raft leader")
 	}
 
 	if req.Op != kv.GetOp && req.Op != kv.SetOp && req.Op != kv.DelOp {
-		return errors.New("unsupported operation"), nil
+		return nil, errors.New("unsupported operation")
 	}
 
 	messageID := uuid.NewString()
@@ -178,18 +173,11 @@ func (fsm *FSM) Process(req kv.Request, respCh chan []byte) (error, []byte) {
 		HashicorpRaftMessage{ID: messageID, Data: req.Serialize()},
 	)
 
-	fsm.respChMux.Lock()
-	fsm.respChMap[messageID] = respCh
-	fsm.respChMux.Unlock()
-
 	raftFuture := fsm.raft.Apply(buffer.Bytes(), fsm.proposalTimeout)
 
 	err := raftFuture.Error()
-	if err != nil {
-		return err, nil
-	}
 
-	return nil, raftFuture.Response().([]byte)
+	return raftFuture.Response().([]byte), err
 }
 
 ////////////////////////////////////////////////////////////////////////////////

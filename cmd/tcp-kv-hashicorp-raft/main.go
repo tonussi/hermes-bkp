@@ -29,6 +29,13 @@ var (
 func main() {
 	flag.Parse()
 
+	nodeID := os.Getenv("NODE_ID")
+	if nodeID == "" {
+		log.Fatal("node id must be set")
+	}
+
+	raftAddr := os.Getenv("PROTOCOL_IP") + ":" + os.Getenv("PROTOCOL_PORT")
+
 	tcpAddr, err := net.ResolveTCPAddr("tcp", *addr)
 	if err != nil {
 		log.Fatal(err.Error())
@@ -39,13 +46,6 @@ func main() {
 		log.Fatal(err.Error())
 	}
 	defer listener.Close()
-
-	nodeID := os.Getenv("NODE_ID")
-	if nodeID == "" {
-		log.Fatal("node id must be set")
-	}
-
-	raftAddr := os.Getenv("PROTOCOL_IP") + ":" + os.Getenv("PROTOCOL_PORT")
 
 	fsm, err := NewFSM(
 		nodeID,
@@ -88,7 +88,6 @@ func main() {
 			log.Println("connection started")
 
 			buffer := make([]byte, *bufferSize)
-			respCh := make(chan []byte, 1)
 
 			for {
 				n, err := conn.Read(buffer)
@@ -104,7 +103,7 @@ func main() {
 				req := kv.Request{}
 				req.Parse(buffer[:n])
 
-				err, resp := fsm.Process(req, respCh)
+				resp, err := fsm.Process(req)
 				if err != nil {
 					conn.Write([]byte(err.Error()))
 					conn.Write([]byte("\n"))

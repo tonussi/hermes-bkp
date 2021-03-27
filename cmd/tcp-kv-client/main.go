@@ -28,6 +28,7 @@ var (
 func main() {
 	flag.Parse()
 	runtime.GOMAXPROCS(runtime.NumCPU())
+	rand.Seed(time.Now().Unix())
 
 	allSetWg := sync.WaitGroup{}
 	clientsWg := sync.WaitGroup{}
@@ -64,6 +65,7 @@ func main() {
 		for {
 			select {
 			case <-stopChan:
+				conn.Close()
 				clientsWg.Done()
 				return
 			default:
@@ -91,7 +93,8 @@ func main() {
 					log.Fatal(err)
 				}
 
-				if req.Key%*logFrequency == 0 {
+				if key%*logFrequency == 0 {
+					log.Println(req.Key)
 					log.Println(time.Since(startTime).Microseconds())
 				}
 
@@ -121,6 +124,7 @@ func main() {
 			for {
 				select {
 				case <-stopChan:
+					conn.Close()
 					clientsWg.Done()
 					return
 				default:

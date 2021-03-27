@@ -1,6 +1,8 @@
 package kv
 
-import "sync"
+import (
+	"sync"
+)
 
 type KV struct {
 	store map[uint64][]byte

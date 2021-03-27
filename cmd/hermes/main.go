@@ -15,6 +15,7 @@ var (
 	listenAddr     = flag.String("l", ":8000", "listen requests address")
 	deliveryAddr   = flag.String("d", ":8001", "delivery server address")
 	listenJoinAddr = flag.String("k", ":9000", "listen join requests address")
+	bufferSize     = flag.Int("b", 2048, "requests buffer size")
 	joinAddr       = flag.String("j", "", "join address")
 )
 
@@ -31,6 +32,9 @@ func main() {
 	tcpCommunicator, err := communication.NewTCPCommunicator(
 		*listenAddr,
 		*deliveryAddr,
+		5,
+		2*time.Second,
+		*bufferSize,
 	)
 	if err != nil {
 		log.Fatal(err.Error())
