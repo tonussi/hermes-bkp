@@ -22,7 +22,7 @@ spec:
             "-b", "2048",
           ]
           ports:
-            - containerPort: 8000
+            - containerPort: 8001
           resources:
             requests:
               cpu: 2000m
@@ -32,7 +32,7 @@ spec:
               memory: 4Gi
           readinessProbe:
             tcpSocket:
-              port: 8000
+              port: 8001
       nodeSelector:
         role: server
       affinity:
@@ -54,5 +54,5 @@ spec:
     app: tcp-kv-server
   type: NodePort
   ports:
-    - port: 8000
-      targetPort: 8000
+    - port: 8001
+      targetPort: 8001

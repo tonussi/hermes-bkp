@@ -4,6 +4,8 @@ export N_CLIENTS=$2
 export N_THREADS=$3
 SCENE=$4
 
+export SERVICE_NAME=tcp-kv-hashicorp-raft-leader
+
 echo "apply leader..."
 kubectl apply -f $KUBERNETES_DIR/tcp-kv-hashicorp-raft-leader.yml
 

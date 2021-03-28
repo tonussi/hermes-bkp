@@ -1,0 +1,61 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: tcp-kv-client
+  # namespace: hermes
+spec:
+  completions: $N_CLIENTS
+  parallelism: $N_CLIENTS
+  template:
+    metadata:
+      labels:
+        app: tcp-kv-client
+    spec:
+      initContainers:
+        - name: init-kv
+          image: r3musketeers/tcp-kv-client:latest
+          args: [
+            "-s", "$SERVICE_NAME:8001",
+            "-d", "60s",
+            "-p", "1024",
+            "-k", "100000",
+            "-r", "0",
+            "-n", "$N_THREADS",
+            "-t", "10ms",
+            "-f", "50",
+            "-b", "2048"
+          ]
+      containers:
+        - name: tcp-kv-client
+          image: r3musketeers/tcp-kv-client:latest
+          args: [
+            "-s", "$SERVICE_NAME:8001",
+            "-d", "60s",
+            "-p", "1024",
+            "-k", "100000",
+            "-r", "100",
+            "-n", "$N_THREADS",
+            "-t", "10ms",
+            "-f", "50",
+            "-b", "2048"
+          ]
+          resources:
+            requests:
+              cpu: 2000m
+              memory: 2Gi
+            limits:
+                cpu: 4000m
+                memory: 4Gi
+      restartPolicy: Never
+      nodeSelector:
+        role: client
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: name
+                    operator: In
+                    values: [ "tcp-kv-client" ]
+              topologyKey: failure-domain.beta.kubernetes.io/zone
+  backoffLimit: 4
