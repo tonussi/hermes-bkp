@@ -94,7 +94,6 @@ func main() {
 				}
 
 				if key%*logFrequency == 0 {
-					log.Println(req.Key)
 					log.Println(time.Since(startTime).Microseconds())
 				}
 

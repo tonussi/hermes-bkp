@@ -20,7 +20,7 @@ var (
 	last       uint64
 	counterMux sync.RWMutex
 
-	addr       = flag.String("a", ":8000", "server address")
+	addr       = flag.String("a", ":8001", "server address")
 	logPath    = flag.String("l", "throughput.log", "path to log the throughput")
 	bufferSize = flag.Int("b", 2048, "requests buffer size")
 )

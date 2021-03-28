@@ -4,8 +4,8 @@ metadata:
   name: tcp-kv-client
   # namespace: hermes
 spec:
-  completions: 2
-  parallelism: 2
+  completions: $N_CLIENTS
+  parallelism: $N_CLIENTS
   template:
     metadata:
       labels:
@@ -15,14 +15,14 @@ spec:
       - name: tcp-kv-client
         image: r3musketeers/tcp-kv-client:latest
         args: [
-          "-s", "tcp-kv-hashicorp-raft-leader:8000",
+          "-s", "$SERVICE_NAME:8000",
           "-d", "60s",
           "-p", "1024",
           "-k", "100000",
           "-r", "0",
-          "-n", "42",
+          "-n", "$N_THREADS",
           "-t", "10ms",
-          "-f", "100",
+          "-f", "50",
           "-b", "2048"
         ]
         resources:

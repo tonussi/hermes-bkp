@@ -45,7 +45,7 @@ func NewTCPCommunicator(
 			time.Sleep(connAttemptPeriod)
 		}
 	}
-	if err != nil {
+	if deliverConn == nil && err != nil {
 		return nil, err
 	}
 

@@ -11,6 +11,6 @@ FROM golang:1.15-alpine
 
 COPY --from=build-env /bin/tcp-kv-server /bin/tcp-kv-server
 
-EXPOSE 8000
+EXPOSE 8001
 
 ENTRYPOINT [ "/bin/tcp-kv-server" ]
