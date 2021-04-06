@@ -41,6 +41,7 @@ func main() {
 	}
 
 	payload := make([]byte, *payloadSize)
+	emptyPayload := make([]byte, 0)
 
 	allSetWg.Add(*nThreads)
 	clientsWg.Add(*nThreads)
@@ -53,11 +54,19 @@ func main() {
 
 		buffer := make([]byte, *bufferSize)
 
-		req := kv.Request{
+		setReq := kv.Request{
+			Op:   kv.SetOp,
 			Data: payload,
 		}
+		getReq := kv.Request{
+			Op:   kv.GetOp,
+			Data: emptyPayload,
+		}
 
-		reqBytes := req.Serialize()
+		setReqBytes := setReq.Serialize()
+		getReqBytes := getReq.Serialize()
+
+		var reqBytes []byte
 
 		allSetWg.Done()
 		<-startCh
@@ -70,13 +79,11 @@ func main() {
 				return
 			default:
 				randOpNumber := rand.Intn(100)
-				var op kv.Op
 				if randOpNumber < *readRate {
-					op = kv.GetOp
+					reqBytes = getReqBytes
 				} else {
-					op = kv.SetOp
+					reqBytes = setReqBytes
 				}
-				binary.PutUvarint(reqBytes[:kv.OpByteSize], uint64(op))
 
 				key := uint64(rand.Intn(*keyRange))
 				binary.PutUvarint(
@@ -87,6 +94,7 @@ func main() {
 				startTime := time.Now()
 
 				conn.Write(reqBytes)
+				conn.Write([]byte("\n"))
 
 				_, err := conn.Read(buffer)
 				if err != nil {
@@ -111,11 +119,19 @@ func main() {
 
 			buffer := make([]byte, *bufferSize)
 
-			req := kv.Request{
+			setReq := kv.Request{
+				Op:   kv.SetOp,
 				Data: payload,
 			}
+			getReq := kv.Request{
+				Op:   kv.GetOp,
+				Data: emptyPayload,
+			}
 
-			reqBytes := req.Serialize()
+			setReqBytes := setReq.Serialize()
+			getReqBytes := getReq.Serialize()
+
+			var reqBytes []byte
 
 			allSetWg.Done()
 			<-startCh
@@ -128,13 +144,11 @@ func main() {
 					return
 				default:
 					randOpNumber := rand.Intn(100)
-					var op kv.Op
 					if randOpNumber < *readRate {
-						op = kv.GetOp
+						reqBytes = getReqBytes
 					} else {
-						op = kv.SetOp
+						reqBytes = setReqBytes
 					}
-					binary.PutUvarint(reqBytes[:kv.OpByteSize], uint64(op))
 
 					key := uint64(rand.Intn(*keyRange))
 					binary.PutUvarint(
@@ -143,6 +157,7 @@ func main() {
 					)
 
 					conn.Write(reqBytes)
+					conn.Write([]byte("\n"))
 
 					_, err := conn.Read(buffer)
 					if err != nil {

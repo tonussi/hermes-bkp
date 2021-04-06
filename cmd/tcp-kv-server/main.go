@@ -16,13 +16,17 @@ import (
 )
 
 var (
-	counter    uint64
-	last       uint64
-	counterMux sync.RWMutex
+	counter uint64
+	last    uint64
+
+	mux sync.Mutex
 
 	addr       = flag.String("a", ":8001", "server address")
 	logPath    = flag.String("l", "throughput.log", "path to log the throughput")
 	bufferSize = flag.Int("b", 2048, "requests buffer size")
+	keyRange   = flag.Int("k", 100000, "key range")
+	valueSize  = flag.Int("v", 1024, "base value size for pre-population")
+	useMutex   = flag.Bool("m", true, "use mutex to each command or not")
 )
 
 func main() {
@@ -41,6 +45,14 @@ func main() {
 
 	store := kv.NewKV()
 
+	baseValue := make([]byte, *valueSize)
+
+	log.Println("pre-populating kv")
+	for i := 0; i <= *keyRange; i++ {
+		store.Set(uint64(i), baseValue)
+	}
+	log.Println("done")
+
 	go func() {
 		logFile, err := os.Create(*logPath)
 		if err != nil {
@@ -57,52 +69,107 @@ func main() {
 		}
 	}()
 
-	for {
-		conn, err := listener.AcceptTCP()
-		if err != nil {
-			log.Println(err.Error())
-			continue
-		}
-
-		go func() {
-			log.Println("connection started")
-
-			buffer := make([]byte, *bufferSize)
-
-			for {
-				n, err := conn.Read(buffer)
-				if err != nil {
-					if errors.Is(err, io.EOF) {
-						log.Println("connection closed")
-						break
-					}
-					conn.Write([]byte("bad message\n"))
-					continue
-				}
-
-				req := kv.Request{}
-				req.Parse(buffer[:n])
-
-				switch req.Op {
-				case kv.GetOp:
-					value := store.Get(req.Key)
-					conn.Write(value)
-					conn.Write([]byte("\n"))
-				case kv.SetOp:
-					store.Set(req.Key, req.Data)
-					conn.Write([]byte("\n"))
-				case kv.DelOp:
-					store.Delete(req.Key)
-					conn.Write([]byte("\n"))
-				case kv.SnapOp:
-					snapshot := store.Snapshot()
-					json.NewEncoder(conn).Encode(snapshot)
-				default:
-					conn.Write([]byte("unsupported operation\n"))
-				}
-
-				atomic.AddUint64(&counter, 1)
+	if *useMutex {
+		for {
+			conn, err := listener.AcceptTCP()
+			if err != nil {
+				log.Println(err.Error())
+				continue
 			}
-		}()
+
+			go func() {
+				log.Println("connection started")
+
+				buffer := make([]byte, *bufferSize)
+
+				for {
+					n, err := conn.Read(buffer)
+					if err != nil {
+						if errors.Is(err, io.EOF) {
+							log.Println("connection closed")
+							break
+						}
+						conn.Write([]byte("bad message\n"))
+						continue
+					}
+
+					req := kv.Request{}
+					req.Parse(buffer[:n])
+
+					mux.Lock()
+
+					switch req.Op {
+					case kv.GetOp:
+						value := store.Get(req.Key)
+						conn.Write(value)
+						conn.Write([]byte("\n"))
+					case kv.SetOp:
+						store.Set(req.Key, req.Data)
+						conn.Write([]byte("\n"))
+					case kv.DelOp:
+						store.Delete(req.Key)
+						conn.Write([]byte("\n"))
+					case kv.SnapOp:
+						snapshot := store.Snapshot()
+						json.NewEncoder(conn).Encode(snapshot)
+					default:
+						conn.Write([]byte("unsupported operation\n"))
+					}
+
+					mux.Unlock()
+
+					atomic.AddUint64(&counter, 1)
+				}
+			}()
+		}
+	} else {
+		for {
+			conn, err := listener.AcceptTCP()
+			if err != nil {
+				log.Println(err.Error())
+				continue
+			}
+
+			go func() {
+				log.Println("connection started")
+
+				buffer := make([]byte, *bufferSize)
+
+				for {
+					n, err := conn.Read(buffer)
+					if err != nil {
+						if errors.Is(err, io.EOF) {
+							log.Println("connection closed")
+							break
+						}
+						conn.Write([]byte("bad message\n"))
+						continue
+					}
+
+					req := kv.Request{}
+					req.Parse(buffer[:n])
+
+					switch req.Op {
+					case kv.GetOp:
+						value := store.Get(req.Key)
+						conn.Write(value)
+						conn.Write([]byte("\n"))
+					case kv.SetOp:
+						store.Set(req.Key, req.Data)
+						conn.Write([]byte("\n"))
+					case kv.DelOp:
+						store.Delete(req.Key)
+						conn.Write([]byte("\n"))
+					case kv.SnapOp:
+						snapshot := store.Snapshot()
+						json.NewEncoder(conn).Encode(snapshot)
+					default:
+						conn.Write([]byte("unsupported operation\n"))
+					}
+
+					atomic.AddUint64(&counter, 1)
+				}
+			}()
+		}
 	}
 }
