@@ -15,7 +15,7 @@ spec:
       - name: tcp-kv-client
         image: r3musketeers/tcp-kv-client:latest
         args: [
-          "-s", "$SERVICE_NAME:8001",
+          "-s", "$SERVICE_NAME:8000",
           "-d", "60s",
           "-p", "1024",
           "-k", "100000",

@@ -2,7 +2,8 @@
 KUBERNETES_DIR=$1
 export N_CLIENTS=$2
 export N_THREADS=$3
-SCENE=$4
+export READ_RATE=$4
+SCENE=$5
 
 export SERVICE_NAME=tcp-kv-hashicorp-raft-leader
 
@@ -29,13 +30,13 @@ kubectl apply -f $KUBERNETES_DIR/tcp-kv-hashicorp-raft-followers.yml
 sleep 5
 
 echo "wait all replicas to be ready..."
-until [ "$(kubectl get deployments -l app=tcp-kv-hashicorp-raft-follower -o jsonpath="{.items[0].status.replicas}")" = "$(kubectl get deployments -l app=tcp-kv-hashicorp-raft-follower -o jsonpath="{.items[0].status.readyReplicas}")" ]
+until [ "$(kubectl get deployments -l app=tcp-kv-hashicorp-raft-followers -o jsonpath="{.items[0].status.replicas}")" = "$(kubectl get deployments -l app=tcp-kv-hashicorp-raft-followers -o jsonpath="{.items[0].status.readyReplicas}")" ]
 do
   sleep 5;
 done
 
 echo "wait server to be running..."
-until [ "$(kubectl get pods -l app=tcp-kv-hashicorp-raft-follower -o jsonpath="{.items[0].status.phase}")" = "Running" ]
+until [ "$(kubectl get pods -l app=tcp-kv-hashicorp-raft-followers -o jsonpath="{.items[0].status.phase}")" = "Running" ]
 do
   sleep 5;
 done

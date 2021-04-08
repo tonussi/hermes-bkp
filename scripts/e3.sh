@@ -2,7 +2,8 @@
 KUBERNETES_DIR=$1
 export N_CLIENTS=$2
 export N_THREADS=$3
-SCENE=$4
+export READ_RATE=$4
+SCENE=$5
 
 export SERVICE_NAME=hermes-leader
 
