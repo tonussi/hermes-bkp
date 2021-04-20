@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"flag"
+	"fmt"
 	"io"
 	"log"
 	"net"
@@ -26,7 +27,7 @@ var (
 	bufferSize = flag.Int("b", 2048, "requests buffer size")
 	keyRange   = flag.Int("k", 100000, "key range")
 	valueSize  = flag.Int("v", 1024, "base value size for pre-population")
-	useMutex   = flag.Bool("m", true, "use mutex to each command or not")
+	useMutex   = flag.Bool("m", false, "use mutex to each command or not")
 )
 
 func main() {
@@ -59,12 +60,10 @@ func main() {
 			log.Fatal(err)
 		}
 
-		logger := log.New(logFile, "", log.LstdFlags)
-
 		ticker := time.NewTicker(time.Second)
 		for range ticker.C {
 			delta := atomic.LoadUint64(&counter) - atomic.LoadUint64(&last)
-			logger.Println(delta)
+			fmt.Fprintln(logFile, time.Now().UnixNano(), delta)
 			atomic.StoreUint64(&last, atomic.LoadUint64(&counter))
 		}
 	}()

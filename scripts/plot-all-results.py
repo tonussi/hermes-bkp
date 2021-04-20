@@ -51,6 +51,5 @@ for sc in scenarios:
 
   axes = (*axes, result_data['avg_throughput'], result_data['latency_90th'])
 
-pyplot.ylim(0, 35)
 pyplot.plot(*axes)
 pyplot.show()

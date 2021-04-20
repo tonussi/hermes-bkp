@@ -17,13 +17,13 @@ spec:
         args: [
           "-s", "$SERVICE_NAME:8000",
           "-d", "60s",
-          "-p", "1024",
+          "-p", "128",
           "-k", "100000",
           "-r", "$READ_RATE",
           "-n", "$N_THREADS",
           "-t", "10ms",
           "-f", "50",
-          "-b", "2048"
+          "-b", "256"
         ]
         resources:
           requests:

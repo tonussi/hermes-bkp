@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/binary"
 	"flag"
+	"fmt"
 	"log"
 	"math/rand"
 	"net"
@@ -102,7 +103,7 @@ func main() {
 				}
 
 				if key%*logFrequency == 0 {
-					log.Println(time.Since(startTime).Microseconds())
+					fmt.Println(time.Now().UnixNano(), time.Since(startTime).Microseconds())
 				}
 
 				time.Sleep(*thinkingTime)

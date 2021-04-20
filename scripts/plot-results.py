@@ -17,8 +17,7 @@ for (throuput_file, latency_file) in zip(throughput_files, latency_files):
   throughput_series = read_csv(
     throuput_file,
     sep=' ',
-    names=('date', 'time', 'req/s'),
-    parse_dates=[['date', 'time']],
+    names=('unix_timestamp', 'req/s'),
     squeeze=True,
     index_col=0
   )
@@ -26,8 +25,7 @@ for (throuput_file, latency_file) in zip(throughput_files, latency_files):
   latency_series = read_csv(
     latency_file,
     sep=' ',
-    names=('date', 'time', 'latency'),
-    parse_dates=[['date', 'time']],
+    names=('unix_timestamp', 'latency'),
     squeeze=True,
     index_col=0
   )
@@ -35,11 +33,16 @@ for (throuput_file, latency_file) in zip(throughput_files, latency_files):
   avg_throughput = throughput_series.mean()
   latency_90th = latency_series.quantile(0.9) / 1000
 
-  result_data = result_data.append(DataFrame([[avg_throughput, latency_90th]], columns=['avg_throughput', 'latency_90th']), ignore_index=True)
+  file_desc = throuput_file.split('/')
+  exp_desc = file_desc[len(file_desc) - 1][:-4].split('-')
+  n_clients, total_threads = int(exp_desc[1]), int(exp_desc[0])
+  threads_per_client = total_threads / n_clients
 
-print(result_data.sort_values('avg_throughput'))
+  result_data = result_data.append(DataFrame([[n_clients, threads_per_client, total_threads, avg_throughput, latency_90th]], columns=['n_clients', 'threads_per_client', 'total_threads', 'avg_throughput', 'latency_90th']), ignore_index=True)
 
 result_data = result_data.sort_values('avg_throughput')
+
+print(result_data.to_csv())
 
 # series = read_csv(
 #   sys.argv[1],
