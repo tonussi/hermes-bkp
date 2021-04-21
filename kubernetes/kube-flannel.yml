@@ -193,6 +193,7 @@ spec:
           - --iface=enp5s0f3
           - --iface=enp6s0f0
           - --iface=enp6s0f1
+          - --iface=enp6s0f2
           - --iface=enp6s0f3
         resources:
           requests:
