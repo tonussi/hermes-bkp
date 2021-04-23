@@ -42,7 +42,7 @@ for (throuput_file, latency_file) in zip(throughput_files, latency_files):
 
 result_data = result_data.sort_values('avg_throughput')
 
-print(result_data.to_csv())
+print(result_data)
 
 # series = read_csv(
 #   sys.argv[1],
