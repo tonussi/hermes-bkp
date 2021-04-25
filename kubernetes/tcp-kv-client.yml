@@ -2,7 +2,6 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: tcp-kv-client
-  # namespace: hermes
 spec:
   completions: $N_CLIENTS
   parallelism: $N_CLIENTS

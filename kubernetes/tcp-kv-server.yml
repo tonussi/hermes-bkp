@@ -19,6 +19,8 @@ spec:
           image: r3musketeers/tcp-kv-server
           args: [
             "-l", "/tmp/throughput.log",
+            "-b", "256",
+            "-v", "128",
             "-m"
           ]
           ports:

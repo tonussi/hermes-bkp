@@ -71,7 +71,7 @@ func NewTCPCommunicator(
 	}, nil
 }
 
-func (comm TCPCommunicator) Listen(
+func (comm *TCPCommunicator) Listen(
 	handle proxy.HandleIncomingMessageFunc,
 ) error {
 	defer comm.listener.Close()
@@ -89,7 +89,7 @@ func (comm TCPCommunicator) Listen(
 	}
 }
 
-func (comm TCPCommunicator) Deliver(data []byte) ([]byte, error) {
+func (comm *TCPCommunicator) Deliver(data []byte) ([]byte, error) {
 	comm.deliverConn.Write(data)
 
 	n, err := comm.deliverConn.Read(comm.responseBuffer)

@@ -41,19 +41,19 @@ func main() {
 		log.Fatal(err)
 	}
 
-	payload := make([]byte, *payloadSize)
-	emptyPayload := make([]byte, 0)
-
 	allSetWg.Add(*nThreads)
 	clientsWg.Add(*nThreads)
 
-	go func() {
-		conn, err := net.DialTCP("tcp", nil, tcpAddr)
+	go func(addr net.TCPAddr, bsize int, psize int, rRate int, kRange int, logFreq uint64, tt time.Duration) {
+		conn, err := net.DialTCP("tcp", nil, &addr)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		buffer := make([]byte, *bufferSize)
+		buffer := make([]byte, bsize)
+
+		payload := make([]byte, psize)
+		emptyPayload := make([]byte, 0)
 
 		setReq := kv.Request{
 			Op:   kv.SetOp,
@@ -80,13 +80,13 @@ func main() {
 				return
 			default:
 				randOpNumber := rand.Intn(100)
-				if randOpNumber < *readRate {
+				if randOpNumber < rRate {
 					reqBytes = getReqBytes
 				} else {
 					reqBytes = setReqBytes
 				}
 
-				key := uint64(rand.Intn(*keyRange))
+				key := uint64(rand.Intn(kRange))
 				binary.PutUvarint(
 					reqBytes[kv.OpByteSize:kv.OpByteSize+kv.KeyByteSize],
 					key,
@@ -95,38 +95,37 @@ func main() {
 				startTime := time.Now()
 
 				conn.Write(reqBytes)
-				conn.Write([]byte("\n"))
 
 				_, err := conn.Read(buffer)
 				if err != nil {
 					log.Fatal(err)
 				}
 
-				if key%*logFrequency == 0 {
+				if key%logFreq == 0 {
 					fmt.Println(time.Now().UnixNano(), time.Since(startTime).Microseconds())
 				}
 
-				time.Sleep(*thinkingTime)
+				time.Sleep(tt)
 			}
 		}
-	}()
+	}(*tcpAddr, *bufferSize, *payloadSize, *readRate, *keyRange, *logFrequency, *thinkingTime)
 
 	for i := 1; i <= *nThreads-1; i++ {
-		go func(clientId int) {
-			conn, err := net.DialTCP("tcp", nil, tcpAddr)
+		go func(clientId int, addr net.TCPAddr, bsize int, psize int, rRate int, kRange int, logFreq uint64, tt time.Duration) {
+			conn, err := net.DialTCP("tcp", nil, &addr)
 			if err != nil {
 				log.Fatal(err)
 			}
 
-			buffer := make([]byte, *bufferSize)
+			buffer := make([]byte, bsize)
 
 			setReq := kv.Request{
 				Op:   kv.SetOp,
-				Data: payload,
+				Data: make([]byte, psize),
 			}
 			getReq := kv.Request{
 				Op:   kv.GetOp,
-				Data: emptyPayload,
+				Data: make([]byte, 0),
 			}
 
 			setReqBytes := setReq.Serialize()
@@ -145,30 +144,29 @@ func main() {
 					return
 				default:
 					randOpNumber := rand.Intn(100)
-					if randOpNumber < *readRate {
+					if randOpNumber < rRate {
 						reqBytes = getReqBytes
 					} else {
 						reqBytes = setReqBytes
 					}
 
-					key := uint64(rand.Intn(*keyRange))
+					key := uint64(rand.Intn(kRange))
 					binary.PutUvarint(
 						reqBytes[kv.OpByteSize:kv.OpByteSize+kv.KeyByteSize],
 						key,
 					)
 
 					conn.Write(reqBytes)
-					conn.Write([]byte("\n"))
 
 					_, err := conn.Read(buffer)
 					if err != nil {
 						log.Fatal(err)
 					}
 
-					time.Sleep(*thinkingTime)
+					time.Sleep(tt)
 				}
 			}
-		}(i)
+		}(i, *tcpAddr, *bufferSize, *payloadSize, *readRate, *keyRange, *logFrequency, *thinkingTime)
 	}
 
 	allSetWg.Wait()

@@ -15,11 +15,12 @@ spec:
         app: hermes-followers
     spec:
       containers:
-        - name: tcp-kv-server
+        - name: kv
           image: r3musketeers/tcp-kv-server
           args: [
             "-l", "/tmp/throughput.log",
-            "-b", "2048"
+            "-b", "256",
+            "-v", "128"
           ]
           ports:
             - containerPort: 8001
@@ -33,7 +34,7 @@ spec:
           readinessProbe:
             tcpSocket:
               port: 8001
-        - name: hermes-followers
+        - name: hermes
           image: r3musketeers/hermes
           args: [
             "-j", "hermes-leader:9000"

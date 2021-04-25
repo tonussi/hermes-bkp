@@ -62,9 +62,10 @@ func main() {
 
 		ticker := time.NewTicker(time.Second)
 		for range ticker.C {
-			delta := atomic.LoadUint64(&counter) - atomic.LoadUint64(&last)
+			c, l := atomic.LoadUint64(&counter), atomic.LoadUint64(&last)
+			delta := c - l
 			fmt.Fprintln(logFile, time.Now().UnixNano(), delta)
-			atomic.StoreUint64(&last, atomic.LoadUint64(&counter))
+			atomic.StoreUint64(&last, c)
 		}
 	}()
 
@@ -101,18 +102,17 @@ func main() {
 					case kv.GetOp:
 						value := store.Get(req.Key)
 						conn.Write(value)
-						conn.Write([]byte("\n"))
 					case kv.SetOp:
 						store.Set(req.Key, req.Data)
-						conn.Write([]byte("\n"))
+						conn.Write([]byte{0})
 					case kv.DelOp:
 						store.Delete(req.Key)
-						conn.Write([]byte("\n"))
+						conn.Write([]byte{0})
 					case kv.SnapOp:
 						snapshot := store.Snapshot()
 						json.NewEncoder(conn).Encode(snapshot)
 					default:
-						conn.Write([]byte("unsupported operation\n"))
+						conn.Write([]byte("unsupported operation"))
 					}
 
 					mux.Unlock()
@@ -152,18 +152,17 @@ func main() {
 					case kv.GetOp:
 						value := store.Get(req.Key)
 						conn.Write(value)
-						conn.Write([]byte("\n"))
 					case kv.SetOp:
 						store.Set(req.Key, req.Data)
-						conn.Write([]byte("\n"))
+						conn.Write([]byte{0})
 					case kv.DelOp:
 						store.Delete(req.Key)
-						conn.Write([]byte("\n"))
+						conn.Write([]byte{0})
 					case kv.SnapOp:
 						snapshot := store.Snapshot()
 						json.NewEncoder(conn).Encode(snapshot)
 					default:
-						conn.Write([]byte("unsupported operation\n"))
+						conn.Write([]byte("unsupported operation"))
 					}
 
 					atomic.AddUint64(&counter, 1)

@@ -25,8 +25,7 @@ for sc in scenarios:
     throughput_series = read_csv(
       throuput_file,
       sep=' ',
-      names=('date', 'time', 'req/s'),
-      parse_dates=[['date', 'time']],
+      names=('unix_timestamp', 'req/s'),
       squeeze=True,
       index_col=0
     )
@@ -34,8 +33,7 @@ for sc in scenarios:
     latency_series = read_csv(
       latency_file,
       sep=' ',
-      names=('date', 'time', 'latency'),
-      parse_dates=[['date', 'time']],
+      names=('unix_timestamp', 'latency'),
       squeeze=True,
       index_col=0
     )
@@ -51,5 +49,6 @@ for sc in scenarios:
 
   axes = (*axes, result_data['avg_throughput'], result_data['latency_90th'])
 
+pyplot.ylim(top=11, bottom=2)
 pyplot.plot(*axes)
 pyplot.show()

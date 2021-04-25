@@ -176,7 +176,7 @@ func (orderer *HashicorpRaftOrderer) Process(data []byte) ([]byte, error) {
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-func (orderer HashicorpRaftOrderer) Apply(logEntry *raft.Log) interface{} {
+func (orderer *HashicorpRaftOrderer) Apply(logEntry *raft.Log) interface{} {
 	var message HashicorpRaftMessage
 
 	buffer := bytes.NewReader(logEntry.Data)
@@ -190,11 +190,11 @@ func (orderer HashicorpRaftOrderer) Apply(logEntry *raft.Log) interface{} {
 	return resp
 }
 
-func (orderer HashicorpRaftOrderer) Snapshot() (raft.FSMSnapshot, error) {
+func (orderer *HashicorpRaftOrderer) Snapshot() (raft.FSMSnapshot, error) {
 	return orderer.snapshot(), nil
 }
 
-func (orderer HashicorpRaftOrderer) Restore(snapshotReader io.ReadCloser) error {
+func (orderer *HashicorpRaftOrderer) Restore(snapshotReader io.ReadCloser) error {
 	snapshot := &HashicorpRaftSnapshot{}
 	err := gob.NewDecoder(snapshotReader).Decode(snapshot)
 	if err != nil {
@@ -208,7 +208,7 @@ func (orderer HashicorpRaftOrderer) Restore(snapshotReader io.ReadCloser) error 
 
 // Unexported methods
 
-func (orderer HashicorpRaftOrderer) snapshot() *HashicorpRaftSnapshot {
+func (orderer *HashicorpRaftOrderer) snapshot() *HashicorpRaftSnapshot {
 	history := map[string][]byte{}
 
 	for id, message := range orderer.history {

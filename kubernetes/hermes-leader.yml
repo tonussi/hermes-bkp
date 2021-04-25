@@ -15,11 +15,12 @@ spec:
         app: hermes-leader
     spec:
       containers:
-        - name: tcp-kv-server
+        - name: kv
           image: r3musketeers/tcp-kv-server
           args: [
             "-l", "/tmp/throughput.log",
-            "-b", "2048",
+            "-b", "256",
+            "-v", "128"
           ]
           ports:
             - containerPort: 8001
@@ -30,10 +31,10 @@ spec:
             limits:
               cpu: 4000m
               memory: 4Gi
-          readinessProbe:
-            tcpSocket:
-              port: 8001
-        - name: hermes-leader
+          # readinessProbe:
+          #   tcpSocket:
+          #     port: 8001
+        - name: hermes
           image: r3musketeers/hermes
           env:
             - name: NODE_ID

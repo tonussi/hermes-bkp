@@ -1,9 +1,9 @@
 #!/usr/bin/env sh
-KUBERNETES_DIR=$1
+export KUBERNETES_DIR=$1
 export N_CLIENTS=$2
 export N_THREADS=$3
 export READ_RATE=$4
-SCENE=$5
+export SCENE=$5
 
 export SERVICE_NAME=hermes-leader
 
@@ -27,7 +27,7 @@ done
 echo "apply followers..."
 kubectl apply -f $KUBERNETES_DIR/hermes-followers.yml
 
-sleep 5
+sleep 10
 
 echo "wait all replicas to be ready..."
 until [ "$(kubectl get deployments -l app=hermes-followers -o jsonpath="{.items[0].status.replicas}")" = "$(kubectl get deployments -l app=hermes-followers -o jsonpath="{.items[0].status.readyReplicas}")" ]
@@ -40,6 +40,8 @@ until [ "$(kubectl get pods -l app=hermes-followers -o jsonpath="{.items[0].stat
 do
   sleep 5;
 done
+
+sleep 10
 
 echo "apply clients..."
 envsubst < $KUBERNETES_DIR/tcp-kv-client.yml | kubectl apply -f -
