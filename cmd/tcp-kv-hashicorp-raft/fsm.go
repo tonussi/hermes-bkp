@@ -52,6 +52,8 @@ func NewFSM(
 	proposalTimeout time.Duration,
 	listenJoinAddr string,
 	joinAddr string,
+	valueSize int,
+	keyRange int,
 ) (*FSM, error) {
 	config := raft.DefaultConfig()
 	config.LocalID = raft.ServerID(nodeID)
@@ -154,6 +156,14 @@ func NewFSM(
 		}()
 	}
 
+	baseValue := make([]byte, valueSize)
+
+	log.Println("pre-populating kv")
+	for i := 0; i <= keyRange; i++ {
+		fsm.store.Set(uint64(i), baseValue)
+	}
+	log.Println("done")
+
 	return fsm, nil
 }
 
@@ -202,8 +212,10 @@ func (fsm *FSM) Apply(logEntry *raft.Log) interface{} {
 		resp = fsm.store.Get(req.Key)
 	case kv.SetOp:
 		fsm.store.Set(req.Key, req.Data)
+		resp = []byte{0}
 	case kv.DelOp:
 		fsm.store.Delete(req.Key)
+		resp = []byte{0}
 	}
 
 	return resp

@@ -25,6 +25,8 @@ var (
 	bufferSize     = flag.Int("b", 2048, "requests buffer size")
 	listenJoinAddr = flag.String("k", ":9000", "address to listen join requests")
 	joinAddr       = flag.String("j", "", "join listener address")
+	keyRange       = flag.Int("r", 100000, "key range")
+	valueSize      = flag.Int("v", 1024, "base value size for pre-population")
 )
 
 func main() {
@@ -57,6 +59,8 @@ func main() {
 		10*time.Second,
 		*listenJoinAddr,
 		*joinAddr,
+		*valueSize,
+		*keyRange,
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -105,12 +109,10 @@ func main() {
 				resp, err := fsm.Process(req)
 				if err != nil {
 					conn.Write([]byte(err.Error()))
-					conn.Write([]byte("\n"))
 					continue
 				}
 
 				conn.Write(resp)
-				conn.Write([]byte("\n"))
 
 				atomic.AddUint64(&counter, 1)
 			}

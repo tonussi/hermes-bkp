@@ -19,8 +19,8 @@ spec:
           image: r3musketeers/tcp-kv-server
           args: [
             "-l", "/tmp/throughput.log",
-            "-b", "256",
-            "-v", "128"
+            "-b", "2048",
+            "-v", "1024"
           ]
           ports:
             - containerPort: 8001

@@ -19,7 +19,8 @@ spec:
           image: r3musketeers/tcp-kv-hashicorp-raft
           args: [
             "-l", "/tmp/throughput.log",
-            "-b", "256",
+            "-b", "1024",
+            "-v", "512"
           ]
           env:
             - name: NODE_ID
