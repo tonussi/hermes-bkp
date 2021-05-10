@@ -17,18 +17,33 @@ func Init(
 	_orderer = orderer
 }
 
-func Run() error {
-	_orderer.SetOrderedMessageHandler(handleOrderedMessage)
+type HermesProxy struct {
+	communicator Communicator
+	orderer      Orderer
+}
 
-	return _communicator.Listen(handleIncomingMessage)
+func NewHermesProxy(
+	communicator Communicator,
+	orderer Orderer,
+) *HermesProxy {
+	return &HermesProxy{
+		communicator: communicator,
+		orderer:      orderer,
+	}
+}
+
+func (proxy *HermesProxy) Run() error {
+	proxy.orderer.SetOrderedMessageHandler(proxy.handleOrderedMessage)
+
+	return proxy.communicator.Listen(proxy.handleIncomingMessage)
 }
 
 // Unexported functions
 
-func handleIncomingMessage(data []byte) ([]byte, error) {
+func (proxy *HermesProxy) handleIncomingMessage(data []byte) ([]byte, error) {
 	return _orderer.Process(data)
 }
 
-func handleOrderedMessage(data []byte) ([]byte, error) {
+func (proxy *HermesProxy) handleOrderedMessage(data []byte) ([]byte, error) {
 	return _communicator.Deliver(data)
 }

@@ -54,8 +54,10 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-	proxy.Init(tcpCommunicator, hashicoprRaftOrderer)
-	if err := proxy.Run(); err != nil {
+	hermes := proxy.NewHermesProxy(tcpCommunicator, hashicoprRaftOrderer)
+
+	err = hermes.Run()
+	if err != nil {
 		log.Fatal(err.Error())
 	}
 }
