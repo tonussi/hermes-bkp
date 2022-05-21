@@ -56,7 +56,7 @@ kubectl cp $(kubectl get pods -l app=hermes-leader -o=jsonpath='{.items[0].metad
 
 echo "collecting latency log..."
 mkdir -p logs/lucas/$SCENE/latency
-kubectl logs $(kubectl get pods -l app=http-log-client -o=jsonpath='{.items[0].metadata.name}') > logs/lucas/$SCENE/latency/$TEST.log
+kubectl logs $(kubectl get pods -l app=http-log-client -o=jsonpath='{.items[0].metadata.name}'):/tmp/latency.log > logs/lucas/$SCENE/latency/$TEST.log
 
 echo "deleting client..."
 kubectl delete -f $KUBERNETES_DIR/http-log-client.yml

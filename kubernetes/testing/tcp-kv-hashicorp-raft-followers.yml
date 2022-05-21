@@ -1,48 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hermes-followers
+  name: tcp-kv-hashicorp-raft-followers
   labels:
-    app: hermes-followers
+    app: tcp-kv-hashicorp-raft-followers
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: hermes-followers
+      app: tcp-kv-hashicorp-raft-followers
   template:
     metadata:
       labels:
-        app: hermes-followers
+        app: tcp-kv-hashicorp-raft-followers
     spec:
       containers:
-        - name: kv
-          image: lptonussi/public:http-log-server
-          imagePullPolicy: Always
-          # args: [
-          #   "-l", "/tmp/throughput.log",
-          #   "-b", "2048",
-          #   "-v", "1024"
-          # ]
-          ports:
-            - containerPort: 8001
-          volumeMounts:
-            - name: vol-http-server-logs
-              mountPath: /tmp/logs
-          resources:
-            requests:
-              memory: "64Mi"
-              cpu: "250m"
-            limits:
-              memory: "128Mi"
-              cpu: "500m"
-          readinessProbe:
-            tcpSocket:
-              port: 8001
-        - name: hermes
-          image: lptonussi/public:hermes
-          imagePullPolicy: Always
+        - name: tcp-kv-hashicorp-raft-followers
+          image: r3musketeers/tcp-kv-hashicorp-raft
           args: [
-            "-j", "hermes-leader:9000"
+            "-l", "/tmp/throughput.log",
+            "-b", "1024",
+            "-j", "tcp-kv-hashicorp-raft-leader:9000",
+            "-v", "512"
           ]
           env:
             - name: NODE_ID
@@ -64,17 +43,14 @@ spec:
               containerPort: 10000
           resources:
             requests:
-              memory: "64Mi"
-              cpu: "250m"
+              cpu: "100m"
+              memory: "50Mi"
             limits:
-              memory: "128Mi"
-              cpu: "500m"
+              cpu: "100m"
+              memory: "50Mi"
           readinessProbe:
             tcpSocket:
               port: 8000
-      volumes:
-        - name: vol-http-server-logs
-          emptyDir: {}
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -84,4 +60,6 @@ spec:
                     operator: In
                     values:
                       - hardworker
-
+                  - key: name
+                    operator: In
+                    values: [ "tcp-kv-hashicorp-raft-leader", "tcp-kv-hashicorp-raft-followers" ]

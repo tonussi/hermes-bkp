@@ -29,5 +29,14 @@ spec:
             limits:
               memory: "128Mi"
               cpu: "500m"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/role
+                    operator: In
+                    values:
+                      - hardworker
       restartPolicy: Never
   backoffLimit: 4

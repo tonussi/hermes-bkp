@@ -1,46 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hermes-leader
+  name: tcp-kv-hashicorp-raft-leader
   labels:
-    app: hermes-leader
+    app: tcp-kv-hashicorp-raft-leader
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: hermes-leader
+      app: tcp-kv-hashicorp-raft-leader
   template:
     metadata:
       labels:
-        app: hermes-leader
+        app: tcp-kv-hashicorp-raft-leader
     spec:
       containers:
-        - name: kv
-          image: lptonussi/public:http-log-server
-          imagePullPolicy: Always
-          # args: [
-          #   "-l", "/tmp/throughput.log",
-          #   "-b", "2048",
-          #   "-v", "1024"
-          # ]
-          volumeMounts:
-            - name: vol-http-server-logs
-              mountPath: /tmp/logs
-          ports:
-            - containerPort: 8001
-          resources:
-            requests:
-              memory: "64Mi"
-              cpu: "250m"
-            limits:
-              memory: "128Mi"
-              cpu: "500m"
-          # readinessProbe:
-          #   tcpSocket:
-          #     port: 8001
-        - name: hermes
-          image: lptonussi/public:hermes
-          imagePullPolicy: Always
+        - name: tcp-kv-hashicorp-raft-leader
+          image: r3musketeers/tcp-kv-hashicorp-raft
+          args: [
+            "-l", "/tmp/throughput.log",
+            "-b", "1024",
+            "-v", "512"
+          ]
           env:
             - name: NODE_ID
               valueFrom:
@@ -61,19 +42,14 @@ spec:
               containerPort: 10000
           resources:
             requests:
-              memory: "64Mi"
-              cpu: "250m"
+              cpu: "100m"
+              memory: "50Mi"
             limits:
-              memory: "128Mi"
-              cpu: "500m"
+              cpu: "100m"
+              memory: "50Mi"
           readinessProbe:
             tcpSocket:
               port: 8000
-      volumes:
-        - name: vol-http-server-logs
-          emptyDir: {}
-      nodeSelector:
-        role: server
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -82,15 +58,18 @@ spec:
                   - key: kubernetes.io/role
                     operator: In
                     values:
-                      - landowner
+                      - hardworker
+                  - key: name
+                    operator: In
+                    values: [ "tcp-kv-hashicorp-raft-leader", "tcp-kv-hashicorp-raft-follower" ]
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: hermes-leader
+  name: tcp-kv-hashicorp-raft-leader
 spec:
   selector:
-    app: hermes-leader
+    app: tcp-kv-hashicorp-raft-leader
   type: NodePort
   ports:
     - name: server
