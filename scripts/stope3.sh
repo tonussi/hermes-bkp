@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-export KUBERNETES_DIR=$1
+export KUBERNETES_DIR=kubernetes
 
 kubectl delete -f $KUBERNETES_DIR/tcp-kv-client.yml
 kubectl delete -f $KUBERNETES_DIR/hermes-leader.yml

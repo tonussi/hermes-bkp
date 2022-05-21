@@ -38,6 +38,17 @@ do
   # kubectl taint nodes node$i.$EXPERIMENT_NAME.$EMULAB_GROUP_NAME.emulab.net node-role.kubernetes.io/master-
 done
 
-# kubectl label nodes node0.hermes-lucas.lptonussi.emulab.net key=server --overwrite
-# kubectl label nodes node1.hermes-lucas.lptonussi.emulab.net key=client --overwrite
-# kubectl label nodes node2.hermes-lucas.lptonussi.emulab.net key=client --overwrite
+# kubectl label nodes node0.simulation-1.lptonussi.emulab.net key=server --overwrite
+# kubectl label nodes node1.simulation-1.lptonussi.emulab.net key=client --overwrite
+# kubectl label nodes node2.simulation-1.lptonussi.emulab.net key=client --overwrite
+#  minikube start --nodes 3 -p 10.10.1.2 10.10.1.1 10.10.1.3
+# kubectl label nodes 10.10.1.2 key=server --overwrite
+# kubectl label nodes 10.10.1.1-m02 key=client --overwrite
+# kubectl label nodes 10.10.1.3-m03 key=client --overwrite
+kubectl label nodes multinode-demo key=server --overwrite
+kubectl label nodes multinode-demo-m02 key=client --overwrite
+kubectl label nodes multinode-demo-m03 key=client --overwrite
+kubectl label nodes multinode-demo kubernetes.io/role=landowner --overwrite
+kubectl label nodes multinode-demo-m02 kubernetes.io/role=hardworker --overwrite
+kubectl label nodes multinode-demo-m03 kubernetes.io/role=hardworker --overwrite
+kubectl get nodes

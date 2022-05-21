@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tcp-kv-server
+  labels:
+    app: tcp-kv-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tcp-kv-server
+  template:
+    metadata:
+      labels:
+        app: tcp-kv-server
+    spec:
+      containers:
+        - name: tcp-kv-server
+          image: r3musketeers/tcp-kv-server
+          args: [
+            "-a", ":8001",
+            "-l", "/tmp/throughput.log",
+            "-b", "256",
+            "-v", "128",
+            "-m"
+          ]
+          ports:
+            - containerPort: 8001
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "50Mi"
+            limits:
+              cpu: "100m"
+              memory: "50Mi"
+          readinessProbe:
+            tcpSocket:
+              port: 8001
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/role
+                    operator: In
+                    values:
+                      - landowner
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tcp-kv-server
+spec:
+  selector:
+    app: tcp-kv-server
+  type: NodePort
+  ports:
+    - port: 8000
+      targetPort: 8001

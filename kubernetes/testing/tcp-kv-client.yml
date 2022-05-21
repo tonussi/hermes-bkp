@@ -1,0 +1,45 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: tcp-kv-client
+spec:
+  completions: $N_CLIENTS
+  parallelism: $N_CLIENTS
+  template:
+    metadata:
+      labels:
+        app: tcp-kv-client
+    spec:
+      containers:
+      - name: tcp-kv-client
+        image: r3musketeers/tcp-kv-client:latest
+        imagePullPolicy: Always
+        args: [
+          "-s", "$SERVICE_NAME:8000",
+          "-d", "60s",
+          "-p", "512",
+          "-k", "100000",
+          "-r", "$READ_RATE",
+          "-n", "$N_THREADS",
+          "-t", "2ms",
+          "-f", "20",
+          "-b", "1024"
+        ]
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "50Mi"
+          limits:
+            cpu: "100m"
+            memory: "50Mi"
+      restartPolicy: Never
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/role
+                    operator: In
+                    values:
+                      - hardworker
+  backoffLimit: 4

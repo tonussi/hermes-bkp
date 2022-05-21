@@ -72,8 +72,8 @@ spec:
       volumes:
         - name: vol-http-server-logs
           emptyDir: {}
-      # nodeSelector:
-      #   role: server
+      nodeSelector:
+        role: server
       # affinity:
       #   podAntiAffinity:
       #     requiredDuringSchedulingIgnoredDuringExecution:
@@ -83,6 +83,13 @@ spec:
       #               operator: In
       #               values: [ "hermes-leader", "hermes-follower" ]
       #         topologyKey: failure-domain.beta.kubernetes.io/zone
+      affinity:
+        # ⬇⬇⬇ This ensures pods will land on separate hosts
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions: [{ key: app, operator: In, values: [hello] }]
+            topologyKey: "kubernetes.io/hostname"
 ---
 apiVersion: v1
 kind: Service
