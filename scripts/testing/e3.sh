@@ -52,10 +52,11 @@ kubectl wait --for=condition=complete --timeout=1h job.batch/http-log-client
 TEST=$(expr $N_CLIENTS \* $N_THREADS)-$N_CLIENTS
 
 echo "collecting throughput log..."
-kubectl cp $(kubectl get pods -l app=hermes-leader -o=jsonpath='{.items[0].metadata.name}'):/tmp/throughput.log logs/$SCENE/throughput/$TEST.log
+kubectl cp $(kubectl get pods -l app=hermes-leader -o=jsonpath='{.items[0].metadata.name}'):/tmp/throughput.log logs/lucas/$SCENE/throughput/$TEST.log
 
 echo "collecting latency log..."
-kubectl logs $(kubectl get pods -l app=http-log-client -o=jsonpath='{.items[0].metadata.name}') > logs/$SCENE/latency/$TEST.log
+mkdir -p logs/lucas/$SCENE/latency
+kubectl logs $(kubectl get pods -l app=http-log-client -o=jsonpath='{.items[0].metadata.name}') > logs/lucas/$SCENE/latency/$TEST.log
 
 echo "deleting client..."
 kubectl delete -f $KUBERNETES_DIR/http-log-client.yml
