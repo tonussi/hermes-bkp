@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: http-log-client
+spec:
+  completions: $N_CLIENTS
+  parallelism: $N_CLIENTS
+  template:
+    metadata:
+      labels:
+        app: http-log-client
+    spec:
+      containers:
+        - name: http-log-client
+          image: lptonussi/public:http-log-client
+          imagePullPolicy: Always
+          args: [
+            '--address=$SERVICE_NAME'
+          ]
+          env:
+            - name: NODE_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+      restartPolicy: Never
+  backoffLimit: 4

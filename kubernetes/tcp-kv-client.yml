@@ -13,6 +13,7 @@ spec:
       containers:
       - name: tcp-kv-client
         image: r3musketeers/tcp-kv-client:latest
+        imagePullPolicy: Always
         args: [
           "-s", "$SERVICE_NAME:8000",
           "-d", "60s",
@@ -26,11 +27,11 @@ spec:
         ]
         resources:
           requests:
-            cpu: 2000m
-            memory: 2Gi
+            cpu: "100m"
+            memory: "50Mi"
           limits:
-              cpu: 4000m
-              memory: 4Gi
+            cpu: "100m"
+            memory: "50Mi"
       restartPolicy: Never
       nodeSelector:
         role: client

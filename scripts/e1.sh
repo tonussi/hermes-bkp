@@ -33,10 +33,10 @@ kubectl wait --for=condition=complete --timeout=1h job.batch/tcp-kv-client
 TEST=$(expr $N_CLIENTS \* $N_THREADS)-$N_CLIENTS
 
 echo "collecting throughput log..."
-kubectl cp $(kubectl get pods -l app=tcp-kv-server -o=jsonpath='{.items[0].metadata.name}'):/tmp/throughput.log logs/$SCENE/throughput/$TEST.log
+kubectl cp $(kubectl get pods -l app=tcp-kv-server -o=jsonpath='{.items[0].metadata.name}'):/tmp/throughput.log logs/lucas/$SCENE/throughput/$TEST.log
 
 echo "collecting latency log..."
-kubectl logs $(kubectl get pods -l app=tcp-kv-client -o=jsonpath='{.items[0].metadata.name}') > logs/$SCENE/latency/$TEST.log
+kubectl logs $(kubectl get pods -l app=tcp-kv-client -o=jsonpath='{.items[0].metadata.name}') > logs/lucas/$SCENE/latency/$TEST.log
 
 echo "deleting client..."
 kubectl delete -f $KUBERNETES_DIR/tcp-kv-client.yml

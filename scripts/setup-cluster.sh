@@ -2,7 +2,8 @@
 ANSIBLE_PB_DIR=$1
 KUBERNETES_DIR=$2
 EXPERIMENT_NAME=$3
-N_SERVER_NODES=$4
+EMULAB_GROUP_NAME=$4
+N_SERVER_NODES=$5
 
 DOCKERD_JSON_FILE=`echo $(cd $ANSIBLE_PB_DIR; pwd)/daemon.json`
 
@@ -22,15 +23,21 @@ echo "join worker nodes to cluster..."
 ansible-playbook -i $ANSIBLE_PB_DIR/hosts $ANSIBLE_PB_DIR/join-workers.yml
 
 echo "label server nodes..."
-for i in $(seq 1 $N_SERVER_NODES)
+for i in $(seq 0 $(expr $N_SERVER_NODES - 1))
 do
-  kubectl label nodes node$i.$EXPERIMENT_NAME.scalablesmr.emulab.net role=server
+  kubectl label node node$i.$EXPERIMENT_NAME.$EMULAB_GROUP_NAME.emulab.net key=server --overwrite
+  # kubectl taint nodes node$i.$EXPERIMENT_NAME.$EMULAB_GROUP_NAME.emulab.net node-role.kubernetes.io/master-
 done
 
 echo "label client nodes..."
 N_NODES=$(kubectl get nodes -o go-template="{{len .items}}")
 
-for i in $(seq $(expr $N_SERVER_NODES + 1) $N_NODES)
+for i in $(seq $(expr $N_SERVER_NODES) $(expr $N_NODES))
 do
-  kubectl label nodes node$i.$EXPERIMENT_NAME.scalablesmr.emulab.net role=client
+  kubectl label nodes node$i.$EXPERIMENT_NAME.$EMULAB_GROUP_NAME.emulab.net key=client --overwrite
+  # kubectl taint nodes node$i.$EXPERIMENT_NAME.$EMULAB_GROUP_NAME.emulab.net node-role.kubernetes.io/master-
 done
+
+# kubectl label nodes node0.hermes-lucas.lptonussi.emulab.net key=server --overwrite
+# kubectl label nodes node1.hermes-lucas.lptonussi.emulab.net key=client --overwrite
+# kubectl label nodes node2.hermes-lucas.lptonussi.emulab.net key=client --overwrite

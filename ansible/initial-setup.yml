@@ -31,7 +31,7 @@
         src: "{{ daemon_json_file }}"
         dest: /etc/docker/daemon.json
     
-    - name: create docker demon systemd directory
+    - name: create docker daemon systemd directory
       become: yes
       become_method: sudo
       file:

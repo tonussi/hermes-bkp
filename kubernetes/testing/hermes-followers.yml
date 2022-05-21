@@ -16,22 +16,25 @@ spec:
     spec:
       containers:
         - name: kv
-          image: lptonussi/public:tcp-kv-server
+          image: lptonussi/public:http-log-server
           imagePullPolicy: Always
-          args: [
-            "-l", "/tmp/throughput.log",
-            "-b", "2048",
-            "-v", "1024"
-          ]
+          # args: [
+          #   "-l", "/tmp/throughput.log",
+          #   "-b", "2048",
+          #   "-v", "1024"
+          # ]
           ports:
             - containerPort: 8001
+          volumeMounts:
+            - name: vol-http-server-logs
+              mountPath: /tmp/logs
           resources:
             requests:
-              cpu: "100m"
-              memory: "50Mi"
+              memory: "64Mi"
+              cpu: "250m"
             limits:
-              cpu: "100m"
-              memory: "50Mi"
+              memory: "128Mi"
+              cpu: "500m"
           readinessProbe:
             tcpSocket:
               port: 8001
@@ -61,22 +64,25 @@ spec:
               containerPort: 10000
           resources:
             requests:
-              cpu: "100m"
-              memory: "50Mi"
+              memory: "64Mi"
+              cpu: "250m"
             limits:
-              cpu: "100m"
-              memory: "50Mi"
+              memory: "128Mi"
+              cpu: "500m"
           readinessProbe:
             tcpSocket:
               port: 8000
-      nodeSelector:
-        role: server
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                  - key: name
-                    operator: In
-                    values: [ "hermes-leader", "hermes-follower" ]
-              topologyKey: failure-domain.beta.kubernetes.io/zone
+      volumes:
+        - name: vol-http-server-logs
+          emptyDir: {}
+      # nodeSelector:
+      #   role: server
+      # affinity:
+      #   podAntiAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #       - labelSelector:
+      #           matchExpressions:
+      #             - key: name
+      #               operator: In
+      #               values: [ "hermes-leader", "hermes-follower" ]
+      #         topologyKey: failure-domain.beta.kubernetes.io/zone
