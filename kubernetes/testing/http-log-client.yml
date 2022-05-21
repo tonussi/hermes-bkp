@@ -15,7 +15,16 @@ spec:
           image: lptonussi/public:http-log-client
           imagePullPolicy: Always
           args: [
-            '--address=$SERVICE_NAME'
+            '--address=$SERVICE_NAME',
+            '--port=8001',
+            '--duration=60',
+            '--payload_size=512',
+            '--key_range=100000',
+            '--read_rate=$READ_RATE',
+            '--n_threads=$N_THREADS',
+            '--thinking_time=2',
+            '--log_frequency=20',
+            '--buffer_size=1024'
           ]
           env:
             - name: NODE_ID
