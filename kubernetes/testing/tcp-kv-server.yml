@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: tcp-kv-server
-          image: r3musketeers/tcp-kv-server
+          image: lptonussi/public:tcp-kv-server
           args: [
             "-a", ":8001",
             "-l", "/tmp/throughput.log",

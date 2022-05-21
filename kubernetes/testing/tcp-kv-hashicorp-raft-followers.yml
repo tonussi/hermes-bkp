@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: tcp-kv-hashicorp-raft-followers
-          image: r3musketeers/tcp-kv-hashicorp-raft
+          image: lptonussi/public:tcp-kv-hashicorp-raft
           args: [
             "-l", "/tmp/throughput.log",
             "-b", "1024",

@@ -87,4 +87,3 @@ spec:
                     operator: In
                     values:
                       - hardworker
-
