@@ -60,6 +60,6 @@ spec:
                     operator: In
                     values:
                       - hardworker
-                  - key: name
-                    operator: In
-                    values: [ "tcp-kv-hashicorp-raft-leader", "tcp-kv-hashicorp-raft-followers" ]
+                  # - key: name
+                  #   operator: In
+                  #   values: [ "tcp-kv-hashicorp-raft-leader", "tcp-kv-hashicorp-raft-followers" ]

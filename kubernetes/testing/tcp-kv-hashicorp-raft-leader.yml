@@ -59,9 +59,9 @@ spec:
                     operator: In
                     values:
                       - hardworker
-                  - key: name
-                    operator: In
-                    values: [ "tcp-kv-hashicorp-raft-leader", "tcp-kv-hashicorp-raft-follower" ]
+                  # - key: name
+                  #   operator: In
+                  #   values: [ "tcp-kv-hashicorp-raft-leader", "tcp-kv-hashicorp-raft-follower" ]
 ---
 apiVersion: v1
 kind: Service
