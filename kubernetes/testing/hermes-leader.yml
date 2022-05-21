@@ -72,8 +72,6 @@ spec:
       volumes:
         - name: vol-http-server-logs
           emptyDir: {}
-      nodeSelector:
-        role: server
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
