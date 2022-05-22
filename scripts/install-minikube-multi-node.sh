@@ -2,7 +2,7 @@
 
 set -exu
 
-sudo sh -c "echo 'deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian bulleyes contrib' >> /etc/apt/sources.list"
+sudo sh -c "echo 'deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian bullseye contrib' >> /etc/apt/sources.list"
 
 sudo apt -yq update
 sudo apt -yq install git docker docker.io virtualbox curl wget apt-transport-https ca-certificates virtualbox virtualbox-ext-pack
