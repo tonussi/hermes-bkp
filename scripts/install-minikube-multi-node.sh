@@ -5,7 +5,7 @@ set -exu
 sudo sh -c "echo 'deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian bullseye contrib' > /etc/apt/sources.list.d/virtualbox.list"
 
 sudo apt -yq update
-sudo apt -yq install git docker docker.io virtualbox curl wget apt-transport-https ca-certificates virtualbox virtualbox-ext-pack
+sudo apt -yq install git docker docker.io virtualbox curl wget apt-transport-https ca-certificates virtualbox
 
 sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
 echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
