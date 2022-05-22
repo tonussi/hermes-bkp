@@ -4,9 +4,11 @@
 sudo sh -c "echo 'deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian bullseye contrib' > /etc/apt/sources.list.d/virtualbox.list"
 sudo apt -yq update
 sudo apt -yq install git docker docker.io virtualbox curl wget apt-transport-https ca-certificates virtualbox
+sudo usermod -aG docker $USER && newgrp docker
 
 # Make root mounted as rshared to fix kube-dns issues.
-sudo mount --make-rshared /
+# For multiple physical nodes
+# sudo mount --make-rshared /
 
 # Download kubectl, which is a requirement for using minikube.
 curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
