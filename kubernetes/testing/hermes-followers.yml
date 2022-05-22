@@ -19,7 +19,7 @@ spec:
           image: lptonussi/public:http-log-server
           imagePullPolicy: Always
           args: [
-            '--address=0.0.0.0',
+            '--address=localhost',
             '--port=8001',
             "--log_path=/tmp/throughput.log",
             "--buffer_size=256",
