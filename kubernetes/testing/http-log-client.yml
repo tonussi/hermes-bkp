@@ -34,7 +34,7 @@ spec:
             memory: "50Mi"
       restartPolicy: Never
       nodeSelector:
-        role: client
+        "kubernetes.io/role": "hardworker"
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
