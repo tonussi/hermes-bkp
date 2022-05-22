@@ -1,14 +1,19 @@
 #!/usr/bin/env sh
 
-sudo apt -yq update
-sudo apt -yq install docker docker.io \
-virtualbox \
-curl \
-apt-transport-https \
-ca-certificates \
-virtualbox virtualbox-ext-pack
-
 set -exu
+
+sudo sh -c "echo 'deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian bulleyes contrib' >> /etc/apt/sources.list"
+wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
+wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key add -
+
+sudo apt -yq update
+sudo apt -yq install git docker docker.io virtualbox curl wget apt-transport-https ca-certificates virtualbox virtualbox-ext-pack
+
+sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo apt -yq update
+sudo apt -yq install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl
 
 # Make root mounted as rshared to fix kube-dns issues.
 sudo mount --make-rshared /
@@ -48,8 +53,3 @@ echo "https://minikube.sigs.k8s.io/docs/tutorials/multi_node/"
 # check $HOME
 # df
 # minikube start --nodes 3 -p multinode-demo
-sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
-echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
-sudo apt -yq update
-sudo apt -yq install -y kubelet kubeadm kubectl
-sudo apt-mark hold kubelet kubeadm kubectl
