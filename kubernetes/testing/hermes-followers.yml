@@ -16,15 +16,12 @@ spec:
     spec:
       containers:
         - name: kv
-          image: lptonussi/public:http-log-server
+          image: lptonussi/public:tcp-kv-server
           imagePullPolicy: Always
           args: [
-            '--address=localhost',
-            '--port=8001',
-            "--log_path=/tmp/throughput.log",
-            "--buffer_size=256",
-            "--value_size=128",
-            "--mutex_onoff=True"
+            "-l", "/tmp/throughput.log",
+            "-b", "2048",
+            "-v", "1024"
           ]
           ports:
             - containerPort: 8001

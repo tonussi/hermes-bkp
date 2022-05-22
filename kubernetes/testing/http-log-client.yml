@@ -24,7 +24,7 @@ spec:
             '--n_threads=$N_THREADS',
             '--thinking_time=2',
             '--log_frequency=20',
-            '--buffer_size=1024'
+            '--buffer_size=512'
           ]
           env:
             - name: NODE_ID
