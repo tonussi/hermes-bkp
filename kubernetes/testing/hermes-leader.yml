@@ -18,11 +18,14 @@ spec:
         - name: kv
           image: lptonussi/public:http-log-server
           imagePullPolicy: Always
-          # args: [
-          #   "-l", "/tmp/throughput.log",
-          #   "-b", "2048",
-          #   "-v", "1024"
-          # ]
+          args: [
+            '--address=0.0.0.0',
+            '--port=8001',
+            "--log_path=/tmp/throughput.log",
+            "--buffer_size=256",
+            "--value_size=128",
+            "--mutex_onoff=True"
+          ]
           volumeMounts:
             - name: vol-http-server-logs
               mountPath: /tmp/logs

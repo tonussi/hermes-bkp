@@ -16,7 +16,7 @@ spec:
           imagePullPolicy: Always
           args: [
             '--address=$SERVICE_NAME',
-            '--port=8001',
+            '--port=8000',
             '--duration=60',
             '--payload_size=512',
             '--key_range=100000',
