@@ -55,7 +55,7 @@ echo "collecting throughput log..."
 kubectl cp $(kubectl get pods -l app=hermes-leader -o=jsonpath='{.items[0].metadata.name}'):/tmp/throughput.log logs/lucas/$SCENE/throughput/$TEST.log
 
 echo "collecting latency log..."
-mkdir -p logs/$SCENE/latencyss
+mkdir -p logs/lucas/$SCENE/latency
 kubectl logs $(kubectl get pods -l app=tcp-kv-client -o=jsonpath='{.items[0].metadata.name}') > logs/lucas/$SCENE/latency/$TEST.log
 
 echo "deleting client..."
