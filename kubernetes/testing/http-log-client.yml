@@ -1,51 +1,47 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: http-log-client
+  name: tcp-kv-client
 spec:
   completions: $N_CLIENTS
   parallelism: $N_CLIENTS
   template:
     metadata:
       labels:
-        app: http-log-client
+        app: tcp-kv-client
     spec:
       containers:
-        - name: http-log-client
-          image: lptonussi/public:http-log-client
-          imagePullPolicy: Always
-          args: [
-            '--address=$SERVICE_NAME',
-            '--port=8000',
-            '--duration=60',
-            '--payload_size=512',
-            '--key_range=100000',
-            '--read_rate=$READ_RATE',
-            '--n_threads=$N_THREADS',
-            '--thinking_time=2',
-            '--log_frequency=20',
-            '--buffer_size=512'
-          ]
-          env:
-            - name: NODE_ID
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-          resources:
-            requests:
-              memory: "64Mi"
-              cpu: "250m"
-            limits:
-              memory: "128Mi"
-              cpu: "500m"
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/role
-                    operator: In
-                    values:
-                      - hardworker
+      - name: tcp-kv-client
+        image: r3musketeers/tcp-kv-client:latest
+        imagePullPolicy: Always
+        args: [
+          "-s", "$SERVICE_NAME:8000",
+          "-d", "60s",
+          "-p", "512",
+          "-k", "100000",
+          "-r", "$READ_RATE",
+          "-n", "$N_THREADS",
+          "-t", "2ms",
+          "-f", "20",
+          "-b", "1024"
+        ]
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "50Mi"
+          limits:
+            cpu: "100m"
+            memory: "50Mi"
       restartPolicy: Never
+      nodeSelector:
+        role: client
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: name
+                    operator: In
+                    values: [ "tcp-kv-client" ]
+              topologyKey: failure-domain.beta.kubernetes.io/zone
   backoffLimit: 4
