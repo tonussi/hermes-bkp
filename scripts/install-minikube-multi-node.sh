@@ -1,5 +1,13 @@
 #!/usr/bin/env sh
 
+sudo apt -yq update
+sudo apt -yq install docker docker.io \
+virtualbox \
+curl \
+apt-transport-https \
+ca-certificates \
+virtualbox virtualbox-ext-pack
+
 set -exu
 
 # Make root mounted as rshared to fix kube-dns issues.
@@ -22,14 +30,6 @@ JSONPATH='{range .items[*]}{@.metadata.name}:{range @.status.conditions[*]}{@.ty
 # Install stafy
 
 echo "let minikube handle $HOME/.minikube; if you need space you will have to remove $HOME/.minikube"
-sudo apt -yq install docker docker.io
-sudo apt -yq install virtualbox
-sudo apt -yq update
-sudo apt -yq upgrade
-sudo apt -yq install curl
-sudo apt -yq install apt-transport-https
-sudo apt -yq install ca-certificates
-sudo apt -yq install virtualbox virtualbox-ext-pack
 wget https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
 sudo cp minikube-linux-amd64 /usr/local/bin/minikube
 sudo chmod 755 /usr/local/bin/minikube
