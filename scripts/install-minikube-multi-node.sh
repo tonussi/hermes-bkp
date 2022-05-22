@@ -3,8 +3,6 @@
 set -exu
 
 sudo sh -c "echo 'deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian bulleyes contrib' >> /etc/apt/sources.list"
-wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
-wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key add -
 
 sudo apt -yq update
 sudo apt -yq install git docker docker.io virtualbox curl wget apt-transport-https ca-certificates virtualbox virtualbox-ext-pack
