@@ -3,6 +3,7 @@ kind: Job
 metadata:
   name: tcp-kv-client
 spec:
+  backoffLimit: 5
   completions: $N_CLIENTS
   parallelism: $N_CLIENTS
   template:
@@ -34,7 +35,7 @@ spec:
             memory: "50Mi"
       restartPolicy: Never
       nodeSelector:
-        role: client
+        "kubernetes.io/role": "hardworker"
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -44,4 +45,3 @@ spec:
                     operator: In
                     values: [ "tcp-kv-client" ]
               topologyKey: failure-domain.beta.kubernetes.io/zone
-  backoffLimit: 4

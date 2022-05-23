@@ -24,7 +24,7 @@ spec:
             "-v", "1024"
           ]
           volumeMounts:
-            - name: vol-http-server-logs
+            - name: hermes-volume-logs
               mountPath: /tmp/logs
           ports:
             - containerPort: 8001
@@ -70,7 +70,7 @@ spec:
             tcpSocket:
               port: 8000
       volumes:
-        - name: vol-http-server-logs
+        - name: hermes-volume-logs
           emptyDir: {}
       affinity:
         nodeAffinity:
