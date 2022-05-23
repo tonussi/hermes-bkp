@@ -53,14 +53,14 @@ spec:
       nodeSelector:
         "kubernetes.io/role": "landowner"
       affinity:
-        nodeAffinity:
+        podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/role
+            - labelSelector:
+                matchExpressions:
+                  - key: name
                     operator: In
-                    values:
-                      - hardworker
+                    values: [ "tcp-kv-hashicorp-raft-leader", "tcp-kv-hashicorp-raft-follower" ]
+              topologyKey: failure-domain.beta.kubernetes.io/zone
 ---
 apiVersion: v1
 kind: Service
