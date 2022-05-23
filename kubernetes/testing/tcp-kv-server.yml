@@ -36,6 +36,8 @@ spec:
           readinessProbe:
             tcpSocket:
               port: 8001
+      nodeSelector:
+        "kubernetes.io/role": "landowner"
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

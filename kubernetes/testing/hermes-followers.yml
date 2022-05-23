@@ -75,6 +75,8 @@ spec:
       volumes:
         - name: hermes-volume-logs
           emptyDir: {}
+      nodeSelector:
+        "kubernetes.io/role": "landowner"
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

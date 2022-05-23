@@ -51,6 +51,8 @@ spec:
           readinessProbe:
             tcpSocket:
               port: 8000
+      nodeSelector:
+        "kubernetes.io/role": "landowner"
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -60,6 +62,3 @@ spec:
                     operator: In
                     values:
                       - hardworker
-                  # - key: name
-                  #   operator: In
-                  #   values: [ "tcp-kv-hashicorp-raft-leader", "tcp-kv-hashicorp-raft-followers" ]

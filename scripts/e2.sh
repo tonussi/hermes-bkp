@@ -45,7 +45,7 @@ echo "apply clients..."
 envsubst < $KUBERNETES_DIR/tcp-kv-client.yml | kubectl apply -f -
 
 echo "wait job to complete..."
-kubectl wait --for=condition=complete --timeout=1h job.batch/tcp-kv-client
+kubectl wait --for=condition=complete --timeout=60s job.batch/tcp-kv-client
 
 TEST=$(expr $N_CLIENTS \* $N_THREADS)-$N_CLIENTS
 
