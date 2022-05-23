@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: kv
-          image: r3musketeers/tcp-kv-server
+          image: lptonussi/public:tcp-kv-server
           imagePullPolicy: Always
           args: [
             "-l", "/tmp/throughput.log",
@@ -36,7 +36,7 @@ spec:
             tcpSocket:
               port: 8001
         - name: hermes
-          image: r3musketeers/hermes
+          image: lptonussi/public:hermes
           imagePullPolicy: Always
           args: [
             "-j", "hermes-leader:9000"
