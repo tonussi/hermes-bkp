@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: tcp-kv-client
-        image: lptonussi/public:tcp-kv-client
+        image: r3musketeers/tcp-kv-client:latest
         imagePullPolicy: Always
         args: [
           "-s", "$SERVICE_NAME:8000",

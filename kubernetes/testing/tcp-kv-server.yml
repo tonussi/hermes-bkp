@@ -39,14 +39,14 @@ spec:
       nodeSelector:
         "kubernetes.io/role": "landowner"
       affinity:
-        nodeAffinity:
+        podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/role
+            - labelSelector:
+                matchExpressions:
+                  - key: name
                     operator: In
-                    values:
-                      - landowner
+                    values: [ "tcp-kv-server" ]
+              topologyKey: failure-domain.beta.kubernetes.io/zone
 ---
 apiVersion: v1
 kind: Service
