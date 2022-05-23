@@ -36,7 +36,7 @@ spec:
             tcpSocket:
               port: 8001
         - name: hermes
-          image: lptonussi/public:hermes
+          image: r3musketeers/hermes
           imagePullPolicy: Always
           args: [
             "-j", "hermes-leader:9000"
