@@ -60,9 +60,9 @@ echo "collecting latency log..."
 mkdir -p logs/lucas/$SCENE/latency
 kubectl logs $(kubectl get pods -l app=tcp-kv-client -o=jsonpath='{.items[0].metadata.name}'):/tmp/logs/latency.log > logs/lucas/$SCENE/latency/$TEST.log
 
-# echo "deleting client..."
-# kubectl delete -f $KUBERNETES_DIR/tcp-kv-client.yml
+echo "deleting client..."
+kubectl delete -f $KUBERNETES_DIR/tcp-kv-client.yml
 
-# echo "deleting server..."
-# kubectl delete -f $KUBERNETES_DIR/hermes-leader.yml
-# kubectl delete -f $KUBERNETES_DIR/hermes-followers.yml
+echo "deleting server..."
+kubectl delete -f $KUBERNETES_DIR/hermes-leader.yml
+kubectl delete -f $KUBERNETES_DIR/hermes-followers.yml
