@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hermes-leader
+  labels:
+    app: hermes-leader
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hermes-leader
+  template:
+    metadata:
+      labels:
+        app: hermes-leader
+    spec:
+      containers:
+        - name: kv
+          image: lptonussi/public:http-log-server
+          imagePullPolicy: Always
+          args: [
+            '--address=localhost',
+            '--port=8001',
+            "--buffer_size=1024",
+            "--tcp_onoff=True"
+          ]
+          ports:
+            - containerPort: 8001
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "50Mi"
+            limits:
+              cpu: "100m"
+              memory: "50Mi"
+          # readinessProbe:
+          #   tcpSocket:
+          #     port: 8001
+        - name: hermes
+          image: r3musketeers/hermes
+          imagePullPolicy: Always
+          env:
+            - name: NODE_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: PROTOCOL_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: PROTOCOL_PORT
+              value: "10000"
+          ports:
+            - name: server
+              containerPort: 8000
+            - name: join
+              containerPort: 9000
+            - name: protocol
+              containerPort: 10000
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "50Mi"
+            limits:
+              cpu: "100m"
+              memory: "50Mi"
+          readinessProbe:
+            tcpSocket:
+              port: 8000
+      nodeSelector:
+        "kubernetes.io/role": "landowner"
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: name
+                    operator: In
+                    values: [ "hermes-leader", "hermes-follower" ]
+              topologyKey: failure-domain.beta.kubernetes.io/zone
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hermes-leader
+spec:
+  selector:
+    app: hermes-leader
+  type: NodePort
+  ports:
+    - name: server
+      port: 8000
+      targetPort: 8000
+    - name: join
+      port: 9000
+      targetPort: 9000
