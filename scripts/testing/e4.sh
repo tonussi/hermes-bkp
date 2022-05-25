@@ -44,10 +44,10 @@ done
 sleep 10
 
 echo "apply clients..."
-envsubst < $KUBERNETES_DIR/tcp-kv-client.yml | kubectl apply -f -
+envsubst < $KUBERNETES_DIR/http-log-client.yml | kubectl apply -f -
 
 echo "wait job to complete..."
-kubectl wait --for=condition=complete --timeout=60s job.batch/tcp-kv-client
+kubectl wait --for=condition=complete --timeout=60s job.batch/http-log-client
 
 TEST=$(expr $N_CLIENTS \* $N_THREADS)-$N_CLIENTS
 
@@ -58,10 +58,10 @@ kubectl cp $(kubectl get pods -l app=http-log-server -o=jsonpath='{.items[0].met
 
 echo "collecting latency log..."
 mkdir -p logs/lucas/$SCENE/latency
-kubectl logs $(kubectl get pods -l app=tcp-kv-client -o=jsonpath='{.items[0].metadata.name}'):/tmp/logs/latency.log > logs/lucas/$SCENE/latency/$TEST.log
+kubectl logs $(kubectl get pods -l app=http-log-client -o=jsonpath='{.items[0].metadata.name}') > logs/lucas/$SCENE/latency/$TEST.log
 
 echo "deleting client..."
-kubectl delete -f $KUBERNETES_DIR/tcp-kv-client.yml
+kubectl delete -f $KUBERNETES_DIR/http-log-client.yml
 
 echo "deleting server..."
 kubectl delete -f $KUBERNETES_DIR/hermes-leader.yml
