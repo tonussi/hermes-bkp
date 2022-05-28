@@ -18,7 +18,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/hashicorp/raft"
 	raftboltdb "github.com/hashicorp/raft-boltdb"
-	"github.com/r3musketeers/hermes/pkg/kv"
+	"github.com/tonussi/studygo/pkg/kv"
 )
 
 type HashicorpRaftMessage struct {

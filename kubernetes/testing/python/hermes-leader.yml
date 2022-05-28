@@ -15,29 +15,28 @@ spec:
         app: hermes-leader
     spec:
       containers:
-        - name: kv
+        - name: http-log-server
           image: lptonussi/public:http-log-server
           imagePullPolicy: Always
           args: [
             '--address=localhost',
-            '--port=8001',
-            "--buffer_size=1024",
-            "--tcp_onoff=True"
+            '--port=8001'
           ]
           ports:
             - containerPort: 8001
           resources:
             requests:
               cpu: "100m"
-              memory: "50Mi"
+              memory: "500Mi"
             limits:
               cpu: "100m"
-              memory: "50Mi"
-          # readinessProbe:
-          #   tcpSocket:
+              memory: "500Mi"
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
           #     port: 8001
         - name: hermes
-          image: r3musketeers/hermes
+          image: lptonussi/public:hermes
           imagePullPolicy: Always
           env:
             - name: NODE_ID
@@ -60,15 +59,16 @@ spec:
           resources:
             requests:
               cpu: "100m"
-              memory: "50Mi"
+              memory: "500Mi"
             limits:
               cpu: "100m"
-              memory: "50Mi"
-          readinessProbe:
-            tcpSocket:
-              port: 8000
+              memory: "500Mi"
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: 8000
       nodeSelector:
-        "kubernetes.io/role": "landowner"
+        role: server
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

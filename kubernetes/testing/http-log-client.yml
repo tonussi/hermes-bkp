@@ -40,14 +40,14 @@ spec:
             cpu: "100m"
             memory: "50Mi"
       restartPolicy: Never
-      nodeSelector:
-        "kubernetes.io/role": "hardworker"
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                  - key: name
-                    operator: In
-                    values: [ "http-log-client" ]
-              topologyKey: failure-domain.beta.kubernetes.io/zone
+      # nodeSelector:
+      #   role: client
+      # affinity:
+      #   podAntiAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #       - labelSelector:
+      #           matchExpressions:
+      #             - key: name
+      #               operator: In
+      #               values: [ "http-log-client" ]
+      #         topologyKey: failure-domain.beta.kubernetes.io/zone

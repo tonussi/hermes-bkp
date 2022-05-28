@@ -22,20 +22,21 @@ kubectl apply -f $KUBERNETES_DIR/kube-flannel.yml
 echo "join worker nodes to cluster..."
 ansible-playbook -i $ANSIBLE_PB_DIR/hosts $ANSIBLE_PB_DIR/join-workers.yml
 
-echo "label server nodes..."
+echo "label the admin master node (for admin purposes only)..."
 for i in $(seq 0 $(expr $N_SERVER_NODES - 1))
 do
-  kubectl label nodes node$i.$EXPERIMENT_NAME.$EMULAB_GROUP_NAME.emulab.net kubernetes.io/role=landowner --overwrite
-  # kubectl label node node$i.$EXPERIMENT_NAME.$EMULAB_GROUP_NAME.emulab.net key=server --overwrite
-  # kubectl taint nodes node$i.$EXPERIMENT_NAME.$EMULAB_GROUP_NAME.emulab.net node-role.kubernetes.io/master-
+  kubectl label nodes node$i.$EXPERIMENT_NAME.$EMULAB_GROUP_NAME.emulab.net kubernetes.io/role=admin --overwrite
 done
 
-echo "label client nodes..."
+echo "label the worker nodes (where the experiment happens)..."
 N_NODES=$(kubectl get nodes -o go-template="{{len .items}}")
 
-for i in $(seq $(expr $N_SERVER_NODES) $(expr $N_NODES))
+for i in $(seq $(expr $N_SERVER_NODES) $(expr $N_SERVER_NODES))
 do
-  kubectl label nodes node$i.$EXPERIMENT_NAME.$EMULAB_GROUP_NAME.emulab.net kubernetes.io/role=hardworker --overwrite
-  # kubectl label nodes node$i.$EXPERIMENT_NAME.$EMULAB_GROUP_NAME.emulab.net key=client --overwrite
-  # kubectl taint nodes node$i.$EXPERIMENT_NAME.$EMULAB_GROUP_NAME.emulab.net node-role.kubernetes.io/master-
+  kubectl label nodes node$i.$EXPERIMENT_NAME.$EMULAB_GROUP_NAME.emulab.net kubernetes.io/role=server --overwrite
+done
+
+for i in $(seq $(expr $N_SERVER_NODES + 1) $(expr $N_NODES - 1))
+do
+  kubectl label nodes node$i.$EXPERIMENT_NAME.$EMULAB_GROUP_NAME.emulab.net kubernetes.io/role=client --overwrite
 done

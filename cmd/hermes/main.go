@@ -6,16 +6,15 @@ import (
 	"os"
 	"time"
 
-	"github.com/r3musketeers/hermes/pkg/communication"
-	hashicorpraft "github.com/r3musketeers/hermes/pkg/ordering/hashicorp-raft"
-	"github.com/r3musketeers/hermes/pkg/proxy"
+	"github.com/tonussi/studygo/pkg/communication"
+	hashicorpraft "github.com/tonussi/studygo/pkg/ordering/hashicorp-raft"
+	"github.com/tonussi/studygo/pkg/proxy"
 )
 
 var (
 	listenAddr     = flag.String("l", ":8000", "listen requests address")
 	deliveryAddr   = flag.String("d", ":8001", "delivery server address")
 	listenJoinAddr = flag.String("k", ":9000", "listen join requests address")
-	bufferSize     = flag.Int("b", 2048, "requests buffer size")
 	joinAddr       = flag.String("j", "", "join address")
 )
 
@@ -29,12 +28,11 @@ func main() {
 
 	raftAddr := os.Getenv("PROTOCOL_IP") + ":" + os.Getenv("PROTOCOL_PORT")
 
-	tcpCommunicator, err := communication.NewTCPCommunicator(
+	httpCommunicator, err := communication.NewHTTPCommunicator(
 		*listenAddr,
 		*deliveryAddr,
 		5,
 		2*time.Second,
-		*bufferSize,
 	)
 	if err != nil {
 		log.Fatal(err.Error())
@@ -54,7 +52,7 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-	hermes := proxy.NewHermesProxy(tcpCommunicator, hashicoprRaftOrderer)
+	hermes := proxy.NewHermesProxy(httpCommunicator, hashicoprRaftOrderer)
 
 	err = hermes.Run()
 	if err != nil {

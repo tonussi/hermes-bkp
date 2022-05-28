@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/r3musketeers/hermes/pkg/proxy"
+	"github.com/tonussi/studygo/pkg/proxy"
 )
 
 type TCPCommunicator struct {

@@ -37,7 +37,7 @@ spec:
             tcpSocket:
               port: 8001
       nodeSelector:
-        "kubernetes.io/role": "landowner"
+        role: server
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

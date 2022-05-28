@@ -69,14 +69,14 @@ spec:
           readinessProbe:
             tcpSocket:
               port: 8000
-      nodeSelector:
-        "kubernetes.io/role": "landowner"
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                  - key: name
-                    operator: In
-                    values: [ "hermes-leader", "hermes-follower" ]
-              topologyKey: failure-domain.beta.kubernetes.io/zone
+      # nodeSelector:
+      #   role: client
+      # affinity:
+      #   podAntiAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #       - labelSelector:
+      #           matchExpressions:
+      #             - key: name
+      #               operator: In
+      #               values: [ "hermes-leader", "hermes-follower" ]
+      #         topologyKey: failure-domain.beta.kubernetes.io/zone

@@ -1,41 +1,41 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: tcp-kv-client
+  name: http-log-client
+  labels:
+    app: http-log-client
 spec:
-  backoffLimit: 5
+  backoffLimit: 4
   completions: $N_CLIENTS
   parallelism: $N_CLIENTS
   template:
     metadata:
       labels:
-        app: tcp-kv-client
+        app: http-log-client
     spec:
       containers:
-      - name: tcp-kv-client
-        image: lptonussi/public:tcp-kv-client
+      - name: http-log-client
+        image: lptonussi/public:http-log-client
         imagePullPolicy: Always
         args: [
-          "-s", "$SERVICE_NAME:8000",
-          "-d", "60s",
-          "-p", "512",
-          "-k", "100000",
-          "-r", "$READ_RATE",
-          "-n", "$N_THREADS",
-          "-t", "2ms",
-          "-f", "20",
-          "-b", "1024"
+          '--address=$SERVICE_NAME',
+          '--port=8000'
         ]
+        env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
         resources:
           requests:
-            cpu: "100m"
-            memory: "50Mi"
+            cpu: "200m"
+            memory: "500Mi"
           limits:
-            cpu: "100m"
-            memory: "50Mi"
+            cpu: "250m"
+            memory: "500Mi"
       restartPolicy: Never
       nodeSelector:
-        "kubernetes.io/role": "hardworker"
+        role: client
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -43,5 +43,5 @@ spec:
                 matchExpressions:
                   - key: name
                     operator: In
-                    values: [ "tcp-kv-client" ]
+                    values: [ "http-log-client" ]
               topologyKey: failure-domain.beta.kubernetes.io/zone
