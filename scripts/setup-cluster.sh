@@ -5,22 +5,22 @@ EXPERIMENT_NAME=$3
 EMULAB_GROUP_NAME=$4
 N_SERVER_NODES=$5
 
-# DOCKERD_JSON_FILE=`echo $(cd $ANSIBLE_PB_DIR; pwd)/daemon.json`
+DOCKERD_JSON_FILE=`echo $(cd $ANSIBLE_PB_DIR; pwd)/daemon.json`
 
-# echo "ping all nodes..."
-# ansible all -i $ANSIBLE_PB_DIR/hosts -m ping
+echo "ping all nodes..."
+ansible all -i $ANSIBLE_PB_DIR/hosts -m ping
 
-# echo "initial cluster setup..."
-# ansible-playbook -i $ANSIBLE_PB_DIR/hosts --extra-vars daemon_json_file=$DOCKERD_JSON_FILE $ANSIBLE_PB_DIR/initial-setup.yml
+echo "initial cluster setup..."
+ansible-playbook -i $ANSIBLE_PB_DIR/hosts --extra-vars daemon_json_file=$DOCKERD_JSON_FILE $ANSIBLE_PB_DIR/initial-setup.yml
 
-# echo "initial master setup..."
-# ansible-playbook -i $ANSIBLE_PB_DIR/hosts $ANSIBLE_PB_DIR/init-master.yml
+echo "initial master setup..."
+ansible-playbook -i $ANSIBLE_PB_DIR/hosts $ANSIBLE_PB_DIR/init-master.yml
 
-# echo "apply flannel pod network..."
-# kubectl apply -f $KUBERNETES_DIR/kube-flannel.yml
+echo "apply flannel pod network..."
+kubectl apply -f $KUBERNETES_DIR/kube-flannel.yml
 
-# echo "join worker nodes to cluster..."
-# ansible-playbook -i $ANSIBLE_PB_DIR/hosts $ANSIBLE_PB_DIR/join-workers.yml
+echo "join worker nodes to cluster..."
+ansible-playbook -i $ANSIBLE_PB_DIR/hosts $ANSIBLE_PB_DIR/join-workers.yml
 
 echo "label the admin master node (for admin purposes only)..."
 for i in $(seq 0 $(expr $N_SERVER_NODES - 1))
