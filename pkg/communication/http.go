@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/tonussi/studygo/pkg/proxy"
+	"github.com/r3musketeers/hermes/pkg/proxy"
 )
 
 type HTTPCommunicator struct {

@@ -3,7 +3,7 @@ package communication
 // import (
 // 	"net"
 
-// 	"github.com/tonussi/studygo/proxy"
+// 	"github.com/r3musketeers/hermes/proxy"
 // )
 
 // type UDPCommunicator struct {

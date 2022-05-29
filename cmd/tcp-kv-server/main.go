@@ -13,7 +13,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/tonussi/studygo/pkg/kv"
+	"github.com/r3musketeers/hermes/pkg/kv"
 )
 
 var (

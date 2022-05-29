@@ -2,8 +2,10 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: http-log-client
+  labels:
+    app: http-log-client
 spec:
-  backoffLimit: 5
+  backoffLimit: 4
   completions: $N_CLIENTS
   parallelism: $N_CLIENTS
   template:
@@ -17,15 +19,7 @@ spec:
         imagePullPolicy: Always
         args: [
           '--address=$SERVICE_NAME',
-          '--port=8001',
-          '--duration=60',
-          '--payload_size=512',
-          '--key_range=100000',
-          '--read_rate=$READ_RATE',
-          '--n_threads=$N_THREADS',
-          '--thinking_time=2',
-          '--log_frequency=20',
-          '--buffer_size=1024'
+          '--port=8000'
         ]
         env:
           - name: POD_NAME
@@ -34,20 +28,20 @@ spec:
                 fieldPath: metadata.name
         resources:
           requests:
-            cpu: "100m"
-            memory: "50Mi"
+            cpu: "200m"
+            memory: "500Mi"
           limits:
-            cpu: "100m"
-            memory: "50Mi"
+            cpu: "250m"
+            memory: "500Mi"
       restartPolicy: Never
-      # nodeSelector:
-      #   role: client
-      # affinity:
-      #   podAntiAffinity:
-      #     requiredDuringSchedulingIgnoredDuringExecution:
-      #       - labelSelector:
-      #           matchExpressions:
-      #             - key: name
-      #               operator: In
-      #               values: [ "http-log-client" ]
-      #         topologyKey: failure-domain.beta.kubernetes.io/zone
+      nodeSelector:
+        role: client
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: name
+                    operator: In
+                    values: [ "http-log-client" ]
+              topologyKey: failure-domain.beta.kubernetes.io/zone

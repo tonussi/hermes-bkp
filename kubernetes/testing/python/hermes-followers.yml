@@ -19,22 +19,21 @@ spec:
           image: lptonussi/public:http-log-server
           imagePullPolicy: Always
           args: [
-            '--address=localhost',
             '--port=8001'
           ]
           ports:
             - containerPort: 8001
           resources:
             requests:
-              cpu: "100m"
-              memory: "500Mi"
+              memory: "300Mi"
+              cpu: "50m"
             limits:
-              cpu: "100m"
               memory: "500Mi"
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: 8001
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8001
         - name: hermes
           image: lptonussi/public:hermes
           imagePullPolicy: Always
@@ -61,17 +60,17 @@ spec:
               containerPort: 10000
           resources:
             requests:
-              cpu: "100m"
-              memory: "500Mi"
+              memory: "300Mi"
+              cpu: "50m"
             limits:
-              cpu: "100m"
               memory: "500Mi"
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: 8000
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8000
       nodeSelector:
-        role: client
+        role: server
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
