@@ -41,9 +41,9 @@ func (proxy *HermesProxy) Run() error {
 // Unexported functions
 
 func (proxy *HermesProxy) handleIncomingMessage(data []byte) ([]byte, error) {
-	return _orderer.Process(data)
+	return proxy.orderer.Process(data)
 }
 
 func (proxy *HermesProxy) handleOrderedMessage(data []byte) ([]byte, error) {
-	return _communicator.Deliver(data)
+	return proxy.communicator.Deliver(data)
 }

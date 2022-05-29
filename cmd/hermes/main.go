@@ -29,7 +29,7 @@ func main() {
 
 	raftAddr := os.Getenv("PROTOCOL_IP") + ":" + os.Getenv("PROTOCOL_PORT")
 
-	tcpCommunicator, err := communication.NewHTTPCommunicator(
+	httpCommunicator, err := communication.NewHTTPCommunicator(
 		*listenAddr,
 		*deliveryAddr,
 		5,
@@ -54,7 +54,7 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-	hermes := proxy.NewHermesProxy(tcpCommunicator, hashicoprRaftOrderer)
+	hermes := proxy.NewHermesProxy(httpCommunicator, hashicoprRaftOrderer)
 
 	err = hermes.Run()
 	if err != nil {
