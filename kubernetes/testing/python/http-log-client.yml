@@ -20,9 +20,16 @@ spec:
         imagePullPolicy: Always
         args: [
           '--address=$SERVICE_NAME',
-          '--port=8000'
+          '--payload_size=$PAYLOAD_SIZE',
+          '--qty_iteration=$QTY_ITERATION',
+          '--read_rate=$READ_RATE',
+          '--n_threads=$N_THREADS',
+          '--thinking_time=$THINKING_TIME',
+          '--percentage_sampling=$PERCENTAGE_SAMPLING'
         ]
         env:
+          - name: PYTHONUNBUFFERED
+            value: "1"
           - name: POD_NAME
             valueFrom:
               fieldRef:

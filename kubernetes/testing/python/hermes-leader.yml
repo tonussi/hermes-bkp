@@ -19,8 +19,12 @@ spec:
           image: lptonussi/public:http-log-server
           imagePullPolicy: Always
           args: [
-            '--port=8001'
+            '--port=8001',
+            '--tcp_onoff=True'
           ]
+          env:
+            - name: PYTHONUNBUFFERED
+              value: "1"
           ports:
             - containerPort: 8001
           resources:
