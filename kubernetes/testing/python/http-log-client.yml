@@ -8,7 +8,6 @@ spec:
   backoffLimit: 4
   completions: $N_CLIENTS
   parallelism: $N_CLIENTS
-  completionMode: Indexed
   template:
     metadata:
       labels:

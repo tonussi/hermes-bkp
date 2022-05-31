@@ -4,10 +4,10 @@ export N_CLIENTS=$2
 export N_THREADS=$3
 export READ_RATE=$4
 export SCENE=$5
-export PAYLOAD_SIZE=1
-export QTY_ITERATION=5000
-export THINKING_TIME=0.02
-export PERCENTAGE_SAMPLING=20
+export PAYLOAD_SIZE=2
+export QTY_ITERATION=100000
+export THINKING_TIME=0.2
+export PERCENTAGE_SAMPLING=90
 export SERVICE_NAME=hermes-leader
 
 echo "apply leader..."
@@ -55,7 +55,14 @@ kubectl wait --for=condition=complete --timeout=100s job.batch/http-log-client
 TEST=$(expr $N_CLIENTS \* $N_THREADS)-$N_CLIENTS
 
 echo "collecting throughput log..."
-kubectl cp $(kubectl get pods -l app=hermes-leader -o=jsonpath='{.items[0].metadata.name}'):/tmp/logs/throughput.log logs/$SCENE/throughput/hermes-leader/$TEST.log
+kubectl logs $(kubectl get pods -l app=hermes-leader -o=jsonpath='{.items[0].metadata.name}') > logs/$SCENE/throughput/hermes-leader/$TEST.log
+kubectl logs $(kubectl get pods -l app=hermes-followers -o=jsonpath='{.items[0].metadata.name}') > logs/$SCENE/throughput/hermes-follower-0/$TEST.log
+kubectl logs $(kubectl get pods -l app=hermes-followers -o=jsonpath='{.items[1].metadata.name}') > logs/$SCENE/throughput/hermes-follower-1/$TEST.log
+
+echo "collecting data..."
+kubectl cp $(kubectl get pods -l app=hermes-leader -o=jsonpath='{.items[0].metadata.name}'):/tmp/logs/operations.log > logs/$SCENE/operations/$TEST-0.log
+kubectl cat $(kubectl get pods -l app=hermes-followers -o=jsonpath='{.items[0].metadata.name}'):/tmp/logs/operations.log > logs/$SCENE/operations/$TEST-1.log
+kubectl cat $(kubectl get pods -l app=hermes-followers -o=jsonpath='{.items[1].metadata.name}'):/tmp/logs/operations.log > logs/$SCENE/operations/$TEST-2.log
 
 echo "collecting latency log..."
 for i in $(seq $(expr $N_CLIENTS - 1))
