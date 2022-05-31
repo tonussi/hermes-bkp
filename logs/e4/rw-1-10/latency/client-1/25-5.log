@@ -1,4 +1,0 @@
-Usage: app.py [OPTIONS]
-Try 'app.py --help' for help.
-
-Error: Invalid value for '--read_rate': 'e4/rw-1-10' is not a valid integer.
