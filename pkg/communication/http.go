@@ -12,9 +12,14 @@ import (
 )
 
 type HTTPCommunicator struct {
-	fromAddr string
-	toAddr   string
-	urlPath  string
+	fromAddr      string
+	toAddr        string
+	urlPath       string
+	method        string
+	requestURI    string
+	httpTextBytes []byte
+	bodyBytes     []byte
+	r             *http.Request
 }
 
 func NewHTTPCommunicator(
@@ -42,60 +47,97 @@ func (comm *HTTPCommunicator) Listen(handle proxy.HandleIncomingMessageFunc) err
 }
 
 func (comm *HTTPCommunicator) Deliver(data []byte) ([]byte, error) {
-	// build url to post
-	deliveryFullUrlString := comm.buildHttpUrlPath()
-
-	// payload bytes as buffered reader
-	bufferedPayload := payloadBytesAsBufferedReader(data)
-
-	// delivery to a server
-	resp, err := http.Post(deliveryFullUrlString, "application/json", bufferedPayload)
-	if err != nil {
-		log.Fatalln(err)
+	if comm.httpTextBytes == nil {
+		return nil, nil
 	}
 
-	// close response body
-	defer resp.Body.Close()
+	client := &http.Client{}
+	var buf bytes.Buffer
+	var res *http.Response
+	var req *http.Request
+	var err error
 
-	// read body response
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Printf("Reading body failed: %s", err)
-		return nil, err
+	switch comm.method {
+	case "GET":
+		req, err = http.NewRequest("GET", "http://"+comm.toAddr+comm.r.RequestURI, nil)
+		if err != nil {
+			panic(err)
+		}
+
+		res, err = client.Do(req)
+		if err != nil {
+			panic(err)
+		}
+
+		defer res.Body.Close()
+
+		if err = res.Write(&buf); err != nil {
+			panic(err)
+		}
+
+		fmt.Println(buf.String())
+	case "POST":
+		bodyIoReader := payloadBytesAsBufferedReader(comm.bodyBytes)
+
+		if err != nil {
+			panic(err)
+		}
+
+		req, err = http.NewRequest("POST", "http://"+comm.toAddr+comm.r.RequestURI, bodyIoReader)
+		if err != nil {
+			panic(err)
+		}
+
+		res, err = client.Do(req)
+		if err != nil {
+			panic(err)
+		}
+
+		defer res.Body.Close()
+
+		if err = res.Write(&buf); err != nil {
+			panic(err)
+		}
+
+		fmt.Println(buf.String())
 	}
 
-	// see data that has been returned to the client
-	bodyString := string(body)
-	log.Println(bodyString)
-	log.Println(comm.urlPath)
-
-	return body, err
+	return buf.Bytes(), err
 }
-
-// Extra functions to clean code a little bit
 
 func (comm *HTTPCommunicator) requestHandler(w http.ResponseWriter, r *http.Request, handle proxy.HandleIncomingMessageFunc) {
+	comm.r = r
+	comm.method = r.Method
 	comm.urlPath = r.URL.Path
-	bodyBytes, _ := ioutil.ReadAll(r.Body)
+	comm.requestURI = r.RequestURI
+	var httpTextBytes bytes.Buffer
 
-	log.Println("handling connection reading bytes and sending to handler")
-
-	resp, err := handle(bodyBytes)
-
+	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Fatalln(err)
+		panic(err)
 	}
 
-	bodyString := string(resp)
-	log.Print(bodyString)
+	comm.bodyBytes = bodyBytes
+
+	// https://stackoverflow.com/a/69055473
+	r.Write(&httpTextBytes)
+
+	comm.httpTextBytes = httpTextBytes.Bytes()
+	fmt.Println(httpTextBytes.String())
+
+	resp, err := handle(comm.httpTextBytes)
+
+	if err != nil {
+		panic(err)
+	}
+
+	bodyResponseFromAppServer := string(resp)
+	log.Print(bodyResponseFromAppServer)
 	fmt.Fprintf(w, "%+v", resp)
-	if err != nil {
-		log.Fatalln(err)
-	}
-}
 
-func (comm *HTTPCommunicator) buildHttpUrlPath() string {
-	return "http://" + comm.toAddr + comm.urlPath
+	if err != nil {
+		panic(err)
+	}
 }
 
 func payloadBytesAsBufferedReader(data []byte) (ioBufferedValues *bytes.Buffer) {

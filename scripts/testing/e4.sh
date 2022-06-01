@@ -99,8 +99,8 @@ kubectl logs $(kubectl get pods -l app=http-log-client -o=jsonpath="{.items[$i].
 done
 
 echo "deleting client..."
-# kubectl delete -f $KUBERNETES_DIR/http-log-client.yml
+kubectl delete -f $KUBERNETES_DIR/http-log-client.yml
 
 echo "deleting server..."
-# kubectl delete -f $KUBERNETES_DIR/hermes-leader.yml
-# kubectl delete -f $KUBERNETES_DIR/hermes-followers.yml
+kubectl delete -f $KUBERNETES_DIR/hermes-leader.yml
+kubectl delete -f $KUBERNETES_DIR/hermes-followers.yml
