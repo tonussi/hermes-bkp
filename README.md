@@ -11,3 +11,7 @@ https://yusufs.medium.com/creating-distributed-kv-database-by-implementing-raft-
 1. https://stackoverflow.com/a/67411808 (gke)
 2. https://stackoverflow.com/a/46720109 (local development)
 3. https://gist.github.com/smijar/64e76808c8a349eb64f56c71dc03d8d8 (k3d)
+
+# Outros links
+
+1. https://stackoverflow.com/a/69055473
