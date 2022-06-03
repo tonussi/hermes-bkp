@@ -28,7 +28,7 @@ func main() {
 
 	raftAddr := os.Getenv("PROTOCOL_IP") + ":" + os.Getenv("PROTOCOL_PORT")
 
-	httpCommunicator, err := communication.NewHTTPCommunicator(
+	communicator, err := communication.NewHTTPCommunicator(
 		*listenAddr,
 		*deliveryAddr,
 	)
@@ -36,7 +36,7 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-	hashicoprRaftOrderer, err := hashicorpraft.NewHashicorpRaftOrderer(
+	orderer, err := hashicorpraft.NewHashicorpRaftOrderer(
 		nodeID,
 		raftAddr,
 		10*time.Second,
@@ -50,7 +50,7 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-	hermes := proxy.NewHermesProxy(httpCommunicator, hashicoprRaftOrderer)
+	hermes := proxy.NewHermesProxy(communicator, orderer)
 
 	err = hermes.Run()
 	if err != nil {
