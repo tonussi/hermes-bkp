@@ -1,4 +1,0 @@
-2022-06-01T06:42:26.154Z [INFO]  raft: initial configuration: index=0 servers=[]
-2022-06-01T06:42:26.154Z [INFO]  raft: entering follower state: follower="Node at 10.4.2.23:10000 [Follower]" leader-address= leader-id=
-2022/06/01 06:42:26 listening join requests at :9000
-2022-06-01T06:42:26.160Z [WARN]  raft: failed to get previous log: previous-index=4 last-index=0 error="log not found"

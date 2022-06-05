@@ -10,6 +10,14 @@ export THINKING_TIME=0.2
 export PERCENTAGE_SAMPLING=90
 export SERVICE_NAME=hermes-leader
 
+TEST="qty-clients"-$(expr $N_CLIENTS \* $N_THREADS)
+EXPERIMENT_NAME=$SCENE/$(expr 100 \- $READ_RATE)/$TEST
+mkdir -p logs/$EXPERIMENT_NAME/throughput
+mkdir -p logs/$EXPERIMENT_NAME/logs
+mkdir -p logs/$EXPERIMENT_NAME/operations
+mkdir -p logs/$EXPERIMENT_NAME/operations
+mkdir -p logs/$EXPERIMENT_NAME/latency
+
 echo "apply leader..."
 kubectl apply -f $KUBERNETES_DIR/hermes-leader.yml
 
@@ -52,50 +60,44 @@ envsubst < $KUBERNETES_DIR/http-log-client.yml | kubectl apply -f -
 echo "wait job to complete..."
 kubectl wait --for=condition=complete --timeout=100s job.batch/http-log-client
 
-TEST=$(expr $N_CLIENTS \* $N_THREADS)-$N_CLIENTS
-
-echo "collecting hermes logs..."
-mkdir -p logs/$SCENE/throughput/http-log-server/
+echo "collecting hermes throughput..."
 echo $(kubectl get pods -l app=hermes-leader -o=jsonpath='{.items[0].metadata.name}')
-kubectl logs $(kubectl get pods -l app=hermes-leader -o=jsonpath='{.items[0].metadata.name}') http-log-server > logs/$SCENE/throughput/http-log-server/$TEST.log
-
-echo "collecting hermes logs..."
-mkdir -p logs/$SCENE/hermes-output/
-echo $(kubectl get pods -l app=hermes-leader -o=jsonpath='{.items[0].metadata.name}')
-kubectl logs $(kubectl get pods -l app=hermes-leader -o=jsonpath='{.items[0].metadata.name}') hermes > logs/$SCENE/hermes-output/hermes-leader.log
+kubectl logs $(kubectl get pods -l app=hermes-leader -o=jsonpath='{.items[0].metadata.name}') http-log-server > logs/$EXPERIMENT_NAME/throughput/leader.log
 
 for i in $(seq 0 1)
 do
-echo "collecting throughput log..."
-mkdir -p logs/$SCENE/throughput/hermes-follower-$i/
+echo "collecting followers throughput..."
 echo $(kubectl get pods -l app=hermes-followers -o=jsonpath="{.items[$i].metadata.name}")
-kubectl logs $(kubectl get pods -l app=hermes-followers -o=jsonpath="{.items[$i].metadata.name}") http-log-server > logs/$SCENE/throughput/http-log-server-$i/$TEST.log
+kubectl logs $(kubectl get pods -l app=hermes-followers -o=jsonpath="{.items[$i].metadata.name}") http-log-server > logs/$EXPERIMENT_NAME/http-log-server/throughput/follower-$i.log
+done
 
 echo "collecting hermes logs..."
-mkdir -p logs/$SCENE/hermes-output/
+echo $(kubectl get pods -l app=hermes-leader -o=jsonpath='{.items[0].metadata.name}')
+kubectl logs $(kubectl get pods -l app=hermes-leader -o=jsonpath='{.items[0].metadata.name}') hermes > logs/$EXPERIMENT_NAME/logs/leader.log
+
+for i in $(seq 0 1)
+do
+echo "collecting followers logs..."
 echo $(kubectl get pods -l app=hermes-followers -o=jsonpath="{.items[$i].metadata.name}")
-kubectl logs $(kubectl get pods -l app=hermes-followers -o=jsonpath="{.items[$i].metadata.name}") hermes > logs/$SCENE/hermes-output/hermes-follower-$i.log
+kubectl logs $(kubectl get pods -l app=hermes-followers -o=jsonpath="{.items[$i].metadata.name}") hermes > logs/$EXPERIMENT_NAME/logs/follower-$i.log
 done
 
 echo "collecting data..."
 # Defaulted container "http-log-server" out of: http-log-server, hermes
-echo $(kubectl get pods -l app=hermes-leader -o=jsonpath="{.items[0].metadata.name}"):tmp/logs/operations.log
-mkdir -p logs/$SCENE/operations
-kubectl cp $(kubectl get pods -l app=hermes-leader -o=jsonpath="{.items[0].metadata.name}"):/tmp/logs/operations.log logs/$SCENE/operations/operations.log
+echo $(kubectl get pods -l app=hermes-leader -o=jsonpath="{.items[0].metadata.name}")
+kubectl cp $(kubectl get pods -l app=hermes-leader -o=jsonpath="{.items[0].metadata.name}"):/tmp/logs/operations.log logs/$EXPERIMENT_NAME/operations/leader.log
 
 for i in $(seq 0 1)
 do
 echo "collecting data..."
-mkdir -p logs/$SCENE/operations
-kubectl cp $(kubectl get pods -l app=hermes-followers -o=jsonpath="{.items[$i].metadata.name}"):/tmp/logs/operations.log logs/$SCENE/operations/operations-$i.log
+kubectl cp $(kubectl get pods -l app=hermes-followers -o=jsonpath="{.items[$i].metadata.name}"):/tmp/logs/operations.log logs/$EXPERIMENT_NAME/operations/follower-$i.log
 done
 
 echo "collecting latency log..."
 for i in $(seq $(expr $N_CLIENTS - 1))
 do
-mkdir -p logs/$SCENE/latency/client-$i
 echo $(kubectl get pods -l app=http-log-client -o=jsonpath="{.items[$i].metadata.name}")
-kubectl logs $(kubectl get pods -l app=http-log-client -o=jsonpath="{.items[$i].metadata.name}") > logs/$SCENE/latency/client-$i/$TEST.log
+kubectl logs $(kubectl get pods -l app=http-log-client -o=jsonpath="{.items[$i].metadata.name}") > logs/$EXPERIMENT_NAME/latency/client-$i.log
 done
 
 echo "deleting client..."
