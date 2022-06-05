@@ -10,7 +10,7 @@ export THINKING_TIME=0.2
 export PERCENTAGE_SAMPLING=90
 export SERVICE_NAME=hermes-leader
 
-TEST="qty-clients"-$(expr $N_CLIENTS \* $N_THREADS)
+TEST="QTYCLI"$(expr $N_CLIENTS \* $N_THREADS)
 EXPERIMENT_NAME=$SCENE/"R"$READ_RATE"W"$(expr 100 \- $READ_RATE)/$TEST
 mkdir -p logs/$EXPERIMENT_NAME/throughput
 mkdir -p logs/$EXPERIMENT_NAME/logs
