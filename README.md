@@ -18,6 +18,7 @@ https://yusufs.medium.com/creating-distributed-kv-database-by-implementing-raft-
 * https://stackoverflow.com/a/46720109 (emulab)
 * https://gist.github.com/tonussi/0a347e345e091a3a9ceed8893f1dc394 (k3d)
 
-# Outros links
+# Other interesting links
 
-* https://stackoverflow.com/a/69055473
+* [Transform http.Response into array of bytes](https://stackoverflow.com/a/69055473)
+* 
