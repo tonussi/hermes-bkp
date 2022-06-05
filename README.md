@@ -21,4 +21,4 @@ https://yusufs.medium.com/creating-distributed-kv-database-by-implementing-raft-
 # Other interesting links
 
 * [Transform http.Response into array of bytes](https://stackoverflow.com/a/69055473)
-* [StatefulSet Redis](https://cloud.google.com/kubernetes-engine/docs/tutorials/upgrading-stateful-workload?hl=pt-br)
+* [StatefulSet Redis // redis.NewClusterClient](https://cloud.google.com/kubernetes-engine/docs/tutorials/upgrading-stateful-workload?hl=pt-br)
