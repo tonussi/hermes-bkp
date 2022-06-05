@@ -1,0 +1,54 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: http-log-client
+  labels:
+    app: http-log-client
+spec:
+  backoffLimit: 4
+  completions: $N_CLIENTS
+  parallelism: $N_CLIENTS
+  template:
+    metadata:
+      labels:
+        app: http-log-client
+    spec:
+      containers:
+      - name: http-log-client
+        image: lptonussi/public:http-log-client
+        imagePullPolicy: Always
+        args: [
+          '--address=$SERVICE_NAME',
+          '--payload_size=$PAYLOAD_SIZE',
+          '--qty_iteration=$QTY_ITERATION',
+          '--read_rate=$READ_RATE',
+          '--n_threads=$N_THREADS',
+          '--thinking_time=$THINKING_TIME',
+          '--percentage_sampling=$PERCENTAGE_SAMPLING'
+        ]
+        env:
+          - name: PYTHONUNBUFFERED
+            value: "1"
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+        resources:
+          requests:
+            memory: "300Mi"
+            cpu: "50m"
+          limits:
+            memory: "500Mi"
+            cpu: "300m"
+      restartPolicy: Never
+      nodeSelector:
+        role: client
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: name
+                    operator: In
+                    values: [ "http-log-client" ]
+              topologyKey: failure-domain.beta.kubernetes.io/zone
