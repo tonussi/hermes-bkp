@@ -21,4 +21,3 @@ https://yusufs.medium.com/creating-distributed-kv-database-by-implementing-raft-
 # Other interesting links
 
 * [Transform http.Response into array of bytes](https://stackoverflow.com/a/69055473)
-* 
