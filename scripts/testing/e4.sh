@@ -68,7 +68,7 @@ for i in $(seq 0 1)
 do
 echo "collecting followers throughput..."
 echo $(kubectl get pods -l app=hermes-followers -o=jsonpath="{.items[$i].metadata.name}")
-kubectl logs $(kubectl get pods -l app=hermes-followers -o=jsonpath="{.items[$i].metadata.name}") http-log-server > logs/$EXPERIMENT_NAME/http-log-server/throughput/follower-$i.log
+kubectl logs $(kubectl get pods -l app=hermes-followers -o=jsonpath="{.items[$i].metadata.name}") http-log-server > logs/$EXPERIMENT_NAME/throughput/follower-$i.log
 done
 
 echo "collecting hermes logs..."
