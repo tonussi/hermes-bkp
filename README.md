@@ -25,5 +25,7 @@ https://yusufs.medium.com/creating-distributed-kv-database-by-implementing-raft-
 
 # Install Kubernetes
 
-* [Kubeadm Install Tutorial](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
-* [Kubectl Install Tutorial](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
+Some useful tutorials on how to setup a cluster with kubeadm
+
+* [Install Kubernetes Cluster on Ubuntu 20.04 with kubeadm](https://computingforgeeks.com/deploy-kubernetes-cluster-on-ubuntu-with-kubeadm/)
+* [How to Install and Use Kubernetes on Ubuntu 20.04](https://www.cloudsigma.com/how-to-install-and-use-kubernetes-on-ubuntu-20-04/)
