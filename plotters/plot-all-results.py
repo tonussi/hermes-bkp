@@ -39,7 +39,7 @@ for sc in scenarios:
     )
 
     avg_throughput = throughput_series.mean()
-    latency_90th = latency_series.quantile(0.9) / 1e8
+    latency_90th = latency_series.quantile(0.9) / 1e6
 
     result_data = result_data.append(DataFrame([[avg_throughput, latency_90th]], columns=['avg_throughput', 'latency_90th']), ignore_index=True)
 
