@@ -8,11 +8,11 @@
             "name": "Debug plotters",
             "type": "python",
             "request": "launch",
-            "program": "${file}",
+            "program": "plotters/plot-all-results.py",
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
-                "logs/e4/emulab-5n/R80W20/QTYCLI32"
+                "logs/e3/1000-rw"
             ]
         }
     ]

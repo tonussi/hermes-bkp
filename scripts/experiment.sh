@@ -1,9 +1,10 @@
 #!/usr/bin/env sh
-export KUBERNETES_DIR=$1
+KUBERNETES_DIR=$1
 export N_CLIENTS=$2
 export N_THREADS=$3
 export READ_RATE=$4
-export SCENE=$5
+SCENE=$5
+
 export PAYLOAD_SIZE=1
 export QTY_ITERATION=1000
 export THINKING_TIME=0.2
@@ -57,7 +58,7 @@ TEST=$(expr $N_CLIENTS \* $N_THREADS)-$N_CLIENTS
 
 echo "collecting throughput log..."
 mkdir -p logs/$SCENE/throughput
-kubectl logs $(kubectl get pods -l app=hermes-leader -o=jsonpath='{.items[0].metadata.name}') > logs/$SCENE/throughput/$TEST.log
+kubectl logs $(kubectl get pods -l app=hermes-leader -o=jsonpath='{.items[0].metadata.name}') http-log-server > logs/$SCENE/throughput/$TEST.log
 
 echo "collecting latency log..."
 mkdir -p logs/$SCENE/latency
