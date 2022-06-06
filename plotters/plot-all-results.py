@@ -24,22 +24,19 @@ for sc in scenarios:
   for (throuput_file, latency_file) in zip(throughput_files, latency_files):
     throughput_series = read_csv(
       throuput_file,
-      sep=';',
+      sep=' ',
       names=('unix_timestamp', 'req/s'),
       squeeze=True,
       index_col=0
     )
 
-    try:
-      latency_series = read_csv(
-        latency_file,
-        sep=';',
-        names=('unix_timestamp', 'latency'),
-        squeeze=True,
-        index_col=0
-      )
-    except:
-      pass
+    latency_series = read_csv(
+      latency_file,
+      sep=' ',
+      names=('unix_timestamp', 'latency'),
+      squeeze=True,
+      index_col=0
+    )
 
     avg_throughput = throughput_series.mean()
     latency_90th = latency_series.quantile(0.9) / 1e8
