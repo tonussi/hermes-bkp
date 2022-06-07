@@ -17,9 +17,6 @@ spec:
       containers:
         - name: http-log-server
           image: lptonussi/http-log-server
-          args: [
-            '--throughput_delay=$THROUGHPUT_DELAY'
-          ]
           imagePullPolicy: Always
           env:
             - name: PYTHONUNBUFFERED

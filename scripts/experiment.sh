@@ -7,12 +7,11 @@ SCENE=$5
 
 export PAYLOAD_SIZE=1
 export QTY_ITERATION=1000000
-export DURATION=1.5
 export THINKING_TIME=0.2
-export THROUGHPUT_DELAY=0.2
+export THROUGHPUT_DELAY=2.0
 export PERCENTAGE_SAMPLING=95
 
-SERVICE_NAME=hermes-leader
+export SERVICE_NAME=hermes-leader
 
 echo "apply leader..."
 envsubst < $KUBERNETES_DIR/hermes-leader.yml | kubectl apply -f -
@@ -32,7 +31,7 @@ do
 done
 
 echo "apply followers..."
-kubectl apply -f $KUBERNETES_DIR/hermes-followers.yml
+envsubst < $KUBERNETES_DIR/hermes-followers.yml | kubectl apply -f -
 
 sleep 10
 

@@ -24,8 +24,7 @@ spec:
           '--read_rate=$READ_RATE',
           '--n_threads=$N_THREADS',
           '--thinking_time=$THINKING_TIME',
-          '--percentage_sampling=$PERCENTAGE_SAMPLING',
-          '--duration=$DURATION'
+          '--percentage_sampling=$PERCENTAGE_SAMPLING'
         ]
         env:
           - name: PYTHONUNBUFFERED
