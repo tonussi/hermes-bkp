@@ -29,3 +29,7 @@ Some useful tutorials on how to setup a cluster with kubeadm
 
 * [Install Kubernetes Cluster on Ubuntu 20.04 with kubeadm](https://computingforgeeks.com/deploy-kubernetes-cluster-on-ubuntu-with-kubeadm/)
 * [How to Install and Use Kubernetes on Ubuntu 20.04](https://www.cloudsigma.com/how-to-install-and-use-kubernetes-on-ubuntu-20-04/)
+* [Is there a way to serialize golang http request object and persist in DB](https://stackoverflow.com/a/59059924)
+* ['Request.RequestURI can't be set in client request' error when resend it through proxy](https://stackoverflow.com/a/65805980)
+* [How to measure elapsed time in Python?](https://stackoverflow.com/questions/7370801/how-to-measure-elapsed-time-in-python)
+* 

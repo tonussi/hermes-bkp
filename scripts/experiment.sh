@@ -6,14 +6,16 @@ export READ_RATE=$4
 SCENE=$5
 
 export PAYLOAD_SIZE=1
-export QTY_ITERATION=1000
+export QTY_ITERATION=1000000
+export DURATION=1.5
 export THINKING_TIME=0.2
-export PERCENTAGE_SAMPLING=90
+export THROUGHPUT_DELAY=0.2
+export PERCENTAGE_SAMPLING=95
 
-export SERVICE_NAME=hermes-leader
+SERVICE_NAME=hermes-leader
 
 echo "apply leader..."
-kubectl apply -f $KUBERNETES_DIR/hermes-leader.yml
+envsubst < $KUBERNETES_DIR/hermes-leader.yml | kubectl apply -f -
 
 sleep 5
 
@@ -52,7 +54,7 @@ echo "apply clients..."
 envsubst < $KUBERNETES_DIR/http-log-client.yml | kubectl apply -f -
 
 echo "wait job to complete..."
-kubectl wait --for=condition=complete --timeout=5m job.batch/http-log-client
+kubectl wait --for=condition=complete --timeout=90s job.batch/http-log-client
 
 TEST=$(expr $N_CLIENTS \* $N_THREADS)-$N_CLIENTS
 

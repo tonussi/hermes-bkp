@@ -16,12 +16,11 @@ spec:
     spec:
       containers:
         - name: http-log-server
-          image: lptonussi/public:http-log-server
-          imagePullPolicy: Always
+          image: lptonussi/http-log-server
           args: [
-            '--port=8001',
-            '--tcp_onoff=1'
+            '--throughput_delay=$THROUGHPUT_DELAY'
           ]
+          imagePullPolicy: Always
           env:
             - name: PYTHONUNBUFFERED
               value: "1"
@@ -35,7 +34,7 @@ spec:
               memory: "500Mi"
               cpu: "500m"
         - name: hermes
-          image: lptonussi/public:hermes
+          image: lptonussi/hermes
           imagePullPolicy: Always
           env:
             - name: NODE_ID

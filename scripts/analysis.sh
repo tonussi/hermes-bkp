@@ -1,14 +1,16 @@
 #!/usr/bin/env sh
-export KUBERNETES_DIR=$1
+KUBERNETES_DIR=$1
 export N_CLIENTS=$2
 export N_THREADS=$3
 export READ_RATE=$4
-export SCENE=$5
+SCENE=$5
+
 export PAYLOAD_SIZE=1
 export QTY_ITERATION=1000
 export THINKING_TIME=0.2
 export PERCENTAGE_SAMPLING=100
-export SERVICE_NAME=hermes-leader
+
+SERVICE_NAME=hermes-leader
 
 TEST=$QTY_ITERATION$(expr $N_CLIENTS \* $N_THREADS)
 EXPERIMENT_NAME=$SCENE/"R"$READ_RATE"W"$(expr 100 \- $READ_RATE)/$TEST
