@@ -23,10 +23,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: docker-compose pull
+      - run: docker pull lptonussi/hermes
+      - run: docker pull lptonussi/http-log-client
+      - run: docker pull lptonussi/http-log-server
       - uses: satackey/action-docker-layer-caching@v0.0.11
         continue-on-error: true
-      - run: docker-compose build
 
   testing:
     needs: [build]
