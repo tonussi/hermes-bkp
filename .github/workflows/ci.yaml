@@ -21,7 +21,6 @@ jobs:
           githubToken: ${{ secrets.CANCEL_WORKFLOW_KEY }}
 
   testing:
-    needs: [build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
