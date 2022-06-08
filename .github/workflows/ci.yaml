@@ -42,7 +42,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: minikube start --nodes 4 -p hermes
+      - name: minikube start --nodes 3 -p multinode-demo
         id: minikube
         with:
           minikube-version: 1.24.0
