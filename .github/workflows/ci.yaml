@@ -54,16 +54,6 @@ jobs:
           echo -n "verifying images:"
           docker images        
       - name: Deploy to minikube
-        run:
-          kubectl apply -f deploy-to-minikube.yaml
-      - name: Test service URLs
-        run: |
-          minikube service list
-          minikube service example --url
-          echo "------------------opening the service------------------"
-          curl $(minikube service example --url)    
-
-      - name: Label
         run: |
           kubectl get nodes
           kubectl label nodes k3d-hermes-agent-0 role=server --overwrite
@@ -72,11 +62,13 @@ jobs:
           kubectl label nodes k3d-hermes-agent-0 kubernetes.io/role=server --overwrite
           kubectl label nodes k3d-hermes-agent-1 kubernetes.io/role=server --overwrite
           kubectl label nodes k3d-hermes-agent-2 kubernetes.io/role=client --overwrite
-
-      - name: "Docker repo demo"
-        shell: bash
-        run: |
           ./scripts/experiment.sh kubernetes 1 $(expr 2 \/ 1) 50 e3/1000-rw
+      - name: Test service URLs
+        run: |
+          minikube service list
+          minikube service example --url
+          echo "------------------opening the service------------------"
+          curl $(minikube service example --url)    
 
       - name: Tar experiments
         run: tar -cvf 1000-rw.tar e3/1000-rw

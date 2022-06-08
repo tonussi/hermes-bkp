@@ -16,7 +16,7 @@ spec:
       containers:
       - name: http-log-client
         image: lptonussi/http-log-client
-        imagePullPolicy: Always
+        imagePullPolicy: Never
         args: [
           '--address=$SERVICE_NAME',
           '--payload_size=$PAYLOAD_SIZE',
