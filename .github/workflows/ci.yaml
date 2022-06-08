@@ -19,6 +19,7 @@ jobs:
       - uses: fauguste/auto-cancellation-running-action@0.1.4
         with:
           githubToken: ${{ secrets.CANCEL_WORKFLOW_KEY }}
+
   build:
     runs-on: ubuntu-latest
     steps:
