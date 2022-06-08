@@ -42,19 +42,21 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Start minikube
+      - name: start minikube
+        id: minikube
+        with:
+          minikube-version: 1.24.0
+          driver: docker
+          container-runtime: containerd
+          kubernetes-version: v1.22.3
+          cpus: 4
+          memory: 4000m
+          cni: bridge
         uses: medyagh/setup-minikube@master
-      - name: Try the cluster !
-        run: kubectl get pods -A
-      - name: Build image
+      # now you can run kubectl to see the pods in the cluster
+      - name: kubectl
         run: |
-          export SHELL=/bin/bash
-          eval $(minikube -p minikube docker-env)
-          docker build -f ./Dockerfile -t local/example .
-          echo -n "verifying images:"
-          docker images        
-      - name: Deploy to minikube
-        run: |
+          kubectl get pods -A
           kubectl get nodes
           kubectl label nodes k3d-hermes-agent-0 role=server --overwrite
           kubectl label nodes k3d-hermes-agent-1 role=server --overwrite
@@ -63,12 +65,6 @@ jobs:
           kubectl label nodes k3d-hermes-agent-1 kubernetes.io/role=server --overwrite
           kubectl label nodes k3d-hermes-agent-2 kubernetes.io/role=client --overwrite
           ./scripts/experiment.sh kubernetes 1 $(expr 2 \/ 1) 50 e3/1000-rw
-      - name: Test service URLs
-        run: |
-          minikube service list
-          minikube service example --url
-          echo "------------------opening the service------------------"
-          curl $(minikube service example --url)    
 
       - name: Tar experiments
         run: tar -cvf 1000-rw.tar e3/1000-rw
