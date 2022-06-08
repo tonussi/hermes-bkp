@@ -58,10 +58,7 @@ jobs:
         shell: bash
         run: |
           eval $(minikube docker-env)
-          kubectl get nodes
-          kubectl label nodes minikube kubernetes.io/role=client
-          kubectl label nodes minikube kubernetes.io/role=server
-          bash ./scripts/experiment.sh kubernetes 1 2 50 e3/1000-rw
+          bash ./scripts/experiment.sh testing 1 2 50 e3/1000-rw
 
       - name: Tar experiments
         run: tar -cvf 1000-rw.tar e3/1000-rw
