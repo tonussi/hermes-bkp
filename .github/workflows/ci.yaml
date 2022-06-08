@@ -42,23 +42,30 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: AbsaOSS/k3d-action@v2
-        name: "Create Single Cluster"
-        with:
-          cluster-name: "hermes"
-          args: >-
-            --agents 3
-            --no-lb
-            --image docker.io/rancher/k3s:v1.20.4-k3s1
-            --k3s-arg "--no-deploy=traefik,servicelb,metrics-server@server:*"
-
-      - name: Check nodes and pods
+      - name: Start minikube
+        uses: medyagh/setup-minikube@master
+      - name: Try the cluster !
+        run: kubectl get pods -A
+      - name: Build image
         run: |
-          kubectl get nodes
-          kubectl get pods
+          export SHELL=/bin/bash
+          eval $(minikube -p minikube docker-env)
+          docker build -f ./Dockerfile -t local/example .
+          echo -n "verifying images:"
+          docker images        
+      - name: Deploy to minikube
+        run:
+          kubectl apply -f deploy-to-minikube.yaml
+      - name: Test service URLs
+        run: |
+          minikube service list
+          minikube service example --url
+          echo "------------------opening the service------------------"
+          curl $(minikube service example --url)    
 
       - name: Label
         run: |
+          kubectl get nodes
           kubectl label nodes k3d-hermes-agent-0 role=server --overwrite
           kubectl label nodes k3d-hermes-agent-1 role=server --overwrite
           kubectl label nodes k3d-hermes-agent-2 role=client --overwrite
