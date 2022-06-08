@@ -59,15 +59,13 @@ jobs:
         run: |
           eval $(minikube docker-env)
           kubectl get nodes
-          MINIKUBE_NODE_PREFIX=hermes
+          MINIKUBE_NODE_PREFIX=multinode-demo
           kubectl label nodes $MINIKUBE_NODE_PREFIX kubernetes.io/role=server --overwrite
           kubectl label nodes $MINIKUBE_NODE_PREFIX-m02 kubernetes.io/role=server --overwrite
-          kubectl label nodes $MINIKUBE_NODE_PREFIX-m03 kubernetes.io/role=server --overwrite
-          kubectl label nodes $MINIKUBE_NODE_PREFIX-m04 kubernetes.io/role=client --overwrite
+          kubectl label nodes $MINIKUBE_NODE_PREFIX-m03 kubernetes.io/role=client --overwrite
           kubectl label nodes $MINIKUBE_NODE_PREFIX role=server --overwrite
           kubectl label nodes $MINIKUBE_NODE_PREFIX-m02 role=server --overwrite
-          kubectl label nodes $MINIKUBE_NODE_PREFIX-m03 role=server --overwrite
-          kubectl label nodes $MINIKUBE_NODE_PREFIX-m04 role=client --overwrite
+          kubectl label nodes $MINIKUBE_NODE_PREFIX-m03 role=client --overwrite
           bash ./scripts/experiment.sh kubernetes 1 2 50 e3/1000-rw
 
       - name: Tar experiments
