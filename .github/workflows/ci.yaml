@@ -1,0 +1,61 @@
+name: CI
+
+on: [pull_request]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  cancel:
+    name: auto-cancellation-running-action
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: fauguste/auto-cancellation-running-action@0.1.4
+        with:
+          githubToken: ${{ secrets.CANCEL_WORKFLOW_KEY }}
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: docker pull lptonussi/hermes
+      - run: docker pull lptonussi/http-log-client
+      - run: docker pull lptonussi/http-log-server
+      - uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true
+
+  testing:
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    # strategy:
+    #   fail-fast: false
+    #   matrix:
+    #     ci_node_total: [4]
+    #     ci_node_index: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: minikube start
+        id: minikube
+        with:
+          minikube-version: 1.24.0
+          driver: docker
+          container-runtime: docker
+          kubernetes-version: v1.22.3
+          cpus: 2
+          memory: 4000m
+          cni: bridge
+        uses: medyagh/setup-minikube@master
+
+      - name: kubectl
+        shell: bash
+        run: |
+          eval $(minikube docker-env)
+          bash ./scripts/experiment.sh testing 1 2 50 test

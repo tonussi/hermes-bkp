@@ -186,15 +186,7 @@ spec:
         args:
           - --ip-masq
           - --kube-subnet-mgr
-          - --iface=enp4s0f0
-          - --iface=enp4s0f1
-          - --iface=enp5s0f0
-          - --iface=enp5s0f1
-          - --iface=enp5s0f3
-          - --iface=enp6s0f0
-          - --iface=enp6s0f1
-          - --iface=enp6s0f2
-          - --iface=enp6s0f3
+          - --iface=eno4
         resources:
           requests:
             cpu: "100m"
