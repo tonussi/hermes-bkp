@@ -59,12 +59,3 @@ jobs:
         run: |
           eval $(minikube docker-env)
           bash ./scripts/experiment.sh testing 1 2 50 e3/1000-rw
-
-      - name: Tar experiments
-        run: tar -cvf 1000-rw.tar e3/1000-rw
-
-      - name: Save experiments
-        uses: actions/upload-artifact@v3
-        with:
-          name: 1000-rw
-          path: 1000-rw.tar
