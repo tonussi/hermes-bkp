@@ -1,0 +1,21 @@
+kubectl label nodes node0.hermes.lptonussi.emulab.net kubernetes.io/role=admin --overwrite
+kubectl label nodes node1.hermes.lptonussi.emulab.net kubernetes.io/role=server --overwrite
+kubectl label nodes node2.hermes.lptonussi.emulab.net kubernetes.io/role=server --overwrite
+kubectl label nodes node3.hermes.lptonussi.emulab.net kubernetes.io/role=server --overwrite
+kubectl label nodes node4.hermes.lptonussi.emulab.net kubernetes.io/role=server --overwrite
+kubectl label nodes node5.hermes.lptonussi.emulab.net kubernetes.io/role=client --overwrite
+kubectl label nodes node6.hermes.lptonussi.emulab.net kubernetes.io/role=client --overwrite
+kubectl label nodes node7.hermes.lptonussi.emulab.net kubernetes.io/role=client --overwrite
+kubectl label nodes node8.hermes.lptonussi.emulab.net kubernetes.io/role=client --overwrite
+kubectl label nodes node9.hermes.lptonussi.emulab.net kubernetes.io/role=client --overwrite
+
+kubectl label nodes node0.hermes.lptonussi.emulab.net role=server --overwrite
+kubectl label nodes node1.hermes.lptonussi.emulab.net role=server --overwrite
+kubectl label nodes node2.hermes.lptonussi.emulab.net role=server --overwrite
+kubectl label nodes node3.hermes.lptonussi.emulab.net role=server --overwrite
+kubectl label nodes node4.hermes.lptonussi.emulab.net role=server --overwrite
+kubectl label nodes node5.hermes.lptonussi.emulab.net role=client --overwrite
+kubectl label nodes node6.hermes.lptonussi.emulab.net role=client --overwrite
+kubectl label nodes node7.hermes.lptonussi.emulab.net role=client --overwrite
+kubectl label nodes node8.hermes.lptonussi.emulab.net role=client --overwrite
+kubectl label nodes node9.hermes.lptonussi.emulab.net role=client --overwrite

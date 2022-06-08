@@ -1,0 +1,64 @@
+name: CI
+
+on: [pull_request]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  cancel:
+    name: auto-cancellation-running-action
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: fauguste/auto-cancellation-running-action@0.1.4
+        with:
+          githubToken: ${{ secrets.CANCEL_WORKFLOW_KEY }}
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: docker-compose pull
+      - uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true
+      - run: docker-compose build
+
+  testing:
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    # strategy:
+    #   fail-fast: false
+    #   matrix:
+    #     ci_node_total: [4]
+    #     ci_node_index: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: AbsaOSS/k3d-action@v2
+        name: "Create single k3d Cluster with imported Registry"
+        with:
+          cluster-name: test-cluster-1
+          args: >-
+            --agents 3
+            --no-lb
+            --k3s-arg "--no-deploy=traefik,servicelb,metrics-server@server:*"
+
+      - name: "Docker repo demo"
+        shell: bash
+        run: |
+          sh ./scripts/experiment.sh kubernetes 1 $(expr 2 \/ 1) 50 e3/1000-rw
+
+      - name: Tar experiments
+        run: tar -cvf 1000-rw.tar e3/1000-rw
+
+      - name: Save experiments
+        uses: actions/upload-artifact@v3
+        with:
+          name: rw
+          path: e3/1000-rw
