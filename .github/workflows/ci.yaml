@@ -47,9 +47,6 @@ jobs:
         with:
           cluster-name: "hermes"
           args: >-
-            -p "8083:80@agent:0:direct"
-            -p "8443:443@agent:0:direct"
-            -p "5053:53/udp@agent:0:direct"
             --agents 3
             --no-lb
             --image docker.io/rancher/k3s:v1.20.4-k3s1
