@@ -42,28 +42,29 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: start minikube
+      - name: minikube start --nodes 3 -p multinode-demo
         id: minikube
         with:
           minikube-version: 1.24.0
           driver: docker
           container-runtime: containerd
           kubernetes-version: v1.22.3
-          cpus: 4
+          cpus: 2
           memory: 4000m
           cni: bridge
         uses: medyagh/setup-minikube@master
-      # now you can run kubectl to see the pods in the cluster
+
       - name: kubectl
         run: |
           kubectl get pods -A
           kubectl get nodes
-          kubectl label nodes k3d-hermes-agent-0 role=server --overwrite
-          kubectl label nodes k3d-hermes-agent-1 role=server --overwrite
-          kubectl label nodes k3d-hermes-agent-2 role=client --overwrite
-          kubectl label nodes k3d-hermes-agent-0 kubernetes.io/role=server --overwrite
-          kubectl label nodes k3d-hermes-agent-1 kubernetes.io/role=server --overwrite
-          kubectl label nodes k3d-hermes-agent-2 kubernetes.io/role=client --overwrite
+          MINIKUBE_NODE_PREFIX=multinode-demo
+          kubectl label nodes $MINIKUBE_NODE_PREFIX kubernetes.io/role=server --overwrite
+          kubectl label nodes $MINIKUBE_NODE_PREFIX-m02 kubernetes.io/role=client --overwrite
+          kubectl label nodes $MINIKUBE_NODE_PREFIX-m03 kubernetes.io/role=client --overwrite
+          kubectl label nodes $MINIKUBE_NODE_PREFIX role=server --overwrite
+          kubectl label nodes $MINIKUBE_NODE_PREFIX-m02 role=client --overwrite
+          kubectl label nodes $MINIKUBE_NODE_PREFIX-m03 role=client --overwrite
           ./scripts/experiment.sh kubernetes 1 $(expr 2 \/ 1) 50 e3/1000-rw
 
       - name: Tar experiments
