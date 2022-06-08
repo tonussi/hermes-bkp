@@ -65,7 +65,7 @@ jobs:
           kubectl label nodes $MINIKUBE_NODE_PREFIX role=server --overwrite
           kubectl label nodes $MINIKUBE_NODE_PREFIX-m02 role=client --overwrite
           kubectl label nodes $MINIKUBE_NODE_PREFIX-m03 role=client --overwrite
-          ./scripts/experiment.sh kubernetes 1 $(expr 2 \/ 1) 50 e3/1000-rw
+          ./scripts/experiment.sh kubernetes 2 2 50 e3/1000-rw
 
       - name: Tar experiments
         run: tar -cvf 1000-rw.tar e3/1000-rw
