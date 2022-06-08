@@ -1,0 +1,59 @@
+name: CI
+
+on: [pull_request]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  cancel:
+    name: auto-cancellation-running-action
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: fauguste/auto-cancellation-running-action@0.1.4
+        with:
+          githubToken: ${{ secrets.CANCEL_WORKFLOW_KEY }}
+
+  cluster:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: AbsaOSS/k3d-action@v2
+        name: "Create single k3d Cluster with imported Registry"
+        with:
+          cluster-name: hermes
+          args: >-
+            --servers 3
+            --no-lb
+            --k3s-arg "--no-deploy=traefik,servicelb,metrics-server@server:*"
+
+      - name: Label
+        run: |
+          kubectl label nodes k3d-hermes-server-0 role=server --overwrite
+          kubectl label nodes k3d-hermes-server-1 role=server --overwrite
+          kubectl label nodes k3d-hermes-server-2 role=client --overwrite
+          kubectl label nodes k3d-hermes-server-0 kubernetes.io/role=server --overwrite
+          kubectl label nodes k3d-hermes-server-1 kubernetes.io/role=server --overwrite
+          kubectl label nodes k3d-hermes-server-2 kubernetes.io/role=client --overwrite
+
+      - name: "Docker repo demo"
+        shell: bash
+        run: |
+          ./scripts/experiment.sh kubernetes 1 $(expr 2 \/ 1) 50 e3/1000-rw
+
+      - name: Tar experiments
+        run: tar -cvf 1000-rw.tar e3/1000-rw
+
+      - name: Save experiments
+        uses: actions/upload-artifact@v3
+        with:
+          name: 1000-rw
+          path: 1000-rw.tar
