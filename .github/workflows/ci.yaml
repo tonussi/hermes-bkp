@@ -55,6 +55,7 @@ jobs:
         uses: medyagh/setup-minikube@master
 
       - name: kubectl
+        shell: bash
         run: |
           eval $(minikube docker-env)
           kubectl get nodes
@@ -67,8 +68,7 @@ jobs:
           kubectl label nodes $MINIKUBE_NODE_PREFIX-m02 role=server --overwrite
           kubectl label nodes $MINIKUBE_NODE_PREFIX-m03 role=server --overwrite
           kubectl label nodes $MINIKUBE_NODE_PREFIX-m04 role=client --overwrite
-          kubectl get pods -A
-          ./scripts/experiment.sh kubernetes 2 2 50 e3/1000-rw
+          bash ./scripts/experiment.sh kubernetes 1 2 50 e3/1000-rw
 
       - name: Tar experiments
         run: tar -cvf 1000-rw.tar e3/1000-rw
