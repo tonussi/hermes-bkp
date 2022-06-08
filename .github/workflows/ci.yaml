@@ -42,7 +42,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: minikube start --nodes 3 -p multinode-demo
+      - name: minikube start --nodes 4 -p hermes
         id: minikube
         with:
           minikube-version: 1.24.0
@@ -56,15 +56,18 @@ jobs:
 
       - name: kubectl
         run: |
-          kubectl get pods -A
+          eval $(minikube docker-env)
           kubectl get nodes
-          MINIKUBE_NODE_PREFIX=multinode-demo
+          MINIKUBE_NODE_PREFIX=hermes
           kubectl label nodes $MINIKUBE_NODE_PREFIX kubernetes.io/role=server --overwrite
-          kubectl label nodes $MINIKUBE_NODE_PREFIX-m02 kubernetes.io/role=client --overwrite
-          kubectl label nodes $MINIKUBE_NODE_PREFIX-m03 kubernetes.io/role=client --overwrite
+          kubectl label nodes $MINIKUBE_NODE_PREFIX-m02 kubernetes.io/role=server --overwrite
+          kubectl label nodes $MINIKUBE_NODE_PREFIX-m03 kubernetes.io/role=server --overwrite
+          kubectl label nodes $MINIKUBE_NODE_PREFIX-m04 kubernetes.io/role=client --overwrite
           kubectl label nodes $MINIKUBE_NODE_PREFIX role=server --overwrite
-          kubectl label nodes $MINIKUBE_NODE_PREFIX-m02 role=client --overwrite
-          kubectl label nodes $MINIKUBE_NODE_PREFIX-m03 role=client --overwrite
+          kubectl label nodes $MINIKUBE_NODE_PREFIX-m02 role=server --overwrite
+          kubectl label nodes $MINIKUBE_NODE_PREFIX-m03 role=server --overwrite
+          kubectl label nodes $MINIKUBE_NODE_PREFIX-m04 role=client --overwrite
+          kubectl get pods -A
           ./scripts/experiment.sh kubernetes 2 2 50 e3/1000-rw
 
       - name: Tar experiments
