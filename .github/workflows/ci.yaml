@@ -20,7 +20,7 @@ jobs:
         with:
           githubToken: ${{ secrets.CANCEL_WORKFLOW_KEY }}
 
-  cluster:
+  testing:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
