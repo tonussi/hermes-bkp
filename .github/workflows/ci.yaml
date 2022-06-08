@@ -20,25 +20,9 @@ jobs:
         with:
           githubToken: ${{ secrets.CANCEL_WORKFLOW_KEY }}
 
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - run: docker pull lptonussi/hermes
-      - run: docker pull lptonussi/http-log-client
-      - run: docker pull lptonussi/http-log-server
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-
-  testing:
+  cluster:
     needs: [build]
     runs-on: ubuntu-latest
-    timeout-minutes: 25
-    # strategy:
-    #   fail-fast: false
-    #   matrix:
-    #     ci_node_total: [4]
-    #     ci_node_index: [0, 1, 2, 3]
     steps:
       - uses: actions/checkout@v2
 
