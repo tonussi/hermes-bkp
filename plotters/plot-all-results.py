@@ -3,7 +3,7 @@ import sys
 from os import listdir
 from os.path import isfile, join
 
-from pandas import DataFrame, read_csv, concat
+from pandas import DataFrame, read_csv
 from matplotlib import pyplot
 
 scenarios = sys.argv[1:]
@@ -51,5 +51,7 @@ for sc in scenarios:
   axes = (*axes, result_data['avg_throughput'], result_data['latency_90th'])
 
 pyplot.ylim()
+pyplot.xlabel("throughput (avg)")
+pyplot.ylabel("latency (90th)")
 pyplot.plot(*axes)
 pyplot.show()
