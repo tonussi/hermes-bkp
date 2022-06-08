@@ -17,7 +17,7 @@ spec:
       containers:
         - name: http-log-server
           image: lptonussi/http-log-server
-          imagePullPolicy: Never
+          imagePullPolicy: Always
           env:
             - name: PYTHONUNBUFFERED
               value: "1"
@@ -32,7 +32,7 @@ spec:
               cpu: "500m"
         - name: hermes
           image: lptonussi/hermes
-          imagePullPolicy: Never
+          imagePullPolicy: Always
           env:
             - name: NODE_ID
               valueFrom:

@@ -47,7 +47,7 @@ jobs:
         with:
           minikube-version: 1.24.0
           driver: docker
-          container-runtime: containerd
+          container-runtime: docker
           kubernetes-version: v1.22.3
           cpus: 2
           memory: 4000m
