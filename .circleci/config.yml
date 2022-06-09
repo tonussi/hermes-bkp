@@ -15,7 +15,7 @@ parameters:
 executors:
   runner:
     machine: true
-    resource_class: circleci/k8s-test
+    resource_class: small
 
 ########################
 # Workflow Definitions #
@@ -32,7 +32,7 @@ workflows:
 jobs:
   runner-job:
     executor: runner
-    parallelism: 5
+    parallelism: 1
     steps:
       - run:
           name: Verify environment
@@ -48,7 +48,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: install minikube
+          name: Install minikube
           command: |
             DEBIAN_FRONTEND=noninteractive
             sudo apt-get update -y
@@ -61,16 +61,25 @@ jobs:
             sudo dpkg -i minikube_latest_amd64.deb && minikube version
             rm minikube_latest_amd64.deb
       - run:
-          name: minikube start
+          name: Minikube start
           command: |
             time docker version
             minikube version
             minikube start --driver=docker
       - run:
-          name: install helm chart
+          name: Install helm chart
           command: |
             helm install runner . --set image.tag=<< pipeline.parameters.runner-image >> --set runnerToken=$K8S_RUNNER_TOKEN --set resourceClass=$K8S_RUNNER_RESOURCE
       - run:
           name: wait for runner job completion
           command: |
             timeout 5m ./scripts/wait_for_task_complete.sh
+      - run:
+          name: Minikube dockers
+          command: |
+            eval $(minikube docker-env)
+      - run:
+          name: Testing cluster
+          shell: bash
+          command: |
+            bash ./scripts/experiment.sh testing 1 2 50 test
