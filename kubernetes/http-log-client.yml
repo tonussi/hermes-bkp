@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: http-log-client
-        image: lptonussi/http-log-client
+        image: lptonussi/http-log-client:latest
         imagePullPolicy: Always
         args: [
           '--address=$SERVICE_NAME',

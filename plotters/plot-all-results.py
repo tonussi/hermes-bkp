@@ -2,6 +2,7 @@
 import sys
 from os import listdir
 from os.path import isfile, join
+import numpy
 
 from pandas import DataFrame, read_csv
 from matplotlib import pyplot
@@ -9,6 +10,9 @@ from matplotlib import pyplot
 scenarios = sys.argv[1:]
 
 axes = ()
+
+CONVERT_NS_TO_MS = 1e6
+PERCENTIL_90 = 0.95
 
 for sc in scenarios:
   throughput_path = join(sc, 'throughput')
@@ -39,8 +43,8 @@ for sc in scenarios:
     )
 
     avg_throughput = throughput_series.mean()
-    # Convert ns to ms (10e6)
-    latency_90th = latency_series.quantile(0.9) / 1e6
+
+    latency_90th = (latency_series / CONVERT_NS_TO_MS).quantile(PERCENTIL_90)
 
     result_data = result_data.append(DataFrame([[avg_throughput, latency_90th]], columns=['avg_throughput', 'latency_90th']), ignore_index=True)
 
@@ -51,7 +55,9 @@ for sc in scenarios:
   axes = (*axes, result_data['avg_throughput'], result_data['latency_90th'])
 
 pyplot.ylim()
-pyplot.xlabel("throughput (avg)")
-pyplot.ylabel("latency (90th)")
+pyplot.xlabel("Vazão (média)")
+pyplot.ylabel("Latência (percentil 90%)")
+# pyplot.xticks(numpy.arange(min(axes[0]), max(axes[0]), 10.0))
+# pyplot.yticks(numpy.arange(min(axes[0]), max(axes[0]), 10.0))
 pyplot.plot(*axes)
 pyplot.show()

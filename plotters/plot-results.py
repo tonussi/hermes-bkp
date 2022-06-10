@@ -13,6 +13,9 @@ print(throughput_files, latency_files)
 
 result_data = DataFrame(columns=['avg_throughput', 'latency_90th'])
 
+CONVERT_NS_TO_MS = 1e6
+PERCENTIL_90 = 0.9
+
 for (throuput_file, latency_file) in zip(throughput_files, latency_files):
   throughput_series = read_csv(
     throuput_file,
@@ -31,7 +34,7 @@ for (throuput_file, latency_file) in zip(throughput_files, latency_files):
   )
 
   avg_throughput = throughput_series.mean()
-  latency_90th = latency_series.quantile(0.9) / 1000
+  latency_90th = latency_series.quantile(PERCENTIL_90) / CONVERT_NS_TO_MS
 
   file_desc = throuput_file.split('/')
   exp_desc = file_desc[len(file_desc) - 1][:-4].split('-')
