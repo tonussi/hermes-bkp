@@ -12,7 +12,7 @@ scenarios = sys.argv[1:]
 axes = ()
 
 CONVERT_NS_TO_MS = 1e6
-PERCENTIL_90 = 0.95
+PERCENTIL_90 = 0.9
 
 for sc in scenarios:
   throughput_path = join(sc, 'throughput')
