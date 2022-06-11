@@ -5,12 +5,6 @@ export N_THREADS=$3
 export READ_RATE=$4
 SCENE=$5
 
-export PAYLOAD_SIZE=2
-export QTY_ITERATION=1000000
-export THINKING_TIME=0.1
-export PERCENTAGE_SAMPLING=50
-export DURATION=1.5
-
 export SERVICE_NAME=hermes-leader
 
 echo "apply leader..."

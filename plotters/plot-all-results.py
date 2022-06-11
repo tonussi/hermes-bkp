@@ -2,7 +2,7 @@
 import sys
 from os import listdir
 from os.path import isfile, join
-import numpy
+# import numpy
 
 from pandas import DataFrame, read_csv
 from matplotlib import pyplot
@@ -44,7 +44,7 @@ for sc in scenarios:
 
     avg_throughput = throughput_series.mean()
 
-    latency_90th = (latency_series / CONVERT_NS_TO_MS).quantile(PERCENTIL_90)
+    latency_90th = latency_series.quantile(PERCENTIL_90) / CONVERT_NS_TO_MS
 
     result_data = result_data.append(DataFrame([[avg_throughput, latency_90th]], columns=['avg_throughput', 'latency_90th']), ignore_index=True)
 

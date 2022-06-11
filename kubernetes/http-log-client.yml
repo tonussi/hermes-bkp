@@ -20,12 +20,8 @@ spec:
         args: [
           '--address=$SERVICE_NAME',
           '--payload_size=$PAYLOAD_SIZE',
-          '--qty_iteration=$QTY_ITERATION',
           '--read_rate=$READ_RATE',
           '--n_threads=$N_THREADS',
-          '--thinking_time=$THINKING_TIME',
-          '--percentage_sampling=$PERCENTAGE_SAMPLING',
-          '--duration=$DURATION'
         ]
         env:
           - name: PYTHONUNBUFFERED

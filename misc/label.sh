@@ -44,15 +44,3 @@ kubectl label nodes node1.hermes.lptonussi.emulab.net role=server --overwrite
 kubectl label nodes node2.hermes.lptonussi.emulab.net role=server --overwrite
 kubectl label nodes node3.hermes.lptonussi.emulab.net role=server --overwrite
 kubectl label nodes node4.hermes.lptonussi.emulab.net role=client --overwrite
-
-kubectl label nodes gke-hermes-hermes-a4e3e4d6-6352 role=admin --overwrite
-kubectl label nodes gke-hermes-hermes-a4e3e4d6-bgb6 role=server --overwrite
-kubectl label nodes gke-hermes-hermes-a4e3e4d6-hbk7 role=server --overwrite
-kubectl label nodes gke-hermes-hermes-a4e3e4d6-hvdb role=server --overwrite
-kubectl label nodes gke-hermes-hermes-a4e3e4d6-vdhl role=client --overwrite
-
-kubectl label nodes gke-hermes-hermes-a4e3e4d6-6352 kubernetes.io/role=admin --overwrite
-kubectl label nodes gke-hermes-hermes-a4e3e4d6-bgb6 kubernetes.io/role=server --overwrite
-kubectl label nodes gke-hermes-hermes-a4e3e4d6-hbk7 kubernetes.io/role=server --overwrite
-kubectl label nodes gke-hermes-hermes-a4e3e4d6-hvdb kubernetes.io/role=server --overwrite
-kubectl label nodes gke-hermes-hermes-a4e3e4d6-vdhl kubernetes.io/role=client --overwrite
