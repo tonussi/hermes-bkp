@@ -19,7 +19,6 @@ spec:
         imagePullPolicy: Always
         args: [
           '--address=$SERVICE_NAME',
-          '--payload_size=$PAYLOAD_SIZE',
           '--read_rate=$READ_RATE',
           '--n_threads=$N_THREADS',
         ]
