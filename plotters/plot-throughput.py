@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+from genericpath import isdir
+import ntpath
+from os import makedirs
 import sys
 
 from pandas import read_csv
@@ -15,4 +18,7 @@ series = read_csv(
 print(series.mean())
 
 series.plot()
-pyplot.show()
+head, tail = ntpath.split(sys.argv[1])
+if not isdir(f"./figs/{head}"): makedirs(f"./figs/{head}")
+pyplot.savefig(f"./figs/{sys.argv[1]}.png")
+# pyplot.show()

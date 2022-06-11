@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
+from genericpath import isdir
+import ntpath
 import sys
-from os import listdir
+from os import listdir, makedirs
 from os.path import isfile, join
+from time import time_ns
 
-from pandas import DataFrame, read_csv, concat
+from pandas import DataFrame, read_csv
 from matplotlib import pyplot
 
 throughput_files = [join(sys.argv[1], f) for f in listdir(sys.argv[1]) if isfile(join(sys.argv[1], f))]
@@ -13,7 +16,7 @@ print(throughput_files, latency_files)
 
 result_data = DataFrame(columns=['avg_throughput', 'latency_90th'])
 
-CONVERT_NS_TO_MS = 1e6
+CONVERT_NS_TO_MS = 1e3
 PERCENTIL_90 = 0.9
 
 for (throuput_file, latency_file) in zip(throughput_files, latency_files):
@@ -58,4 +61,7 @@ print(result_data.to_csv())
 # print(series)
 
 result_data.plot(x='avg_throughput', y='latency_90th')
-pyplot.show()
+head, tail = ntpath.split(sys.argv[1])
+if not isdir(f"./figs/summary/{head}"): makedirs(f"./figs/summary/{head}")
+pyplot.savefig(f"./figs/summary/{head}/lat_vs_thr.png")
+# pyplot.show()

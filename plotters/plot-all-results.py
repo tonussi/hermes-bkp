@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
+from genericpath import isdir
+import ntpath
 import sys
-from os import listdir
+from os import listdir, makedirs
 from os.path import isfile, join
 # import numpy
 
@@ -60,4 +62,7 @@ pyplot.ylabel("Latência (percentil 90%)")
 # pyplot.xticks(numpy.arange(min(axes[0]), max(axes[0]), 10.0))
 # pyplot.yticks(numpy.arange(min(axes[0]), max(axes[0]), 10.0))
 pyplot.plot(*axes)
+head, tail = ntpath.split(sys.argv[1])
+if not isdir(f"./figs/summary/{head}"): makedirs(f"./figs/summary/{head}")
+pyplot.savefig(f"./figs/summary/{sys.argv[1]}.png")
 pyplot.show()
