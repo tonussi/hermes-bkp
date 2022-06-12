@@ -17,6 +17,8 @@ series = read_csv(
 )
 print(series.quantile(0.9) / 1e6)
 
+series = series.quantile(0.9) / 1e6
+
 series.plot()
 head, tail = ntpath.split(sys.argv[1])
 if not isdir(f"./figs/{head}"): makedirs(f"./figs/{head}")

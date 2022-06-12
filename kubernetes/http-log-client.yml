@@ -21,6 +21,7 @@ spec:
           '--address=$SERVICE_NAME',
           '--read_rate=$READ_RATE',
           '--n_threads=$N_THREADS',
+          '--duration=$DURATION'
         ]
         env:
           - name: PYTHONUNBUFFERED

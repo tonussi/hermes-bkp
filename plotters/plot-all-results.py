@@ -13,9 +13,6 @@ scenarios = sys.argv[1:]
 
 axes = ()
 
-CONVERT_NS_TO_MS = 1e6
-PERCENTIL_90 = 0.9
-
 for sc in scenarios:
   throughput_path = join(sc, 'throughput')
   latency_path = join(sc, 'latency')
@@ -46,7 +43,7 @@ for sc in scenarios:
 
     avg_throughput = throughput_series.mean()
 
-    latency_90th = latency_series.quantile(PERCENTIL_90) / CONVERT_NS_TO_MS
+    latency_90th = latency_series.quantile(0.9) / 1e6
 
     result_data = result_data.append(DataFrame([[avg_throughput, latency_90th]], columns=['avg_throughput', 'latency_90th']), ignore_index=True)
 
