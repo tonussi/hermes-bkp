@@ -22,21 +22,22 @@ kubectl apply -f $KUBERNETES_DIR/kube-flannel.yml
 echo "join worker nodes to cluster..."
 ansible-playbook -i $ANSIBLE_PB_DIR/hosts $ANSIBLE_PB_DIR/join-workers.yml
 
+# labels
+
 echo "label the admin master node (for admin purposes only)..."
-for i in $(seq 0 $(expr $N_SERVER_NODES - 1))
-do
-  kubectl label nodes node$i.$EXPERIMENT_NAME.$EMULAB_GROUP_NAME.emulab.net role=admin --overwrite
-done
+kubectl label nodes node0.$EXPERIMENT_NAME.$EMULAB_GROUP_NAME.emulab.net role=admin --overwrite
 
 echo "label the worker nodes (where the experiment happens)..."
 N_NODES=$(kubectl get nodes -o go-template="{{len .items}}")
 
-for i in $(seq $(expr $N_SERVER_NODES) $(expr $N_SERVER_NODES))
+echo "server roles"
+for i in $(seq 1 3)
 do
   kubectl label nodes node$i.$EXPERIMENT_NAME.$EMULAB_GROUP_NAME.emulab.net role=server --overwrite
 done
 
-for i in $(seq $(expr $N_SERVER_NODES + 1) $(expr $N_NODES - 1))
+echo "client roles"
+for i in $(seq 3 $(expr $N_NODES \- 1))
 do
   kubectl label nodes node$i.$EXPERIMENT_NAME.$EMULAB_GROUP_NAME.emulab.net role=client --overwrite
 done

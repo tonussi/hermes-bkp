@@ -48,7 +48,7 @@ echo "apply clients..."
 envsubst < $KUBERNETES_DIR/http-log-client.yml | kubectl apply -f -
 
 echo "wait job to complete..."
-kubectl wait --for=condition=complete --timeout=90s job.batch/http-log-client
+kubectl wait --for=condition=complete --timeout=100s job.batch/http-log-client
 
 TEST=$(expr $N_CLIENTS \* $N_THREADS)-$N_CLIENTS
 
