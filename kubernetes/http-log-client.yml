@@ -18,10 +18,11 @@ spec:
         image: lptonussi/http-log-client:latest
         imagePullPolicy: Always
         args: [
-          '--address=$SERVICE_NAME',
-          '--read_rate=$READ_RATE',
-          '--n_threads=$N_THREADS',
-          '--duration=$DURATION'
+          '--address', '$SERVICE_NAME',
+          '--port', '$PORT',
+          '--read_rate', '$READ_RATE',
+          '--n_threads', '$N_THREADS',
+          '--payload_size', '128'
         ]
         env:
           - name: PYTHONUNBUFFERED
