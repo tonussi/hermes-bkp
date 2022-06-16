@@ -47,7 +47,7 @@ for sc in scenarios:
 
     result_data = result_data.append(DataFrame([[avg_throughput, latency_90th]], columns=['avg_throughput', 'latency_90th']), ignore_index=True)
 
-  result_data = result_data.sort_values('avg_throughput')
+  # result_data = result_data.sort_values('avg_throughput')
 
   print(result_data)
 
