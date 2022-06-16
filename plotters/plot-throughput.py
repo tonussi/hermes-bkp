@@ -19,6 +19,6 @@ print(series.mean())
 
 series.plot()
 head, tail = ntpath.split(sys.argv[1])
-if not isdir(f"./figs/{head}"): makedirs(f"./figs/{head}")
-pyplot.savefig(f"./figs/{sys.argv[1]}.png")
+if not isdir(f"./csvs/{head}"): makedirs(f"./csvs/{head}")
+pyplot.savefig(f"./csvs/{sys.argv[1]}.png")
 # pyplot.show()
