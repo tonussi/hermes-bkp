@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
-from genericpath import isdir
 import ntpath
-from os import makedirs
 import sys
+import warnings
+from os import makedirs
 
-from pandas import read_csv
+from genericpath import isdir
 from matplotlib import pyplot
+from pandas import read_csv
+
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 series = read_csv(
   sys.argv[1],

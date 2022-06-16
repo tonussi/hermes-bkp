@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
-from genericpath import isdir
 import ntpath
 import sys
+import warnings
 from os import listdir, makedirs
 from os.path import isfile, join
-from pandas import DataFrame, read_csv
+from pprint import pprint
+
+from genericpath import isdir
 from matplotlib import pyplot
 from natsort import natsorted
-from pprint import pprint
+from pandas import DataFrame, read_csv
+
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 root_scenarios = sys.argv[1]
 scenarios = natsorted([join(root_scenarios, d) for d in listdir(root_scenarios) if isdir(join(root_scenarios, d))])
