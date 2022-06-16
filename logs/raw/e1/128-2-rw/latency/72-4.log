@@ -1,0 +1,393 @@
+1655332724354104095 581661537
+1655332724860467801 305789919
+1655332725461081618 400182176
+1655332725967003416 305396778
+1655332726412897008 244581481
+1655332726633460701 20153076
+1655332726844159022 10270467
+1655332727085316523 20505475
+1655332728307846885 1018171719
+1655332729526411705 1018290851
+1655332730068837383 300394407
+1655332730563041987 289323149
+1655332730971475380 207550145
+1655332731278125276 9192485
+Process StressGenerator-12:
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/site-packages/urllib3/connectionpool.py", line 710, in urlopen
+    chunked=chunked,
+  File "/usr/local/lib/python3.7/site-packages/urllib3/connectionpool.py", line 449, in _make_request
+    six.raise_from(e, None)
+  File "<string>", line 3, in raise_from
+  File "/usr/local/lib/python3.7/site-packages/urllib3/connectionpool.py", line 444, in _make_request
+    httplib_response = conn.getresponse()
+  File "/usr/local/lib/python3.7/http/client.py", line 1321, in getresponse
+    response.begin()
+  File "/usr/local/lib/python3.7/http/client.py", line 296, in begin
+    version, status, reason = self._read_status()
+  File "/usr/local/lib/python3.7/http/client.py", line 257, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/usr/local/lib/python3.7/socket.py", line 589, in readinto
+    return self._sock.recv_into(b)
+ConnectionResetError: [Errno 104] Connection reset by peer
+
+During handling of the above exception, another exception occurred:
+
+1655332734758203590 3204382517
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/site-packages/requests/adapters.py", line 499, in send
+    timeout=timeout,
+  File "/usr/local/lib/python3.7/site-packages/urllib3/connectionpool.py", line 786, in urlopen
+    method, url, error=e, _pool=self, _stacktrace=sys.exc_info()[2]
+  File "/usr/local/lib/python3.7/site-packages/urllib3/util/retry.py", line 550, in increment
+    raise six.reraise(type(error), error, _stacktrace)
+  File "/usr/local/lib/python3.7/site-packages/urllib3/packages/six.py", line 769, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/local/lib/python3.7/site-packages/urllib3/connectionpool.py", line 710, in urlopen
+    chunked=chunked,
+  File "/usr/local/lib/python3.7/site-packages/urllib3/connectionpool.py", line 449, in _make_request
+    six.raise_from(e, None)
+  File "<string>", line 3, in raise_from
+  File "/usr/local/lib/python3.7/site-packages/urllib3/connectionpool.py", line 444, in _make_request
+    httplib_response = conn.getresponse()
+  File "/usr/local/lib/python3.7/http/client.py", line 1321, in getresponse
+    response.begin()
+  File "/usr/local/lib/python3.7/http/client.py", line 296, in begin
+    version, status, reason = self._read_status()
+  File "/usr/local/lib/python3.7/http/client.py", line 257, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/usr/local/lib/python3.7/socket.py", line 589, in readinto
+    return self._sock.recv_into(b)
+urllib3.exceptions.ProtocolError: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/multiprocessing/process.py", line 297, in _bootstrap
+    self.run()
+  File "app.py", line 40, in run
+    self._write_work()
+  File "app.py", line 51, in _write_work
+    self.do_post_request.perform(encode_bytes_as_base64)
+  File "/app/models/simple_http_log_client.py", line 11, in perform
+    return self._simple_requests_scenario(body_json_content)
+  File "/app/models/simple_http_log_client.py", line 16, in _simple_requests_scenario
+    return self.session.post(f"{self.api_url}/insert", body_json_content)
+  File "/usr/local/lib/python3.7/site-packages/requests/sessions.py", line 635, in post
+    return self.request("POST", url, data=data, json=json, **kwargs)
+  File "/usr/local/lib/python3.7/site-packages/requests/sessions.py", line 587, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/usr/local/lib/python3.7/site-packages/requests/sessions.py", line 701, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/local/lib/python3.7/site-packages/requests/adapters.py", line 547, in send
+    raise ConnectionError(err, request=request)
+requests.exceptions.ConnectionError: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+1655332735061988560 91399720
+1655332735377156392 110621168
+1655332736668836143 1091264857
+1655332738057022409 1187807693
+1655332738367161407 109550515
+1655332739721134231 1148914776
+1655332739942617145 20409496
+1655332740165504111 18492884
+1655332741399958608 1029942606
+1655332741762651250 158393251
+1655332742077246386 109706132
+1655332742359111786 81473821
+1655332742662004042 98107906
+1655332743064989003 191844116
+1655332743285727275 19152319
+1655332743656389467 97676518
+1655332743868919292 9143195
+1655332744082528804 10302239
+1655332744341947216 58300799
+1655332744574732040 20937565
+1655332744855481674 76430882
+1655332745122684915 66025608
+1655332745333860553 10769943
+1655332745654626955 117949428
+1655332745872212929 17166558
+1655332746098384682 24381089
+1655332746366252172 63414503
+1655332749828297443 3259069754
+1655332750043714750 12210760
+1655332750261381296 14871316
+1655332750479131271 14974667
+1655332751702359880 1020512023
+1655332751915392633 12586644
+1655332752162558758 46766411
+1655332752385752170 11901453
+1655332752667124921 80957763
+1655332753078562421 202223897
+1655332754388567313 1108988985
+1655332754674607461 85458464
+1655332754977453327 89106312
+1655332755363017038 185178859
+1655332755577037825 13592607
+1655332756891545090 1113835015
+1655332757110798385 15209890
+1655332758550120394 1188509465
+1655332758983593418 225751009
+1655332759263378080 79397612
+1655332759484252420 16518101
+1655332759706420905 17034643
+1655332759966797035 59989883
+1655332760257950982 90739863
+1655332760572721731 103955241
+1655332760874576077 19487718
+1655332761259409258 100196605
+1655332761582334488 116761865
+1655332761965431112 96300808
+1655332762357968487 191420435
+1655332763749633382 1184462245
+1655332763961869268 9483679
+1655332764257666135 92814520
+1655332764565220848 101563887
+1655332765880488619 1114278398
+1655332766158963590 73233218
+1655332766467940348 103976696
+1655332766691812907 15362485
+1655332766910087905 13680861
+1655332767357784288 242402457
+1655332767585070148 26372045
+1655332767966280878 104782809
+1655332768261758087 90308319
+1655332768477083668 11116463
+1655332768686938717 9102662
+Process StressGenerator-16:
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/site-packages/urllib3/connectionpool.py", line 710, in urlopen
+    chunked=chunked,
+  File "/usr/local/lib/python3.7/site-packages/urllib3/connectionpool.py", line 449, in _make_request
+    six.raise_from(e, None)
+  File "<string>", line 3, in raise_from
+  File "/usr/local/lib/python3.7/site-packages/urllib3/connectionpool.py", line 444, in _make_request
+    httplib_response = conn.getresponse()
+  File "/usr/local/lib/python3.7/http/client.py", line 1321, in getresponse
+    response.begin()
+  File "/usr/local/lib/python3.7/http/client.py", line 296, in begin
+    version, status, reason = self._read_status()
+  File "/usr/local/lib/python3.7/http/client.py", line 257, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/usr/local/lib/python3.7/socket.py", line 589, in readinto
+    return self._sock.recv_into(b)
+ConnectionResetError: [Errno 104] Connection reset by peer
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/site-packages/requests/adapters.py", line 499, in send
+    timeout=timeout,
+  File "/usr/local/lib/python3.7/site-packages/urllib3/connectionpool.py", line 786, in urlopen
+    method, url, error=e, _pool=self, _stacktrace=sys.exc_info()[2]
+  File "/usr/local/lib/python3.7/site-packages/urllib3/util/retry.py", line 550, in increment
+    raise six.reraise(type(error), error, _stacktrace)
+  File "/usr/local/lib/python3.7/site-packages/urllib3/packages/six.py", line 769, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/local/lib/python3.7/site-packages/urllib3/connectionpool.py", line 710, in urlopen
+    chunked=chunked,
+  File "/usr/local/lib/python3.7/site-packages/urllib3/connectionpool.py", line 449, in _make_request
+    six.raise_from(e, None)
+  File "<string>", line 3, in raise_from
+  File "/usr/local/lib/python3.7/site-packages/urllib3/connectionpool.py", line 444, in _make_request
+    httplib_response = conn.getresponse()
+  File "/usr/local/lib/python3.7/http/client.py", line 1321, in getresponse
+    response.begin()
+  File "/usr/local/lib/python3.7/http/client.py", line 296, in begin
+    version, status, reason = self._read_status()
+  File "/usr/local/lib/python3.7/http/client.py", line 257, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/usr/local/lib/python3.7/socket.py", line 589, in readinto
+    return self._sock.recv_into(b)
+urllib3.exceptions.ProtocolError: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/multiprocessing/process.py", line 297, in _bootstrap
+    self.run()
+  File "app.py", line 40, in run
+    self._write_work()
+  File "app.py", line 51, in _write_work
+    self.do_post_request.perform(encode_bytes_as_base64)
+  File "/app/models/simple_http_log_client.py", line 11, in perform
+    return self._simple_requests_scenario(body_json_content)
+  File "/app/models/simple_http_log_client.py", line 16, in _simple_requests_scenario
+    return self.session.post(f"{self.api_url}/insert", body_json_content)
+  File "/usr/local/lib/python3.7/site-packages/requests/sessions.py", line 635, in post
+    return self.request("POST", url, data=data, json=json, **kwargs)
+  File "/usr/local/lib/python3.7/site-packages/requests/sessions.py", line 587, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/usr/local/lib/python3.7/site-packages/requests/sessions.py", line 701, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/local/lib/python3.7/site-packages/requests/adapters.py", line 547, in send
+    raise ConnectionError(err, request=request)
+requests.exceptions.ConnectionError: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+1655332770262008997 1304550026
+1655332770557999390 86614891
+1655332770787735540 28939975
+1655332771065934422 77806599
+1655332771289753364 19406629
+1655332772534996603 1041035790
+1655332772781487912 26623249
+1655332772995038906 13166242
+1655332773215467554 20021571
+1655332774456684229 1040832595
+1655332774675306427 14306779
+1655332777965879112 3086157764
+1655332778199604572 33162896
+1655332779443773509 1040929858
+1655332779680990886 22307489
+1655332780065494384 107562722
+1655332780369501382 103253109
+1655332780675588963 90996860
+1655332781162600563 282659954
+1655332781562589694 199125665
+1655332781875776870 102996247
+1655332782155418324 69629264
+1655332782379028978 18930807
+1655332782649218589 69793033
+1655332783896306684 1046701768
+1655332784361383798 207583935
+1655332784579747118 15529809
+1655332784873223244 93080288
+1655332785251672256 174107706
+1655332785569090870 105101375
+1655332785881638544 15764194
+1655332786271555783 117768992
+1655332786491573336 11185909
+1655332786765429588 69933635
+1655332786983013670 14589733
+1655332788212280893 1028167639
+1655332789469684142 1053027948
+1655332789781713782 111069569
+1655332790071448162 85169751
+1655332790455560396 179196322
+1655332790683144311 26326560
+1655332791057131665 103325198
+1655332791383152671 119674397
+1655332791770480250 112941312
+1655332791990697660 12588495
+1655332793269461908 1078386245
+1655332793686159234 212072990
+1655332793900974881 11064285
+1655332794275294776 117301274
+1655332794658107362 178229258
+1655332794868732762 10236043
+1655332795079318484 9878298
+1655332795377968290 24171790
+1655332795778094558 195784952
+1655332796259826786 276285095
+1655332796560586327 96729688
+1655332797829350473 1068144867
+1655332798175096652 117067586
+1655332798456916678 80721225
+1655332798759958911 102022604
+1655332799179291861 120918304
+1655332799490272570 24973395
+1655332799781610847 27813596
+1655332800161982784 104644240
+1655332800465444308 103027154
+1655332800775931336 110076270
+1655332802006660514 1029974842
+1655332802270976924 63377161
+1655332802566888979 94805215
+1655332802862380321 86749146
+1655332803081619560 14853196
+1655332803297886994 12325147
+1655332803516918864 18395796
+1655332803782314381 60978191
+1655332804271002273 115830153
+1655332804567087079 95425146
+1655332804779157449 11636854
+1655332805005924795 9372700
+Process StressGenerator-15:
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/site-packages/urllib3/connectionpool.py", line 710, in urlopen
+    chunked=chunked,
+  File "/usr/local/lib/python3.7/site-packages/urllib3/connectionpool.py", line 449, in _make_request
+    six.raise_from(e, None)
+  File "<string>", line 3, in raise_from
+  File "/usr/local/lib/python3.7/site-packages/urllib3/connectionpool.py", line 444, in _make_request
+    httplib_response = conn.getresponse()
+  File "/usr/local/lib/python3.7/http/client.py", line 1321, in getresponse
+    response.begin()
+  File "/usr/local/lib/python3.7/http/client.py", line 296, in begin
+    version, status, reason = self._read_status()
+  File "/usr/local/lib/python3.7/http/client.py", line 257, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/usr/local/lib/python3.7/socket.py", line 589, in readinto
+    return self._sock.recv_into(b)
+ConnectionResetError: [Errno 104] Connection reset by peer
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/site-packages/requests/adapters.py", line 499, in send
+    timeout=timeout,
+  File "/usr/local/lib/python3.7/site-packages/urllib3/connectionpool.py", line 786, in urlopen
+    method, url, error=e, _pool=self, _stacktrace=sys.exc_info()[2]
+  File "/usr/local/lib/python3.7/site-packages/urllib3/util/retry.py", line 550, in increment
+    raise six.reraise(type(error), error, _stacktrace)
+  File "/usr/local/lib/python3.7/site-packages/urllib3/packages/six.py", line 769, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/local/lib/python3.7/site-packages/urllib3/connectionpool.py", line 710, in urlopen
+    chunked=chunked,
+  File "/usr/local/lib/python3.7/site-packages/urllib3/connectionpool.py", line 449, in _make_request
+    six.raise_from(e, None)
+  File "<string>", line 3, in raise_from
+  File "/usr/local/lib/python3.7/site-packages/urllib3/connectionpool.py", line 444, in _make_request
+    httplib_response = conn.getresponse()
+  File "/usr/local/lib/python3.7/http/client.py", line 1321, in getresponse
+    response.begin()
+  File "/usr/local/lib/python3.7/http/client.py", line 296, in begin
+    version, status, reason = self._read_status()
+  File "/usr/local/lib/python3.7/http/client.py", line 257, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/usr/local/lib/python3.7/socket.py", line 589, in readinto
+    return self._sock.recv_into(b)
+urllib3.exceptions.ProtocolError: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/multiprocessing/process.py", line 297, in _bootstrap
+    self.run()
+  File "app.py", line 40, in run
+    self._write_work()
+  File "app.py", line 51, in _write_work
+    self.do_post_request.perform(encode_bytes_as_base64)
+  File "/app/models/simple_http_log_client.py", line 11, in perform
+    return self._simple_requests_scenario(body_json_content)
+  File "/app/models/simple_http_log_client.py", line 16, in _simple_requests_scenario
+    return self.session.post(f"{self.api_url}/insert", body_json_content)
+  File "/usr/local/lib/python3.7/site-packages/requests/sessions.py", line 635, in post
+    return self.request("POST", url, data=data, json=json, **kwargs)
+  File "/usr/local/lib/python3.7/site-packages/requests/sessions.py", line 587, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/usr/local/lib/python3.7/site-packages/requests/sessions.py", line 701, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/local/lib/python3.7/site-packages/requests/adapters.py", line 547, in send
+    raise ConnectionError(err, request=request)
+requests.exceptions.ConnectionError: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+1655332805274157040 67736622
+1655332806656961713 1182042166
+1655332806884250457 24201209
+1655332807175652759 88030787
+1655332807446187663 70154759
+1655332807663017333 13503277
+1655332807886415154 20396411
+1655332808167809383 71133956
+1655332808455451469 87266654
+1655332808671737001 15873797
+1655332808906232367 33936187
+1655332810132551945 1021751648
+1655332810365730857 20704017
+1655332810674627557 108467301
+1655332810958843709 80298879
+1655332811246740491 86473626
+1655332811463460477 15998335
+1655332811777496815 110023930
+1655332812157463838 100369632
+1655332812479140368 117942493
+1655332813915795769 1135216786

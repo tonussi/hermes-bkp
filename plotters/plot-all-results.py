@@ -4,10 +4,10 @@ import ntpath
 import sys
 from os import listdir, makedirs
 from os.path import isfile, join
-# import numpy
-
 from pandas import DataFrame, read_csv
 from matplotlib import pyplot
+from natsort import natsorted
+from pprint import pprint
 
 scenarios = sys.argv[1:]
 
@@ -17,10 +17,11 @@ for sc in scenarios:
   throughput_path = join(sc, 'throughput')
   latency_path = join(sc, 'latency')
 
-  throughput_files = [join(throughput_path, f) for f in listdir(throughput_path) if isfile(join(throughput_path, f))]
-  latency_files = [join(latency_path, f) for f in listdir(latency_path) if isfile(join(latency_path, f))]
+  throughput_files = natsorted([join(throughput_path, f) for f in listdir(throughput_path) if isfile(join(throughput_path, f))])
+  pprint(throughput_files)
 
-  print(throughput_files, latency_files)
+  latency_files = natsorted([join(latency_path, f) for f in listdir(latency_path) if isfile(join(latency_path, f))])
+  pprint(latency_files)
 
   result_data = DataFrame(columns=['avg_throughput', 'latency_90th'])
 
@@ -47,19 +48,17 @@ for sc in scenarios:
 
     result_data = result_data.append(DataFrame([[avg_throughput, latency_90th]], columns=['avg_throughput', 'latency_90th']), ignore_index=True)
 
-  # result_data = result_data.sort_values('avg_throughput')
+  plot_result_data = result_data.sort_values('avg_throughput')
+  axes = (*axes, plot_result_data['avg_throughput'], plot_result_data['latency_90th'])
 
-  print(result_data)
-
-  axes = (*axes, result_data['avg_throughput'], result_data['latency_90th'])
-
-pyplot.ylim()
-pyplot.xlabel("Vazão (média)")
-pyplot.ylabel("Latência (percentil 90%)")
-# pyplot.xticks(numpy.arange(min(axes[0]), max(axes[0]), 10.0))
-# pyplot.yticks(numpy.arange(min(axes[0]), max(axes[0]), 10.0))
-pyplot.plot(*axes)
-head, tail = ntpath.split(sys.argv[1])
-if not isdir(f"./figs/summary/{head}"): makedirs(f"./figs/summary/{head}")
-pyplot.savefig(f"./figs/summary/{sys.argv[1]}.png")
-pyplot.show()
+  # print(result_data)
+  pyplot.ylim()
+  pyplot.xlabel("Vazão (média)")
+  pyplot.ylabel("Latência (percentil 90%)")
+  # pyplot.xticks(numpy.arange(min(axes[0]), max(axes[0]), 10.0))
+  # pyplot.yticks(numpy.arange(min(axes[0]), max(axes[0]), 10.0))
+  pyplot.plot(*axes)
+  head, tail = ntpath.split(sys.argv[1])
+  if not isdir(f"./figs/summary/{head}"): makedirs(f"./figs/summary/{head}")
+  pyplot.savefig(f"./figs/summary/{head}/{tail}.png")
+  result_data.to_csv(f"./figs/summary/{head}/{tail}.csv", header=True, sep=';')

@@ -1,0 +1,169 @@
+1655330843647115192 0
+1655330844648347425 0
+1655330845649508301 0
+1655330846649851125 0
+1655330847650995628 0
+1655330848652144605 0
+1655330849653288510 0
+1655330850654439781 0
+1655330851655594295 0
+1655330852656797151 0
+1655330853657963361 0
+1655330854659107517 0
+1655330855660284543 11
+1655330856661678603 16
+1655330857661858456 17
+1655330858663078006 19
+1655330859664290186 25
+1655330860666159751 23
+----------------------------------------
+Exception happened during processing of request from ('10.244.9.18', 36364)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/socketserver.py", line 316, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/local/lib/python3.7/socketserver.py", line 347, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/local/lib/python3.7/socketserver.py", line 360, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/app/models/http_disk_log_app.py", line 17, in __init__
+    super().__init__(request, client_address, server)
+  File "/usr/local/lib/python3.7/socketserver.py", line 720, in __init__
+    self.handle()
+  File "/usr/local/lib/python3.7/http/server.py", line 426, in handle
+    self.handle_one_request()
+  File "/usr/local/lib/python3.7/http/server.py", line 414, in handle_one_request
+    method()
+  File "/app/models/http_disk_log_app.py", line 53, in do_POST
+    post_body = self.rfile.read(content_len)
+  File "/usr/local/lib/python3.7/socket.py", line 589, in readinto
+    return self._sock.recv_into(b)
+ConnectionResetError: [Errno 104] Connection reset by peer
+----------------------------------------
+----------------------------------------
+Exception happened during processing of request from ('10.244.9.18', 36366)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/socketserver.py", line 316, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/local/lib/python3.7/socketserver.py", line 347, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/local/lib/python3.7/socketserver.py", line 360, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/app/models/http_disk_log_app.py", line 17, in __init__
+    super().__init__(request, client_address, server)
+  File "/usr/local/lib/python3.7/socketserver.py", line 720, in __init__
+    self.handle()
+  File "/usr/local/lib/python3.7/http/server.py", line 426, in handle
+    self.handle_one_request()
+  File "/usr/local/lib/python3.7/http/server.py", line 414, in handle_one_request
+    method()
+  File "/app/models/http_disk_log_app.py", line 60, in do_POST
+    self.wfile.write(bytes("written", 'utf-8'))
+  File "/usr/local/lib/python3.7/socketserver.py", line 799, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+1655330861668109084 5
+1655330862669275477 0
+1655330863670444637 0
+1655330864671622588 0
+1655330865672786544 0
+1655330866673954320 0
+1655330867675118275 0
+1655330868676286593 4
+1655330869677462568 16
+1655330870678611748 20
+1655330871679770309 24
+1655330872680961092 23
+1655330873682119571 31
+1655330874683277894 22
+1655330875684457513 0
+1655330876685624824 0
+1655330877686790903 0
+1655330878687961265 0
+1655330879689161144 0
+1655330880690341758 0
+1655330881691530905 0
+1655330882692729523 7
+1655330883694340415 16
+1655330884695705965 18
+1655330885696842911 22
+1655330886698052679 24
+1655330887699197390 24
+1655330888700347715 24
+----------------------------------------
+Exception happened during processing of request from ('10.244.6.18', 41466)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/socketserver.py", line 316, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/local/lib/python3.7/socketserver.py", line 347, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/local/lib/python3.7/socketserver.py", line 360, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/app/models/http_disk_log_app.py", line 17, in __init__
+    super().__init__(request, client_address, server)
+  File "/usr/local/lib/python3.7/socketserver.py", line 720, in __init__
+    self.handle()
+  File "/usr/local/lib/python3.7/http/server.py", line 426, in handle
+    self.handle_one_request()
+  File "/usr/local/lib/python3.7/http/server.py", line 414, in handle_one_request
+    method()
+  File "/app/models/http_disk_log_app.py", line 60, in do_POST
+    self.wfile.write(bytes("written", 'utf-8'))
+  File "/usr/local/lib/python3.7/socketserver.py", line 799, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+1655330889701514005 6
+1655330890702700449 0
+1655330891703440695 0
+1655330892705137877 0
+1655330893706319677 0
+1655330894707487955 0
+1655330895708695144 0
+1655330896709878310 0
+1655330897711038664 9
+1655330898712189316 15
+1655330899713344859 21
+1655330900714493351 25
+1655330901715661031 25
+1655330902716814175 23
+1655330903717960600 5
+1655330904719114833 1
+1655330905720281417 0
+1655330906721453592 0
+1655330907722618082 0
+1655330908723772029 0
+1655330909724939590 0
+1655330910726121898 0
+1655330911727299301 1
+1655330912728448737 10
+1655330913729077155 17
+1655330914730244121 23
+1655330915731418890 23
+1655330916733387342 20
+1655330917734578276 28
+1655330918735752124 27
+1655330919736921058 9
+1655330920738093329 0
+1655330921739278516 0
+1655330922740442862 0
+1655330923741633562 0
+1655330924742842259 0
+1655330925744029760 0
+1655330926745876664 0
+1655330927747041292 0
+1655330928748206403 0
+1655330929749378863 0
+1655330930750547631 0
+1655330931751748107 0
+1655330932752933991 0
+1655330933753876025 0
+1655330934755039128 0
+1655330935756206243 0
+1655330936757386945 0
+1655330937758567604 0
+1655330938759726770 0
+1655330939760894957 0
+1655330940762064540 0
+1655330941763233969 0
+1655330942764415874 0
