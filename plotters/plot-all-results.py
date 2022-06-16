@@ -48,7 +48,12 @@ for sc in scenarios:
 
     latency_90th = latency_series.quantile(0.9) / 1e6
 
-    result_data = result_data.append(DataFrame([[avg_throughput, latency_90th]], columns=['avg_throughput', 'latency_90th']), ignore_index=True)
+    file_desc = throuput_file.split('/')
+    exp_desc = file_desc[len(file_desc) - 1][:-4].split('-')
+    n_clients, total_threads = int(exp_desc[1]), int(exp_desc[0])
+    threads_per_client = total_threads / n_clients
+
+    result_data = result_data.append(DataFrame([[n_clients, threads_per_client, total_threads, avg_throughput, latency_90th]], columns=['n_clients', 'threads_per_client', 'total_threads', 'avg_throughput', 'latency_90th']), ignore_index=True)
 
   # plot_result_data = result_data.sort_values('avg_throughput')
   axes = (*axes, result_data['avg_throughput'], result_data['latency_90th'])
