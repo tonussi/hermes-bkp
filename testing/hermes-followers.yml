@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hermes-followers
+  labels:
+    app: hermes-followers
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hermes-followers
+  template:
+    metadata:
+      labels:
+        app: hermes-followers
+    spec:
+      containers:
+        - name: http-log-server
+          image: lptonussi/http-log-server:latest
+          imagePullPolicy: Always
+          env:
+            - name: PYTHONUNBUFFERED
+              value: "1"
+          ports:
+            - containerPort: 8001
+          resources:
+            requests:
+              memory: "300Mi"
+              cpu: "50m"
+            limits:
+              memory: "500Mi"
+              cpu: "500m"
+        - name: hermes
+          image: lptonussi/hermes
+          imagePullPolicy: Always
+          args: [
+            "-j", "hermes-leader:9000"
+          ]
+          env:
+            - name: NODE_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: PROTOCOL_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: PROTOCOL_PORT
+              value: "10000"
+          ports:
+            - name: server
+              containerPort: 8000
+            - name: join
+              containerPort: 9000
+            - name: protocol
+              containerPort: 10000
+          resources:
+            requests:
+              memory: "300Mi"
+              cpu: "50m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: name
+                    operator: In
+                    values: [ "hermes-leader", "hermes-follower" ]
+              topologyKey: failure-domain.beta.kubernetes.io/zone
