@@ -1,0 +1,214 @@
+1655422122114795124 0
+1655422123116089107 0
+1655422124117305558 0
+1655422125118550759 0
+1655422126119780058 0
+1655422127121008711 0
+1655422128122239010 0
+1655422129123478485 0
+1655422130124350441 0
+1655422131125552411 18
+1655422132126796519 12
+1655422133128031571 0
+1655422134129282404 0
+1655422135130519185 0
+1655422136131744367 0
+1655422137132966819 0
+1655422138134189696 0
+1655422139135383876 16
+1655422140136631162 29
+1655422141137876994 5
+1655422142139120104 0
+1655422143140459114 0
+1655422144141709121 0
+1655422145142957041 0
+1655422146144178566 0
+1655422147145339747 27
+1655422148146584341 25
+1655422149147835199 0
+1655422150148362248 0
+1655422151149501800 0
+1655422152150748793 0
+1655422153151535928 0
+1655422154152345613 6
+1655422155153473153 27
+----------------------------------------
+Exception happened during processing of request from ('10.244.1.34', 55364)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/socketserver.py", line 316, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/local/lib/python3.7/socketserver.py", line 347, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/local/lib/python3.7/socketserver.py", line 360, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/app/models/http_disk_log_app.py", line 17, in __init__
+    super().__init__(request, client_address, server)
+  File "/usr/local/lib/python3.7/socketserver.py", line 720, in __init__
+    self.handle()
+  File "/usr/local/lib/python3.7/http/server.py", line 426, in handle
+    self.handle_one_request()
+  File "/usr/local/lib/python3.7/http/server.py", line 414, in handle_one_request
+    method()
+  File "/app/models/http_disk_log_app.py", line 43, in do_GET
+    self.wfile.write(bytes(json.dumps(server_response), 'utf-8'))
+  File "/usr/local/lib/python3.7/socketserver.py", line 799, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+1655422156154714144 16
+1655422157155793187 0
+1655422158157027876 0
+1655422159158258527 0
+1655422160159509950 0
+1655422161160479487 0
+1655422162161705501 6
+1655422163162879972 35
+----------------------------------------
+Exception happened during processing of request from ('10.244.9.37', 58106)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/socketserver.py", line 316, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/local/lib/python3.7/socketserver.py", line 347, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/local/lib/python3.7/socketserver.py", line 360, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/app/models/http_disk_log_app.py", line 17, in __init__
+    super().__init__(request, client_address, server)
+  File "/usr/local/lib/python3.7/socketserver.py", line 720, in __init__
+    self.handle()
+  File "/usr/local/lib/python3.7/http/server.py", line 426, in handle
+    self.handle_one_request()
+  File "/usr/local/lib/python3.7/http/server.py", line 414, in handle_one_request
+    method()
+  File "/app/models/http_disk_log_app.py", line 43, in do_GET
+    self.wfile.write(bytes(json.dumps(server_response), 'utf-8'))
+  File "/usr/local/lib/python3.7/socketserver.py", line 799, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+----------------------------------------
+Exception happened during processing of request from ('10.244.9.37', 58108)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/socketserver.py", line 316, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/local/lib/python3.7/socketserver.py", line 347, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/local/lib/python3.7/socketserver.py", line 360, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/app/models/http_disk_log_app.py", line 17, in __init__
+    super().__init__(request, client_address, server)
+  File "/usr/local/lib/python3.7/socketserver.py", line 720, in __init__
+    self.handle()
+  File "/usr/local/lib/python3.7/http/server.py", line 426, in handle
+    self.handle_one_request()
+  File "/usr/local/lib/python3.7/http/server.py", line 414, in handle_one_request
+    method()
+  File "/app/models/http_disk_log_app.py", line 43, in do_GET
+    self.wfile.write(bytes(json.dumps(server_response), 'utf-8'))
+  File "/usr/local/lib/python3.7/socketserver.py", line 799, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+----------------------------------------
+Exception happened during processing of request from ('10.244.9.37', 58110)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/socketserver.py", line 316, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/local/lib/python3.7/socketserver.py", line 347, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/local/lib/python3.7/socketserver.py", line 360, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/app/models/http_disk_log_app.py", line 17, in __init__
+    super().__init__(request, client_address, server)
+  File "/usr/local/lib/python3.7/socketserver.py", line 720, in __init__
+    self.handle()
+  File "/usr/local/lib/python3.7/http/server.py", line 426, in handle
+    self.handle_one_request()
+  File "/usr/local/lib/python3.7/http/server.py", line 414, in handle_one_request
+    method()
+  File "/app/models/http_disk_log_app.py", line 43, in do_GET
+    self.wfile.write(bytes(json.dumps(server_response), 'utf-8'))
+  File "/usr/local/lib/python3.7/socketserver.py", line 799, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+----------------------------------------
+Exception happened during processing of request from ('10.244.9.37', 58114)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/socketserver.py", line 316, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/local/lib/python3.7/socketserver.py", line 347, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/local/lib/python3.7/socketserver.py", line 360, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/app/models/http_disk_log_app.py", line 17, in __init__
+    super().__init__(request, client_address, server)
+  File "/usr/local/lib/python3.7/socketserver.py", line 720, in __init__
+    self.handle()
+  File "/usr/local/lib/python3.7/http/server.py", line 426, in handle
+    self.handle_one_request()
+  File "/usr/local/lib/python3.7/http/server.py", line 414, in handle_one_request
+    method()
+  File "/app/models/http_disk_log_app.py", line 43, in do_GET
+    self.wfile.write(bytes(json.dumps(server_response), 'utf-8'))
+  File "/usr/local/lib/python3.7/socketserver.py", line 799, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+1655422164164110828 16
+1655422165164400607 0
+1655422166165625694 0
+1655422167166857849 0
+1655422168168086150 0
+1655422169168843934 0
+1655422170170037531 0
+1655422171171232799 0
+1655422172172405901 0
+1655422173172516116 0
+1655422174173691925 0
+1655422175174861932 0
+1655422176176029844 0
+1655422177177187773 0
+1655422178178353979 0
+1655422179179523723 0
+1655422180180698902 0
+1655422181181880909 0
+1655422182183055647 0
+1655422183184285316 0
+1655422184185449591 0
+1655422185186674186 0
+1655422186187840615 0
+1655422187188307205 0
+1655422188189443291 0
+1655422189190616755 0
+1655422190191801368 0
+1655422191193013883 0
+1655422192194197160 0
+1655422193195337834 0
+1655422194196501965 0
+1655422195197661430 0
+1655422196198815550 0
+1655422197199970414 0
+1655422198200345484 0
+1655422199201528306 0
+1655422200202715554 0
+1655422201203896362 0
+1655422202205068499 0
+1655422203206246681 0
+1655422204207412205 0
+1655422205208575163 0
+1655422206209729338 0
+1655422207210847870 0
+1655422208212017418 0
+1655422209213186697 0
+1655422210214382089 0
+1655422211215575150 0
+1655422212216746044 0
+1655422213217917805 0
+1655422214219105556 0
+1655422215220266834 0
+1655422216221420045 0
+1655422217222591647 0
+1655422218223753841 0
+1655422219224915307 0
+1655422220226084901 0
