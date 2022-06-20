@@ -15,29 +15,6 @@
 1655332619079538573 39
 1655332620080697736 51
 1655332621081846574 21
-----------------------------------------
-Exception happened during processing of request from ('10.244.6.27', 38488)
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.7/socketserver.py", line 316, in _handle_request_noblock
-    self.process_request(request, client_address)
-  File "/usr/local/lib/python3.7/socketserver.py", line 347, in process_request
-    self.finish_request(request, client_address)
-  File "/usr/local/lib/python3.7/socketserver.py", line 360, in finish_request
-    self.RequestHandlerClass(request, client_address, self)
-  File "/app/models/http_disk_log_app.py", line 17, in __init__
-    super().__init__(request, client_address, server)
-  File "/usr/local/lib/python3.7/socketserver.py", line 720, in __init__
-    self.handle()
-  File "/usr/local/lib/python3.7/http/server.py", line 426, in handle
-    self.handle_one_request()
-  File "/usr/local/lib/python3.7/http/server.py", line 414, in handle_one_request
-    method()
-  File "/app/models/http_disk_log_app.py", line 60, in do_POST
-    self.wfile.write(bytes("written", 'utf-8'))
-  File "/usr/local/lib/python3.7/socketserver.py", line 799, in write
-    self._sock.sendall(b)
-BrokenPipeError: [Errno 32] Broken pipe
-----------------------------------------
 1655332622083001217 4
 1655332623084217929 0
 1655332624085387434 0

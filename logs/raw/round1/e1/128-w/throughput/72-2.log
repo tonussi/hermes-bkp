@@ -9,52 +9,6 @@
 1655420069502531393 0
 1655420070503683997 7
 1655420071504836642 27
-----------------------------------------
-Exception happened during processing of request from ('10.244.2.34', 42554)
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.7/socketserver.py", line 316, in _handle_request_noblock
-    self.process_request(request, client_address)
-  File "/usr/local/lib/python3.7/socketserver.py", line 347, in process_request
-    self.finish_request(request, client_address)
-  File "/usr/local/lib/python3.7/socketserver.py", line 360, in finish_request
-    self.RequestHandlerClass(request, client_address, self)
-  File "/app/models/http_disk_log_app.py", line 17, in __init__
-    super().__init__(request, client_address, server)
-  File "/usr/local/lib/python3.7/socketserver.py", line 720, in __init__
-    self.handle()
-  File "/usr/local/lib/python3.7/http/server.py", line 426, in handle
-    self.handle_one_request()
-  File "/usr/local/lib/python3.7/http/server.py", line 414, in handle_one_request
-    method()
-  File "/app/models/http_disk_log_app.py", line 60, in do_POST
-    self.wfile.write(bytes("written", 'utf-8'))
-  File "/usr/local/lib/python3.7/socketserver.py", line 799, in write
-    self._sock.sendall(b)
-BrokenPipeError: [Errno 32] Broken pipe
-----------------------------------------
-----------------------------------------
-Exception happened during processing of request from ('10.244.2.34', 42508)
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.7/socketserver.py", line 316, in _handle_request_noblock
-    self.process_request(request, client_address)
-  File "/usr/local/lib/python3.7/socketserver.py", line 347, in process_request
-    self.finish_request(request, client_address)
-  File "/usr/local/lib/python3.7/socketserver.py", line 360, in finish_request
-    self.RequestHandlerClass(request, client_address, self)
-  File "/app/models/http_disk_log_app.py", line 17, in __init__
-    super().__init__(request, client_address, server)
-  File "/usr/local/lib/python3.7/socketserver.py", line 720, in __init__
-    self.handle()
-  File "/usr/local/lib/python3.7/http/server.py", line 426, in handle
-    self.handle_one_request()
-  File "/usr/local/lib/python3.7/http/server.py", line 414, in handle_one_request
-    method()
-  File "/app/models/http_disk_log_app.py", line 60, in do_POST
-    self.wfile.write(bytes("written", 'utf-8'))
-  File "/usr/local/lib/python3.7/socketserver.py", line 799, in write
-    self._sock.sendall(b)
-BrokenPipeError: [Errno 32] Broken pipe
-----------------------------------------
 1655420072505980008 26
 1655420073507150238 0
 1655420074508316123 0
@@ -63,29 +17,6 @@ BrokenPipeError: [Errno 32] Broken pipe
 1655420077511797074 0
 1655420078512958076 8
 1655420079514122327 34
-----------------------------------------
-Exception happened during processing of request from ('10.244.8.42', 50838)
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.7/socketserver.py", line 316, in _handle_request_noblock
-    self.process_request(request, client_address)
-  File "/usr/local/lib/python3.7/socketserver.py", line 347, in process_request
-    self.finish_request(request, client_address)
-  File "/usr/local/lib/python3.7/socketserver.py", line 360, in finish_request
-    self.RequestHandlerClass(request, client_address, self)
-  File "/app/models/http_disk_log_app.py", line 17, in __init__
-    super().__init__(request, client_address, server)
-  File "/usr/local/lib/python3.7/socketserver.py", line 720, in __init__
-    self.handle()
-  File "/usr/local/lib/python3.7/http/server.py", line 426, in handle
-    self.handle_one_request()
-  File "/usr/local/lib/python3.7/http/server.py", line 414, in handle_one_request
-    method()
-  File "/app/models/http_disk_log_app.py", line 60, in do_POST
-    self.wfile.write(bytes("written", 'utf-8'))
-  File "/usr/local/lib/python3.7/socketserver.py", line 799, in write
-    self._sock.sendall(b)
-BrokenPipeError: [Errno 32] Broken pipe
-----------------------------------------
 1655420080515276758 32
 1655420081516426750 7
 1655420082517575219 0

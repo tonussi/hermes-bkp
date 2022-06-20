@@ -32,29 +32,6 @@
 1655422153151535928 0
 1655422154152345613 6
 1655422155153473153 27
-----------------------------------------
-Exception happened during processing of request from ('10.244.1.34', 55364)
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.7/socketserver.py", line 316, in _handle_request_noblock
-    self.process_request(request, client_address)
-  File "/usr/local/lib/python3.7/socketserver.py", line 347, in process_request
-    self.finish_request(request, client_address)
-  File "/usr/local/lib/python3.7/socketserver.py", line 360, in finish_request
-    self.RequestHandlerClass(request, client_address, self)
-  File "/app/models/http_disk_log_app.py", line 17, in __init__
-    super().__init__(request, client_address, server)
-  File "/usr/local/lib/python3.7/socketserver.py", line 720, in __init__
-    self.handle()
-  File "/usr/local/lib/python3.7/http/server.py", line 426, in handle
-    self.handle_one_request()
-  File "/usr/local/lib/python3.7/http/server.py", line 414, in handle_one_request
-    method()
-  File "/app/models/http_disk_log_app.py", line 43, in do_GET
-    self.wfile.write(bytes(json.dumps(server_response), 'utf-8'))
-  File "/usr/local/lib/python3.7/socketserver.py", line 799, in write
-    self._sock.sendall(b)
-BrokenPipeError: [Errno 32] Broken pipe
-----------------------------------------
 1655422156154714144 16
 1655422157155793187 0
 1655422158157027876 0
@@ -63,98 +40,6 @@ BrokenPipeError: [Errno 32] Broken pipe
 1655422161160479487 0
 1655422162161705501 6
 1655422163162879972 35
-----------------------------------------
-Exception happened during processing of request from ('10.244.9.37', 58106)
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.7/socketserver.py", line 316, in _handle_request_noblock
-    self.process_request(request, client_address)
-  File "/usr/local/lib/python3.7/socketserver.py", line 347, in process_request
-    self.finish_request(request, client_address)
-  File "/usr/local/lib/python3.7/socketserver.py", line 360, in finish_request
-    self.RequestHandlerClass(request, client_address, self)
-  File "/app/models/http_disk_log_app.py", line 17, in __init__
-    super().__init__(request, client_address, server)
-  File "/usr/local/lib/python3.7/socketserver.py", line 720, in __init__
-    self.handle()
-  File "/usr/local/lib/python3.7/http/server.py", line 426, in handle
-    self.handle_one_request()
-  File "/usr/local/lib/python3.7/http/server.py", line 414, in handle_one_request
-    method()
-  File "/app/models/http_disk_log_app.py", line 43, in do_GET
-    self.wfile.write(bytes(json.dumps(server_response), 'utf-8'))
-  File "/usr/local/lib/python3.7/socketserver.py", line 799, in write
-    self._sock.sendall(b)
-BrokenPipeError: [Errno 32] Broken pipe
-----------------------------------------
-----------------------------------------
-Exception happened during processing of request from ('10.244.9.37', 58108)
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.7/socketserver.py", line 316, in _handle_request_noblock
-    self.process_request(request, client_address)
-  File "/usr/local/lib/python3.7/socketserver.py", line 347, in process_request
-    self.finish_request(request, client_address)
-  File "/usr/local/lib/python3.7/socketserver.py", line 360, in finish_request
-    self.RequestHandlerClass(request, client_address, self)
-  File "/app/models/http_disk_log_app.py", line 17, in __init__
-    super().__init__(request, client_address, server)
-  File "/usr/local/lib/python3.7/socketserver.py", line 720, in __init__
-    self.handle()
-  File "/usr/local/lib/python3.7/http/server.py", line 426, in handle
-    self.handle_one_request()
-  File "/usr/local/lib/python3.7/http/server.py", line 414, in handle_one_request
-    method()
-  File "/app/models/http_disk_log_app.py", line 43, in do_GET
-    self.wfile.write(bytes(json.dumps(server_response), 'utf-8'))
-  File "/usr/local/lib/python3.7/socketserver.py", line 799, in write
-    self._sock.sendall(b)
-BrokenPipeError: [Errno 32] Broken pipe
-----------------------------------------
-----------------------------------------
-Exception happened during processing of request from ('10.244.9.37', 58110)
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.7/socketserver.py", line 316, in _handle_request_noblock
-    self.process_request(request, client_address)
-  File "/usr/local/lib/python3.7/socketserver.py", line 347, in process_request
-    self.finish_request(request, client_address)
-  File "/usr/local/lib/python3.7/socketserver.py", line 360, in finish_request
-    self.RequestHandlerClass(request, client_address, self)
-  File "/app/models/http_disk_log_app.py", line 17, in __init__
-    super().__init__(request, client_address, server)
-  File "/usr/local/lib/python3.7/socketserver.py", line 720, in __init__
-    self.handle()
-  File "/usr/local/lib/python3.7/http/server.py", line 426, in handle
-    self.handle_one_request()
-  File "/usr/local/lib/python3.7/http/server.py", line 414, in handle_one_request
-    method()
-  File "/app/models/http_disk_log_app.py", line 43, in do_GET
-    self.wfile.write(bytes(json.dumps(server_response), 'utf-8'))
-  File "/usr/local/lib/python3.7/socketserver.py", line 799, in write
-    self._sock.sendall(b)
-BrokenPipeError: [Errno 32] Broken pipe
-----------------------------------------
-----------------------------------------
-Exception happened during processing of request from ('10.244.9.37', 58114)
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.7/socketserver.py", line 316, in _handle_request_noblock
-    self.process_request(request, client_address)
-  File "/usr/local/lib/python3.7/socketserver.py", line 347, in process_request
-    self.finish_request(request, client_address)
-  File "/usr/local/lib/python3.7/socketserver.py", line 360, in finish_request
-    self.RequestHandlerClass(request, client_address, self)
-  File "/app/models/http_disk_log_app.py", line 17, in __init__
-    super().__init__(request, client_address, server)
-  File "/usr/local/lib/python3.7/socketserver.py", line 720, in __init__
-    self.handle()
-  File "/usr/local/lib/python3.7/http/server.py", line 426, in handle
-    self.handle_one_request()
-  File "/usr/local/lib/python3.7/http/server.py", line 414, in handle_one_request
-    method()
-  File "/app/models/http_disk_log_app.py", line 43, in do_GET
-    self.wfile.write(bytes(json.dumps(server_response), 'utf-8'))
-  File "/usr/local/lib/python3.7/socketserver.py", line 799, in write
-    self._sock.sendall(b)
-BrokenPipeError: [Errno 32] Broken pipe
-----------------------------------------
 1655422164164110828 16
 1655422165164400607 0
 1655422166165625694 0

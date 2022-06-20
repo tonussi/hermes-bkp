@@ -16,52 +16,6 @@
 1655330858663078006 19
 1655330859664290186 25
 1655330860666159751 23
-----------------------------------------
-Exception happened during processing of request from ('10.244.9.18', 36364)
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.7/socketserver.py", line 316, in _handle_request_noblock
-    self.process_request(request, client_address)
-  File "/usr/local/lib/python3.7/socketserver.py", line 347, in process_request
-    self.finish_request(request, client_address)
-  File "/usr/local/lib/python3.7/socketserver.py", line 360, in finish_request
-    self.RequestHandlerClass(request, client_address, self)
-  File "/app/models/http_disk_log_app.py", line 17, in __init__
-    super().__init__(request, client_address, server)
-  File "/usr/local/lib/python3.7/socketserver.py", line 720, in __init__
-    self.handle()
-  File "/usr/local/lib/python3.7/http/server.py", line 426, in handle
-    self.handle_one_request()
-  File "/usr/local/lib/python3.7/http/server.py", line 414, in handle_one_request
-    method()
-  File "/app/models/http_disk_log_app.py", line 53, in do_POST
-    post_body = self.rfile.read(content_len)
-  File "/usr/local/lib/python3.7/socket.py", line 589, in readinto
-    return self._sock.recv_into(b)
-ConnectionResetError: [Errno 104] Connection reset by peer
-----------------------------------------
-----------------------------------------
-Exception happened during processing of request from ('10.244.9.18', 36366)
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.7/socketserver.py", line 316, in _handle_request_noblock
-    self.process_request(request, client_address)
-  File "/usr/local/lib/python3.7/socketserver.py", line 347, in process_request
-    self.finish_request(request, client_address)
-  File "/usr/local/lib/python3.7/socketserver.py", line 360, in finish_request
-    self.RequestHandlerClass(request, client_address, self)
-  File "/app/models/http_disk_log_app.py", line 17, in __init__
-    super().__init__(request, client_address, server)
-  File "/usr/local/lib/python3.7/socketserver.py", line 720, in __init__
-    self.handle()
-  File "/usr/local/lib/python3.7/http/server.py", line 426, in handle
-    self.handle_one_request()
-  File "/usr/local/lib/python3.7/http/server.py", line 414, in handle_one_request
-    method()
-  File "/app/models/http_disk_log_app.py", line 60, in do_POST
-    self.wfile.write(bytes("written", 'utf-8'))
-  File "/usr/local/lib/python3.7/socketserver.py", line 799, in write
-    self._sock.sendall(b)
-BrokenPipeError: [Errno 32] Broken pipe
-----------------------------------------
 1655330861668109084 5
 1655330862669275477 0
 1655330863670444637 0
@@ -90,29 +44,6 @@ BrokenPipeError: [Errno 32] Broken pipe
 1655330886698052679 24
 1655330887699197390 24
 1655330888700347715 24
-----------------------------------------
-Exception happened during processing of request from ('10.244.6.18', 41466)
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.7/socketserver.py", line 316, in _handle_request_noblock
-    self.process_request(request, client_address)
-  File "/usr/local/lib/python3.7/socketserver.py", line 347, in process_request
-    self.finish_request(request, client_address)
-  File "/usr/local/lib/python3.7/socketserver.py", line 360, in finish_request
-    self.RequestHandlerClass(request, client_address, self)
-  File "/app/models/http_disk_log_app.py", line 17, in __init__
-    super().__init__(request, client_address, server)
-  File "/usr/local/lib/python3.7/socketserver.py", line 720, in __init__
-    self.handle()
-  File "/usr/local/lib/python3.7/http/server.py", line 426, in handle
-    self.handle_one_request()
-  File "/usr/local/lib/python3.7/http/server.py", line 414, in handle_one_request
-    method()
-  File "/app/models/http_disk_log_app.py", line 60, in do_POST
-    self.wfile.write(bytes("written", 'utf-8'))
-  File "/usr/local/lib/python3.7/socketserver.py", line 799, in write
-    self._sock.sendall(b)
-BrokenPipeError: [Errno 32] Broken pipe
-----------------------------------------
 1655330889701514005 6
 1655330890702700449 0
 1655330891703440695 0
