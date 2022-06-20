@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
 
-#!/usr/bin/env sh
-
 sh scripts/experiment.sh kubernetes 2 1 50 raw2/e3/128-rw; sleep 45;
 sh scripts/experiment.sh kubernetes 1 4 50 raw2/e3/128-rw; sleep 45;
 sh scripts/experiment.sh kubernetes 1 8 50 raw2/e3/128-rw; sleep 45;

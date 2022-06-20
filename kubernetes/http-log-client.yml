@@ -21,7 +21,7 @@ spec:
           '--address', '$SERVICE_NAME',
           '--read_rate', '$READ_RATE',
           '--n_processes', '$N_THREADS',
-          '--bytes_size', '128',
+          '--bytes_size', '512',
           '--thinking_time', '0.2',
           '--duration', '1.5'
         ]
