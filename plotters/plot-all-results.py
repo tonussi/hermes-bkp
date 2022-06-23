@@ -50,7 +50,7 @@ for sc in scenarios:
 
     avg_throughput = throughput_series.mean()
 
-    latency_90th = latency_series.quantile(0.9) / 1e6
+    latency_90th = latency_series.mean() / 1e6
 
     file_desc = throuput_file.split('/')
     exp_desc = file_desc[len(file_desc) - 1][:-4].split('-')
