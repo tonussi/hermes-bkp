@@ -1,16 +1,12 @@
 [masters]
-master ansible_host=pc443.emulab.net
+master ansible_host=pc300.emulab.net
 
 [workers]
-worker1 ansible_host=pc484.emulab.net
-worker2 ansible_host=pc515.emulab.net
-worker3 ansible_host=pc441.emulab.net
-worker4 ansible_host=pc445.emulab.net
-worker5 ansible_host=pc494.emulab.net
-worker6 ansible_host=pc447.emulab.net
-worker7 ansible_host=pc460.emulab.net
-worker8 ansible_host=pc444.emulab.net
-worker9 ansible_host=pc448.emulab.net
+worker1 ansible_host=pc296.emulab.net
+worker2 ansible_host=pc305.emulab.net
+worker3 ansible_host=pc312.emulab.net
+worker4 ansible_host=pc311.emulab.net
+worker5 ansible_host=pc308.emulab.net
 
 [all:vars]
 ansible_user=LUCAS

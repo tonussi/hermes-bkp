@@ -1,15 +1,23 @@
 #!/usr/bin/env python3
+import ntpath
 import sys
-from os import listdir
+import warnings
+from os import listdir, makedirs
 from os.path import isfile, join
+from pprint import pprint
 
-from pandas import DataFrame, read_csv, concat
+from genericpath import isdir
 from matplotlib import pyplot
+from natsort import natsorted
+from pandas import DataFrame, read_csv
 
-throughput_files = [join(sys.argv[1], f) for f in listdir(sys.argv[1]) if isfile(join(sys.argv[1], f))]
-latency_files = [join(sys.argv[2], f) for f in listdir(sys.argv[1]) if isfile(join(sys.argv[2], f))]
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
-print(throughput_files, latency_files)
+throughput_files = natsorted([join(sys.argv[1], f) for f in listdir(sys.argv[1]) if isfile(join(sys.argv[1], f))])
+pprint(throughput_files)
+
+latency_files = natsorted([join(sys.argv[2], f) for f in listdir(sys.argv[1]) if isfile(join(sys.argv[2], f))])
+pprint(latency_files)
 
 result_data = DataFrame(columns=['avg_throughput', 'latency_90th'])
 
@@ -30,8 +38,8 @@ for (throuput_file, latency_file) in zip(throughput_files, latency_files):
     index_col=0
   )
 
-  avg_throughput = throughput_series.mean()
-  latency_90th = latency_series.quantile(0.9) / 1000
+  avg_throughput = throughput_series.quantile(0.9)
+  latency_90th = latency_series.quantile(0.9) / 1e6
 
   file_desc = throuput_file.split('/')
   exp_desc = file_desc[len(file_desc) - 1][:-4].split('-')
@@ -39,10 +47,6 @@ for (throuput_file, latency_file) in zip(throughput_files, latency_files):
   threads_per_client = total_threads / n_clients
 
   result_data = result_data.append(DataFrame([[n_clients, threads_per_client, total_threads, avg_throughput, latency_90th]], columns=['n_clients', 'threads_per_client', 'total_threads', 'avg_throughput', 'latency_90th']), ignore_index=True)
-
-result_data = result_data.sort_values('avg_throughput')
-
-print(result_data.to_csv())
 
 # series = read_csv(
 #   sys.argv[1],
@@ -54,5 +58,12 @@ print(result_data.to_csv())
 
 # print(series)
 
-result_data.plot(x='avg_throughput', y='latency_90th')
-pyplot.show()
+plot_result_data = result_data.sort_values('avg_throughput')
+plot_result_data.plot(x='avg_throughput', y='latency_90th')
+pyplot.xlabel("Vazão (média)")
+pyplot.ylabel("Latência (percentil 90%)")
+head, tail = ntpath.split(sys.argv[1])
+if not isdir(f"./csvs/summary/{head}"): makedirs(f"./csvs/summary/{head}")
+pyplot.savefig(f"./csvs/summary/{head}/{tail}.png")
+result_data.to_csv(f"./csvs/summary/{head}/{tail}.csv", header=True, sep=';')
+# pyplot.show()

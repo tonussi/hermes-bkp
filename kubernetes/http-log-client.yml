@@ -15,17 +15,15 @@ spec:
     spec:
       containers:
       - name: http-log-client
-        image: lptonussi/http-log-client
+        image: lptonussi/http-log-client:latest
         imagePullPolicy: Always
         args: [
-          '--address=$SERVICE_NAME',
-          '--payload_size=$PAYLOAD_SIZE',
-          '--qty_iteration=$QTY_ITERATION',
-          '--read_rate=$READ_RATE',
-          '--n_threads=$N_THREADS',
-          '--thinking_time=$THINKING_TIME',
-          '--percentage_sampling=$PERCENTAGE_SAMPLING',
-          '--duration=$DURATION'
+          '--address', '$SERVICE_NAME',
+          '--read_rate', '$READ_RATE',
+          '--n_processes', '$N_THREADS',
+          '--bytes_size', '128',
+          '--thinking_time', '0.2',
+          '--duration', '1.7'
         ]
         env:
           - name: PYTHONUNBUFFERED
