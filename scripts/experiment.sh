@@ -1,6 +1,5 @@
 #!/usr/bin/env sh
 KUBERNETES_DIR=$1
-export DURATION=1.5
 export N_CLIENTS=$2
 export N_THREADS=$3
 export READ_RATE=$4
