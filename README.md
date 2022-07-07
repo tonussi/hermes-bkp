@@ -33,3 +33,4 @@ Some useful tutorials on how to setup a cluster with kubeadm
 * ['Request.RequestURI can't be set in client request' error when resend it through proxy](https://stackoverflow.com/a/65805980)
 * [How to measure elapsed time in Python?](https://stackoverflow.com/questions/7370801/how-to-measure-elapsed-time-in-python)
 * [GitHub Action for interacting with kubectl (k8s)](https://github.com/actions-hub/kubectl)
+* [How to deploy mongodb statefulset](https://kubernetes.io/blog/2017/01/running-mongodb-on-kubernetes-with-statefulsets/)
