@@ -23,7 +23,7 @@ spec:
           '--n_processes', '$N_THREADS',
           '--bytes_size', '32',
           '--thinking_time', '0.15',
-          '--duration', '1'
+          '--duration', '1.5'
         ]
         env:
           - name: PYTHONUNBUFFERED
