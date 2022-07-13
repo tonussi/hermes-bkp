@@ -1,9 +1,10 @@
 #!/usr/bin/env sh
 KUBERNETES_DIR=$1
-export N_CLIENTS=$2
-export N_THREADS=$3
-export READ_RATE=$4
-SCENE=$5
+APP=$2
+export N_CLIENTS=$3
+export N_THREADS=$4
+export READ_RATE=$5
+SCENE=$6
 
 export SERVICE_NAME=hermes-leader
 
@@ -44,27 +45,27 @@ done
 sleep 10
 
 echo "apply clients..."
-envsubst < $KUBERNETES_DIR/http-log-client.yml | kubectl apply -f -
+envsubst < $KUBERNETES_DIR/http-$APP-client.yml | kubectl apply -f -
 
 echo "wait job to complete..."
-kubectl wait --for=condition=complete --timeout=100s job.batch/http-log-client
+kubectl wait --for=condition=complete --timeout=100s job.batch/http-$APP-client
 
 TEST=$(expr $N_CLIENTS \* $N_THREADS)-$N_CLIENTS
 
 echo "collecting throughput log..."
 mkdir -p logs/$SCENE/throughput
-kubectl logs $(kubectl get pods -l app=hermes-leader -o=jsonpath='{.items[0].metadata.name}') http-log-server > logs/$SCENE/throughput/$TEST.log
+kubectl logs $(kubectl get pods -l app=hermes-leader -o=jsonpath='{.items[0].metadata.name}') http-$APP-server > logs/$SCENE/throughput/$TEST.log
 
 echo "collecting latency log..."
 mkdir -p logs/$SCENE/latency
-kubectl logs $(kubectl get pods -l app=http-log-client -o=jsonpath='{.items[0].metadata.name}') > logs/$SCENE/latency/$TEST.log
+kubectl logs $(kubectl get pods -l app=http-$APP-client -o=jsonpath='{.items[0].metadata.name}') > logs/$SCENE/latency/$TEST.log
 
 echo "deleting client..."
-kubectl delete -f $KUBERNETES_DIR/http-log-client.yml
+# kubectl delete -f $KUBERNETES_DIR/http-$APP-client.yml
 
 echo "deleting server..."
-kubectl delete -f $KUBERNETES_DIR/hermes-leader.yml
-kubectl delete -f $KUBERNETES_DIR/hermes-followers.yml
+# kubectl delete -f $KUBERNETES_DIR/hermes-leader.yml
+# kubectl delete -f $KUBERNETES_DIR/hermes-followers.yml
 
 sleep 1
 exit 0

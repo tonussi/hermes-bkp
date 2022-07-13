@@ -1,9 +1,9 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: http-log-client
+  name: http-arango-client
   labels:
-    app: http-log-client
+    app: http-arango-client
 spec:
   backoffLimit: 4
   completions: $N_CLIENTS
@@ -11,11 +11,11 @@ spec:
   template:
     metadata:
       labels:
-        app: http-log-client
+        app: http-arango-client
     spec:
       containers:
-      - name: http-log-client
-        image: lptonussi/http-log-client:latest
+      - name: http-arango-client
+        image: lptonussi/http-arango-client:latest
         imagePullPolicy: Always
         args: [
           '--address', '$SERVICE_NAME',
@@ -49,5 +49,5 @@ spec:
                 matchExpressions:
                   - key: name
                     operator: In
-                    values: [ "http-log-client" ]
+                    values: [ "http-arango-client" ]
               topologyKey: failure-domain.beta.kubernetes.io/zone
