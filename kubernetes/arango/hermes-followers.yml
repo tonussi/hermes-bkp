@@ -21,10 +21,11 @@ spec:
             - name: ARANGO_ROOT_PASSWORD
               value: arango
           args: [
-            # "--query.memory-limit", "50000",
-            # "--query.max-runtime", "30",
-            # "--database.auto-upgrade", "true"
+            "--log.level", "queries=trace",
+            "--query.memory-limit", "50000",
+            "--server.endpoint", "tcp://localhost:8001"
           ]
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8529
           resources:
@@ -36,10 +37,9 @@ spec:
               cpu: "1000m"
         - name: hermes
           image: lptonussi/hermes
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           args: [
-            "-j", "hermes-leader:9000",
-            "-d", ":8529"
+            "-j", "hermes-leader:9000"
           ]
           env:
             - name: NODE_ID

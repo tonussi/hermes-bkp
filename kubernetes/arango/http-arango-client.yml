@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
       - name: http-arango-client
-        image: lptonussi/http-arango-client:latest
-        imagePullPolicy: Always
+        image: lptonussi/http-arangodb-client:latest
+        imagePullPolicy: IfNotPresent
         args: [
           '--address', '$SERVICE_NAME',
           '--read_rate', '$READ_RATE',
