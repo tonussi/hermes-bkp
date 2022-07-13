@@ -15,26 +15,21 @@ spec:
         app: hermes-leader
     spec:
       containers:
-        - name: arango
+        - name: http-arango-server
           image: arangodb:3.6.0
           env:
             - name: ARANGO_ROOT_PASSWORD
               value: arango
           args: [
             "--log.level", "queries=trace",
+            "--log.level", "queries=trace",
+            "--log.level", "info",
             "--query.memory-limit", "50000",
             "--server.endpoint", "tcp://localhost:8001"
           ]
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8529
-          resources:
-            requests:
-              memory: "300Mi"
-              cpu: "50m"
-            limits:
-              memory: "500Mi"
-              cpu: "1000m"
         - name: hermes
           image: lptonussi/hermes
           env:
@@ -56,13 +51,6 @@ spec:
               containerPort: 9000
             - name: protocol
               containerPort: 10000
-          resources:
-            requests:
-              memory: "300Mi"
-              cpu: "50m"
-            limits:
-              memory: "1Gi"
-              cpu: "1000m"
       nodeSelector:
         role: server
       affinity:
