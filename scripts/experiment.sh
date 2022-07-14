@@ -61,11 +61,11 @@ mkdir -p logs/$SCENE/latency
 kubectl logs $(kubectl get pods -l app=http-$APP-client -o=jsonpath='{.items[0].metadata.name}') &> logs/$SCENE/latency/$TEST.log
 
 echo "deleting client..."
-kubectl delete -f $KUBERNETES_DIR/http-$APP-client.yml
+# kubectl delete -f $KUBERNETES_DIR/http-$APP-client.yml
 
 echo "deleting server..."
-kubectl delete -f $KUBERNETES_DIR/hermes-leader.yml
-kubectl delete -f $KUBERNETES_DIR/hermes-followers.yml
+# kubectl delete -f $KUBERNETES_DIR/hermes-leader.yml
+# kubectl delete -f $KUBERNETES_DIR/hermes-followers.yml
 
 sleep 1
 exit 0

@@ -32,13 +32,6 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.name
-        resources:
-          requests:
-            memory: "300Mi"
-            cpu: "50m"
-          limits:
-            memory: "500Mi"
-            cpu: "300m"
       restartPolicy: Never
       nodeSelector:
         role: client

@@ -29,7 +29,7 @@ spec:
           ]
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8529
+            - containerPort: 8001
         - name: hermes
           image: lptonussi/hermes
           env:
