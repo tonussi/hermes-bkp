@@ -22,6 +22,7 @@ https://yusufs.medium.com/creating-distributed-kv-database-by-implementing-raft-
 
 * [Transform http.Response into array of bytes](https://stackoverflow.com/a/69055473)
 * [StatefulSet Redis // redis.NewClusterClient](https://cloud.google.com/kubernetes-engine/docs/tutorials/upgrading-stateful-workload?hl=pt-br)
+* [Designing and testing a highly available Kafka cluster on Kubernetes](https://learnk8s.io/kafka-ha-kubernetes)
 
 # Install Kubernetes
 
